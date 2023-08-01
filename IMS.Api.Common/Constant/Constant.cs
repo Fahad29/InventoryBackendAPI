@@ -7,10 +7,20 @@
         #endregion
 
         #region Store Procedure
+
+        #region Authentication
+        public const string SpRegisterUser = "sp_Register_User";
+        public const string SpLoginUser = "sp_Login_User";
+        public const string SpForgetPassword = "sp_ForgetPassword";
+        public const string SpResendOTP = "sp_ReSendOTP";
+        #endregion
+
         public const string SpCreateCompany = "Usp_create_company";
         public const string SpUpdateCompany = "Usp_update_company";
         public const string SpCreateUser = "Usp_create_user";
         public const string SpUpdateUser = "Usp_update_user";
+
+
         #endregion
 
     }
