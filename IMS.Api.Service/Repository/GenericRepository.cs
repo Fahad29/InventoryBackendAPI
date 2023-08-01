@@ -14,14 +14,16 @@ namespace IMS.Api.Service.Repository
     public class GenericRepository<TEntity> : IRepository<TEntity> where TEntity : class
     {
         IConnection _connection;
+        readonly string _connectionString;
         public GenericRepository(IConnection connection)
         {
             _connection = connection;
+            _connectionString = _connection.ConnectionString.ToString();
         }
 
         public IEnumerable<TEntity> Search(object parameters, string query)
         {
-            using (SqlConnection conn = new SqlConnection(_connection.ConnectionString))
+            using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
                 return conn.Query<TEntity>(query, param: parameters, commandType: CommandType.StoredProcedure).ToList();
@@ -30,7 +32,7 @@ namespace IMS.Api.Service.Repository
 
         public IEnumerable<Model> Search<Model>(object parameters, string query)
         {
-            using (SqlConnection conn = new SqlConnection(_connection.ConnectionString))
+            using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
                 return conn.Query<Model>(query, param: parameters, commandType: CommandType.StoredProcedure, commandTimeout: 5000).ToList();
@@ -40,7 +42,7 @@ namespace IMS.Api.Service.Repository
         [ExcludeFromCodeCoverage]
         public List<Model> Search<Model>(object parameters, string sql, string connectionString)
         {
-            SqlConnection connection = new SqlConnection(_connection.ConnectionString);
+            SqlConnection connection = new SqlConnection(_connectionString);
             using (connection)
             {
                 DynamicParameters dynamicParameters = new DynamicParameters();
@@ -82,7 +84,7 @@ namespace IMS.Api.Service.Repository
 
         public IEnumerable<Model> ExecuteQuery<Model>(object parameters, string query)
         {
-            using (SqlConnection conn = new SqlConnection(_connection.ConnectionString))
+            using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
                 return conn.Query<Model>(query, param: parameters, commandType: CommandType.StoredProcedure).ToList();
@@ -90,7 +92,7 @@ namespace IMS.Api.Service.Repository
         }
         public async Task<IEnumerable<Model>> ExecuteQueryAsync<Model>(object parameters, string query)
         {
-            using (SqlConnection conn = new SqlConnection(_connection.ConnectionString))
+            using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 await conn.OpenAsync();
                 return await conn.QueryAsync<Model>(query, param: parameters, commandType: CommandType.StoredProcedure, commandTimeout: 340);
@@ -98,12 +100,21 @@ namespace IMS.Api.Service.Repository
         }
 
 
-        public Model CreateSP<Model>(Model model, string storedProcName)
+        public Model CreateSP<Model>(object model, string storedProcName)
         {
-            using (SqlConnection conn = new SqlConnection(_connection.ConnectionString))
+            using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
                 return conn.Query<Model>(storedProcName, model, commandType: CommandType.StoredProcedure).FirstOrDefault();
+            }
+        }
+
+        public void CreateSP(object model, string storedProcName)
+        {
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+               conn.Query(storedProcName, model, commandType: CommandType.StoredProcedure).FirstOrDefault();
             }
         }
 
@@ -112,7 +123,7 @@ namespace IMS.Api.Service.Repository
             DataTable table = CreateTable(listModel, null);
             if (table.Rows.Count == 0) return;
 
-            using (SqlConnection conn = new SqlConnection(_connection.ConnectionString))
+            using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 var sqlBulkCopy = new SqlBulkCopy(conn);
 

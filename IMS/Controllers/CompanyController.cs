@@ -1,16 +1,18 @@
 ﻿using IMS.Api.Common.Model;
+using IMS.Api.Common.Model.Params;
 using IMS.Api.Core.CoreService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Oculus.Extensions;
 
 namespace IMS.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CompanyController : ControllerBase
+    public class CompanyController : BaseController
     {
-        readonly ICompanyCore _companyCore;
-        public CompanyController(ICompanyCore companyCore)
+        readonly ICompanyCore<CompanyRequestModel> _companyCore;
+        public CompanyController(ICompanyCore<CompanyRequestModel> companyCore, APIResponse apiResponse)
         {
             _companyCore = companyCore;
         }
@@ -52,14 +54,14 @@ namespace IMS.Controllers
         {
             try
             {
-                APIResponse response = await _companyCore.Create(companyRequest);
+                APIResponse response = await _companyCore.Create(companyRequest, new Params() { ContentRootPath = AppConfig.ContentRootPath, UserId = User.GetUserId() });
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();
             }
             catch (Exception ex)
             {
-                throw;
+                return null;
             }
         }
 
@@ -68,7 +70,7 @@ namespace IMS.Controllers
         {
             try
             {
-                APIResponse response = await _companyCore.Update(companyRequest);
+                APIResponse response = await _companyCore.Update(companyRequest, new Params() { ContentRootPath = AppConfig.ContentRootPath, UserId = User.GetUserId() });
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();
@@ -84,7 +86,7 @@ namespace IMS.Controllers
         {
             try
             {
-                APIResponse response = await _companyCore.Delete(companyId);
+                APIResponse response = await _companyCore.Delete(companyId, new Params() { ContentRootPath = AppConfig.ContentRootPath, UserId = User.GetUserId() });
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();

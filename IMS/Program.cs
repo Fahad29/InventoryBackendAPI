@@ -21,6 +21,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddDbContext<ContextCore>(options => options.UseSqlServer(configuration.GetSection("ConnectionStrings")["DefaultConnection"]));
+
 builder.Services.AddRepositories();
 
 
