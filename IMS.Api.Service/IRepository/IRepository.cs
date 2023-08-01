@@ -1,4 +1,8 @@
-﻿namespace IMS.Api.Service.IRepository
+﻿using IMS.Api.Common.Model.DataModel;
+using System.Data.SqlClient;
+using System.Data;
+
+namespace IMS.Api.Service.IRepository
 {
     public interface IRepository<TEntity> where TEntity : class
     {
@@ -8,8 +12,9 @@
         public List<Model> Search<Model>(object parameters, string sql, string connectionString);
         IEnumerable<Model> ExecuteQuery<Model>(object parameters, string query);
         Task<IEnumerable<Model>> ExecuteQueryAsync<Model>(object parameters, string query);
-        Model CreateSP<Model>(Model model, string storedProcName);
+        Model CreateSP<Model>(object model, string storedProcName);
+        void CreateSP(object model, string storedProcName);
         void InsertInBulk<Model>(List<Model> listModel, string tableName, int? commandTimeout);
-
+        
     }
 }

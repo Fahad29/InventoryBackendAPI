@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Text.Json.Serialization;
 
 namespace IMS.Api.Common.Model
 {
@@ -6,6 +7,7 @@ namespace IMS.Api.Common.Model
     {
         public int StatusCode { get; set; }
         public string StatusMessage { get; set; }
+        [JsonIgnore]
         public object Response { get; set; }
 
         public APIResponse ReturnResponse(HttpStatusCode StatusCode, object response)
