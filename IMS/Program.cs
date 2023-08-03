@@ -53,11 +53,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run();
-
-
-
-
 var fileName = Environment.GetEnvironmentVariable("HOSTNAME") ?? "add-on" + "_";
 
 string f = Path.Combine(Environment.CurrentDirectory, $@"Content\Logs\log-{fileName}.txt");
@@ -74,6 +69,7 @@ Log.Logger = (Serilog.ILogger)new LoggerConfiguration()
 
 APIConfig.Log = Log.Logger;
 
+app.Run();
 
 builder.Services.AddSingleton(configuration);
 

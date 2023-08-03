@@ -5,7 +5,7 @@ namespace IMS.Api.Common.Model
 {
     public class APIResponse
     {
-        public int StatusCode { get; set; }
+        public HttpStatusCode StatusCode { get; set; }
         public string StatusMessage { get; set; }
         [JsonIgnore]
         public object Response { get; set; }
@@ -35,7 +35,7 @@ namespace IMS.Api.Common.Model
                 default:
                     StatusMessage = "Not Found"; break;
             }
-            this.StatusCode = ((int)StatusCode);
+            this.StatusCode = (StatusCode);
             this.Response = response;
             this.StatusMessage = StatusMessage;
             return this;

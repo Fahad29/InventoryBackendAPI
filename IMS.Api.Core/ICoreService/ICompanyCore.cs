@@ -1,6 +1,5 @@
 ﻿using IMS.Api.Common.Model;
 using IMS.Api.Common.Model.Params;
-using IMS.Api.Service.IRepository;
 
 namespace IMS.Api.Core.CoreService
 {
