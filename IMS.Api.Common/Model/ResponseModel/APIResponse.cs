@@ -34,6 +34,9 @@ namespace IMS.Api.Common.Model
                 case HttpStatusCode.InternalServerError:
                     StatusMessage = "Internal Server Error";
                     break;
+                case HttpStatusCode.NoContent:
+                    StatusMessage = "Record Not Found.";
+                    break;
                 default:
                     StatusMessage = "Not Found"; break;
             }

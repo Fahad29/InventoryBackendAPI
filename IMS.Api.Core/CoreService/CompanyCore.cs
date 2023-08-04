@@ -38,7 +38,7 @@ namespace IMS.Api.Core.ICoreService
                 }
                 else
                 {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, null);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, null);
                 }
 
 
@@ -129,9 +129,14 @@ namespace IMS.Api.Core.ICoreService
                     company.IsActive = Constant.False;
                     //company.IsDeleted = Constant.True;
                     //company.UpdatedBy = @params.UserId;
+                    company = _iRepository.CreateSP<Company>(company, Constant.SpUpdateCompany);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, company);
                 }
-                company = _iRepository.CreateSP<Company>(company, Constant.SpUpdateCompany);
-                return _apiResponse.ReturnResponse(HttpStatusCode.OK, company);
+                else
+                {
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, null);
+                }
+           
             }
             catch (Exception ex)
             {
