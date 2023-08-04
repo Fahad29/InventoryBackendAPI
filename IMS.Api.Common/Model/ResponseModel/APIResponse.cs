@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using IMS.Api.Common.Model.CommonModel;
+using System.Net;
 using System.Text.Json.Serialization;
 
 namespace IMS.Api.Common.Model
@@ -12,6 +13,7 @@ namespace IMS.Api.Common.Model
 
         public APIResponse ReturnResponse(HttpStatusCode StatusCode, object response)
         {
+            APIConfig.Log.Debug("CALLING API ENDED WITH RESPONSE",response);
             switch (StatusCode)
             {
                 case HttpStatusCode.OK:
@@ -38,6 +40,7 @@ namespace IMS.Api.Common.Model
             this.StatusCode = (StatusCode);
             this.Response = response;
             this.StatusMessage = StatusMessage;
+
             return this;
         }
     }

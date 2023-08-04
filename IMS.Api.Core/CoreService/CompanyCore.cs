@@ -7,14 +7,15 @@ using IMS.Api.Common.Model.Params;
 using IMS.Api.Core.CoreService;
 using IMS.Api.Service.IRepository;
 using System.Net;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace IMS.Api.Core.ICoreService
 {
-    public class CompanyCore : ICompanyCore<CompanyRequestModel>
+    public class CompanyCore : ICompanyCore
     {
-        IRepository<CompanyRequestModel> _iRepository;
+        IRepository<Company> _iRepository;
         APIResponse _apiResponse;
-        public CompanyCore(IRepository<CompanyRequestModel> iRepository, APIResponse apiResponse)
+        public CompanyCore(IRepository<Company> iRepository, APIResponse apiResponse)
         {
             _iRepository = iRepository;
             _apiResponse = apiResponse;
@@ -29,26 +30,25 @@ namespace IMS.Api.Core.ICoreService
                 {
 
                 };
-                List<Company> companies = _iRepository.Search<Company>(obj, Constant.SpGetCompany).ToList();
-                if(companies.Count > 0)
+                List<Company> companies = _iRepository.Search(obj, Constant.SpGetCompany).ToList();
+                if (companies.Count > 0)
                 {
-                    _apiResponse.StatusCode = HttpStatusCode.OK;
-                    _apiResponse.Response = companies;
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, companies);
+
                 }
                 else
                 {
-                    _apiResponse.StatusCode = HttpStatusCode.NoContent;
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, null);
                 }
-                
-                
+
+
             }
             catch (Exception ex)
             {
-                APIConfig.Log.Debug("Exception: "+ex);
+                APIConfig.Log.Debug("Exception: " + ex);
                 _apiResponse.StatusCode = HttpStatusCode.BadRequest;
+                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
-            APIConfig.Log.Debug("CALLING API\" company Get all \"  ENDED");
-            return _apiResponse.ReturnResponse(_apiResponse.StatusCode,_apiResponse.Response);
         }
 
         public async Task<APIResponse> GetById(int CompanyId)
@@ -56,23 +56,22 @@ namespace IMS.Api.Core.ICoreService
             APIConfig.Log.Debug("CALLING API\" company GetById \"  STARTED");
             try
             {
-                Company company = _iRepository.Search<Company>(new { CompanyId = CompanyId }, Constant.SpGetCompany).FirstOrDefault();
-                if(company != null) {
-                    _apiResponse.StatusCode = HttpStatusCode.OK;
-                    _apiResponse.Response = company;
+                Company company = _iRepository.Search(new { CompanyId = CompanyId }, Constant.SpGetCompany).FirstOrDefault();
+                if (company != null)
+                {
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, company);
                 }
                 else
                 {
-                    _apiResponse.StatusCode = HttpStatusCode.NoContent;
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent,null);
                 }
             }
             catch (Exception ex)
             {
                 APIConfig.Log.Debug("Exception: " + ex);
                 _apiResponse.StatusCode = HttpStatusCode.BadRequest;
+                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
-            APIConfig.Log.Debug("CALLING API\" company GetById \"  ENDED");
-            return _apiResponse.ReturnResponse(_apiResponse.StatusCode, _apiResponse.Response);
         }
 
         public async Task<APIResponse> Create(CompanyRequestModel model, Params @params)
@@ -84,36 +83,39 @@ namespace IMS.Api.Core.ICoreService
                 company.CreatedBy = @params.UserId;
                 company = _iRepository.CreateSP<Company>(company, Constant.SpCreateCompany);
 
-                _apiResponse.StatusCode = HttpStatusCode.Created;
-                _apiResponse.Response = company;
+                return _apiResponse.ReturnResponse(HttpStatusCode.Created, company);
+                
             }
             catch (Exception ex)
             {
                 APIConfig.Log.Debug("Exception: " + ex);
                 _apiResponse.StatusCode = HttpStatusCode.BadRequest;
+                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
-            APIConfig.Log.Debug("CALLING API\" company create \"  ENDED");
-            return _apiResponse.ReturnResponse(_apiResponse.StatusCode, _apiResponse.Response);
+     
         }
 
         public async Task<APIResponse> Update(CompanyRequestModel model, Params @params)
         {
-            APIConfig.Log.Debug("CALLING API\" company update \"  STARTED");
             try
             {
+                APIConfig.Log.Debug("CALLING API\" company update \"  STARTED");
                 Company company = model.MapTo<Company>();
                 //company.UpdatedBy = @params.UserId;
                 company = _iRepository.CreateSP<Company>(company, Constant.SpUpdateCompany);
-                _apiResponse.StatusCode = HttpStatusCode.OK;
-                _apiResponse.Response = company;
+                return _apiResponse.ReturnResponse(HttpStatusCode.OK, company);
+
             }
             catch (Exception ex)
             {
                 APIConfig.Log.Debug("Exception: " + ex);
                 _apiResponse.StatusCode = HttpStatusCode.BadRequest;
+                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
+
             }
-            APIConfig.Log.Debug("CALLING API\" company update \"  ENDED");
-            return _apiResponse.ReturnResponse(_apiResponse.StatusCode, _apiResponse.Response);
+            
+
+
         }
 
         public async Task<APIResponse> Delete(int CompanyId, Params @params)
@@ -121,23 +123,23 @@ namespace IMS.Api.Core.ICoreService
             APIConfig.Log.Debug("CALLING API\" company delete \"  STARTED");
             try
             {
-                Company company = _iRepository.CreateSP<Company>(new { CompanyId  = CompanyId }, Constant.SpGetCompany);
-                if(company == null)
+                Company company = _iRepository.CreateSP<Company>(new { CompanyId = CompanyId }, Constant.SpGetCompany);
+                if (company == null)
                 {
                     company.IsActive = Constant.False;
                     //company.IsDeleted = Constant.True;
                     //company.UpdatedBy = @params.UserId;
                 }
                 company = _iRepository.CreateSP<Company>(company, Constant.SpUpdateCompany);
-                _apiResponse.StatusCode = HttpStatusCode.OK;
+                return _apiResponse.ReturnResponse(HttpStatusCode.OK, company);
             }
             catch (Exception ex)
             {
                 APIConfig.Log.Debug("Exception: " + ex);
                 _apiResponse.StatusCode = HttpStatusCode.BadRequest;
+                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
-            APIConfig.Log.Debug("CALLING API\" company delete \"  ENDED");
-            return _apiResponse.ReturnResponse(_apiResponse.StatusCode, _apiResponse.Response);
+           
         }
 
 

@@ -11,8 +11,8 @@ namespace IMS.Controllers
     [ApiController]
     public class CompanyController : BaseController
     {
-        readonly ICompanyCore<CompanyRequestModel> _companyCore;
-        public CompanyController(ICompanyCore<CompanyRequestModel> companyCore, APIResponse apiResponse)
+        readonly ICompanyCore _companyCore;
+        public CompanyController(ICompanyCore companyCore, APIResponse apiResponse)
         {
             _companyCore = companyCore;
         }

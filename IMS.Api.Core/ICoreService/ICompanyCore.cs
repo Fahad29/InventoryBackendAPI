@@ -3,7 +3,7 @@ using IMS.Api.Common.Model.Params;
 
 namespace IMS.Api.Core.CoreService
 {
-    public interface ICompanyCore<TEntity> 
+    public interface ICompanyCore
     {
         Task<APIResponse> GetAll();
         Task<APIResponse> GetById(int CompanyId);
