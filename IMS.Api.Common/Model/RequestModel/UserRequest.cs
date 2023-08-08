@@ -1,19 +1,13 @@
-﻿namespace IMS.Api.Common.Model.DataModel
+﻿namespace IMS.Api.Common.Model.RequestModel
 {
-    public class User : BaseModel
+    public class UserRequest
     {
-        public int UserId { get; set; }
         public int CompanyId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string PasswordHash { get; set; }
         public string Email { get; set; }
-        public string IsEmailVerified { get; set; }
         public string MobileNo { get; set; }
-        public string IsMobileNoVerified { get; set; }
-        public string CreatedBy { get; set; }
-        public string CreatedOn { get; set; }
         public bool IsActive { get; set; }
-
     }
 }

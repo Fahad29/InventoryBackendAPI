@@ -18,10 +18,11 @@ namespace IMS
         public static IServiceCollection AddRepositories(this IServiceCollection services)
         {
             services.AddSingleton<IConnection, ConnectionFactory>();
-            services.AddScoped<IRepository<CompanyRequestModel>, GenericRepository<CompanyRequestModel>>();
-            services.AddScoped<ICompanyCore, CompanyCore>();
-            services.AddScoped<APIResponse>();
+            services.AddScoped<IRepository<Company>, GenericRepository<Company>>();
             services.AddScoped<IRepository<User>, GenericRepository<User>>();
+            services.AddScoped<ICompanyCore, CompanyCore>();
+            services.AddScoped<IUserCore, UserCore>();
+
             return services;
         }
     }
