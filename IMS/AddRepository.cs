@@ -22,6 +22,8 @@ namespace IMS
             services.AddScoped<IRepository<User>, GenericRepository<User>>();
             services.AddScoped<ICompanyCore, CompanyCore>();
             services.AddScoped<IUserCore, UserCore>();
+            services.AddScoped<APIResponse>();
+
 
             return services;
         }
