@@ -19,11 +19,12 @@ namespace IMS
         {
             services.AddSingleton<IConnection, ConnectionFactory>();
             services.AddScoped<IRepository<Company>, GenericRepository<Company>>();
+            services.AddScoped<IRepository<CompanyRequestModel>, GenericRepository<CompanyRequestModel>>();
             services.AddScoped<IRepository<User>, GenericRepository<User>>();
             services.AddScoped<ICompanyCore, CompanyCore>();
+            services.AddScoped<IAuthenticationCore, AuthenticationCore>();
             services.AddScoped<IUserCore, UserCore>();
             services.AddScoped<APIResponse>();
-
 
             return services;
         }

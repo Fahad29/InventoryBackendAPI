@@ -1,8 +1,4 @@
-﻿using IMS.Api.Common.Model.DataModel;
-using System.Data.SqlClient;
-using System.Data;
-
-namespace IMS.Api.Service.IRepository
+﻿namespace IMS.Api.Service.IRepository
 {
     public interface IRepository<TEntity> where TEntity : class
     {

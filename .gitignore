@@ -396,3 +396,5 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+/IMS/Program.cs
+/IMS.Api.Service/Repository/ConnectionFactory.cs
