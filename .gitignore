@@ -398,3 +398,4 @@ FodyWeavers.xsd
 *.sln.iml
 /IMS/Program.cs
 /IMS.Api.Service/Repository/ConnectionFactory.cs
+IMS/appsettings.json
