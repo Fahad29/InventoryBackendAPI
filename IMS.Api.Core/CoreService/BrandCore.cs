@@ -23,11 +23,7 @@ namespace IMS.Api.Core.CoreService
             APIConfig.Log.Debug("CALLING API\" Brand Get all \"  STARTED");
             try
             {
-                Object obj = new
-                {
-
-                };
-                List<Brand> brands = _iRepository.Search(obj, Constant.SpGetCompany).ToList();
+                List<Brand> brands = _iRepository.Search(null, Constant.SpGetAllBrands).ToList();
                 if (brands.Count > 0)
                 {
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, brands);
@@ -55,7 +51,7 @@ namespace IMS.Api.Core.CoreService
             {
                 Brand brand = new Brand();
                 brand.Name = Name;
-                brand = _iRepository.CreateSP<Brand>(brand, Constant.SpCreateCompany);
+                brand = _iRepository.CreateSP<Brand>(brand, Constant.SpCreateBrand);
 
                 return _apiResponse.ReturnResponse(HttpStatusCode.Created, brand);
 
@@ -74,17 +70,15 @@ namespace IMS.Api.Core.CoreService
             APIConfig.Log.Debug("CALLING API\" Brand delete \"  STARTED");
             try
             {
-                Brand brand = new();
-                if (brand == null)
+                if (BrandId >0)
                 {
-                    brand.Id = BrandId;
-                    brand.IsActive = Constant.False;
-                    brand = _iRepository.CreateSP<Brand>(brand, Constant.SpUpdateCompany);
-                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, brand);
+               
+                    List<Brand> brands = _iRepository.CreateSP<List<Brand>>(new { BrandId = BrandId}, Constant.SpDeleteBrand);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, brands);
                 }
                 else
                 {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, null);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, "Invalid Brand Id");
                 }
 
             }

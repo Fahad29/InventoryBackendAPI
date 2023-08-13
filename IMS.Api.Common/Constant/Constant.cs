@@ -30,5 +30,13 @@
 
         #endregion
 
+        #region Brand
+
+        public const string SpCreateBrand = "p_Create_Brand";
+        public const string SpDeleteBrand = "p_Delete_Brand";
+        public const string SpGetAllBrands = "p_GetAll_Brands";
+
+        #endregion
+
     }
 }
