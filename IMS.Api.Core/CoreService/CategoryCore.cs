@@ -4,12 +4,7 @@ using IMS.Api.Common.Model.CommonModel;
 using IMS.Api.Common.Model.DataModel;
 using IMS.Api.Core.ICoreService;
 using IMS.Api.Service.IRepository;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace IMS.Api.Core.CoreService
 {
@@ -32,7 +27,7 @@ namespace IMS.Api.Core.CoreService
                 {
 
                 };
-                List<Category> categories = _iRepository.Search(obj, Constant.SpGetCompany).ToList();
+                List<Category> categories = _iRepository.Search(obj, Constant.SpGetAllCategories).ToList();
 
                 if (categories.Count > 0)
                 {
@@ -41,7 +36,7 @@ namespace IMS.Api.Core.CoreService
                 }
                 else
                 {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, null);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
                 }
 
 
@@ -60,7 +55,7 @@ namespace IMS.Api.Core.CoreService
             {
                 Category category = new Category();
                 category.Name = Name;
-                category = _iRepository.CreateSP<Category>(category, Constant.SpCreateCompany);
+                category = _iRepository.CreateSP<Category>(category, Constant.SpCreateCategory);
 
                 return _apiResponse.ReturnResponse(HttpStatusCode.Created, category);
 
@@ -80,16 +75,12 @@ namespace IMS.Api.Core.CoreService
             {
                 if (categoryId > 0)
                 {
-                    Category category = new();
-                    category.Id = categoryId;
-                    category.IsActive = Constant.False;
-                    category = _iRepository.CreateSP<Category>(category, Constant.SpUpdateCompany);
-                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, string.Empty);
+                    _iRepository.CreateSP<Category>(new { CategoryId = categoryId }, Constant.SpDeleteCategory);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.DeleteRecord);
                 }
                 else
-                {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, string.Empty);
-                }
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, "Invalid Category Selected");
+
 
             }
             catch (Exception ex)

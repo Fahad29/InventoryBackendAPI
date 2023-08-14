@@ -37,7 +37,7 @@ namespace IMS
             services.AddScoped<IBrandCore, BrandCore>();
 
             services.AddScoped<IRepository<Category>, GenericRepository<Category>>();
-            services.AddScoped<ICompanyCore, CompanyCore>();
+            services.AddScoped<ICategoryCore, CategoryCore>();
 
             services.AddScoped<IRepository<ProductQuantity>, GenericRepository<ProductQuantity>>();
             services.AddScoped<IQuantityCore, QuantityCore>();

@@ -31,7 +31,7 @@ namespace IMS.Api.Core.CoreService
                 }
                 else
                 {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, null);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
                 }
 
 
@@ -70,15 +70,15 @@ namespace IMS.Api.Core.CoreService
             APIConfig.Log.Debug("CALLING API\" Brand delete \"  STARTED");
             try
             {
-                if (BrandId >0)
+                if (BrandId > 0)
                 {
-               
-                    List<Brand> brands = _iRepository.CreateSP<List<Brand>>(new { BrandId = BrandId}, Constant.SpDeleteBrand);
-                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, brands);
+
+                    _iRepository.CreateSP<Brand>(new { BrandId = BrandId }, Constant.SpDeleteBrand);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.DeleteRecord);
                 }
                 else
                 {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, "Invalid Brand Id");
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.InValidRecordId);
                 }
 
             }

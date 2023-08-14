@@ -28,23 +28,15 @@ namespace IMS.Api.Core.CoreService
                 {
 
                 };
-                List<ProductQuantity> itemQuantities = _iRepository.Search(obj, Constant.SpGetCompany).ToList();
+                List<ProductQuantity> itemQuantities = _iRepository.Search(obj, Constant.SpGetAllQuantities).ToList();
                 if (itemQuantities.Count > 0)
-                {
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, itemQuantities);
-
-                }
                 else
-                {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, null);
-                }
-
-
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
             }
             catch (Exception ex)
             {
                 APIConfig.Log.Debug("Exception: " + ex);
-                _apiResponse.StatusCode = HttpStatusCode.BadRequest;
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
         }
@@ -58,15 +50,13 @@ namespace IMS.Api.Core.CoreService
                 itemQty.CategoryId = quantityRequest.CategoryId;
                 itemQty.Quantity = quantityRequest.Quantity;
                 itemQty.Unit = quantityRequest.Unit;
-                itemQty = _iRepository.CreateSP<ProductQuantity>(itemQty, Constant.SpCreateCompany);
-
+                itemQty = _iRepository.CreateSP<ProductQuantity>(itemQty, Constant.SpCreateQuantity);
                 return _apiResponse.ReturnResponse(HttpStatusCode.Created, itemQty);
 
             }
             catch (Exception ex)
             {
                 APIConfig.Log.Debug("Exception: " + ex);
-                _apiResponse.StatusCode = HttpStatusCode.BadRequest;
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
 
@@ -79,19 +69,17 @@ namespace IMS.Api.Core.CoreService
             {
                 if (QuantityId > 0)
                 {
-                    ProductQuantity quantity = _iRepository.CreateSP<ProductQuantity>(QuantityId, Constant.SpUpdateCompany);
-                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, quantity);
+                    _iRepository.CreateSP<ProductQuantity>(new { QuantityId = QuantityId }, Constant.SpDeleteQuantity);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.DeleteRecord);
                 }
                 else
-                {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, null);
-                }
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.InValidRecordId);
+
 
             }
             catch (Exception ex)
             {
                 APIConfig.Log.Debug("Exception: " + ex);
-                _apiResponse.StatusCode = HttpStatusCode.BadRequest;
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
 

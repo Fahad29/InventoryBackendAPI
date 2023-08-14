@@ -1,7 +1,6 @@
 ﻿using IMS.Api.Common.Model;
 using IMS.Api.Core.ICoreService;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IMS.Controllers
