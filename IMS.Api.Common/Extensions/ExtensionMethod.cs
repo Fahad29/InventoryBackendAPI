@@ -1,8 +1,11 @@
 ﻿using AutoMapper;
 using IMS.Api.Common.Model.CommonModel;
+using IMS.Api.Common.Model.DataModel;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
+using System.IdentityModel.Tokens.Jwt;
 using System.Reflection;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -289,6 +292,27 @@ namespace IMS.Api.Common.Extensions
             }
             else
                 return string.Empty;
+        }
+
+        public static string GenerateJSONWebToken(User userView, string ExpiryMinutes)
+        {
+            // generate token that is valid for 7 days
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(APIConfig.Configuration?.GetSection("JWT")["KEY"]);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[]
+                {
+                    new Claim(ClaimTypes.NameIdentifier, userView.UserId.ToString()),
+                    new Claim(ClaimTypes.Email, userView.Email),
+                    new Claim(ClaimTypes.GivenName, userView.FirstName+" "+userView.LastName),
+                    new Claim(ClaimTypes.Sid, userView.UserId.ToString()),
+                }),
+                Expires = DateTime.UtcNow.AddMinutes(Convert.ToDouble(ExpiryMinutes)),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
         }
     }
 }

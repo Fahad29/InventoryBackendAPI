@@ -11,9 +11,6 @@
         public string IsEmailVerified { get; set; }
         public string MobileNo { get; set; }
         public string IsMobileNoVerified { get; set; }
-        public string CreatedBy { get; set; }
-        public string CreatedOn { get; set; }
-        public bool IsActive { get; set; }
 
     }
 }

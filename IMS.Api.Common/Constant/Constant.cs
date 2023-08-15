@@ -10,6 +10,11 @@
         #region Response Message
         public const string SuccessResponse = "Success";
         public const string RecordNotFound = "Record Not Found";
+
+        public const string TokenExpireMsgs = "the token is expired.";
+        public const string TokenInvalidMsg = "the token is invalid.";
+        public const string TokenRequired = "Token Required";
+        public const string TokenExpireMsg = "Token Expired";
         #endregion
 
         #region Store Procedure
@@ -26,6 +31,7 @@
         public const string SpGetCompany = "Usp_get_company";
         public const string SpCreateUser = "Usp_create_user";
         public const string SpUpdateUser = "Usp_update_user";
+        public const string SpGetUser = "Usp_get_user";
 
 
         #endregion

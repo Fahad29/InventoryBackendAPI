@@ -80,15 +80,16 @@ Log.Logger = (Serilog.ILogger)new LoggerConfiguration()
      .CreateLogger();
 
 APIConfig.Log = Log.Logger;
+APIConfig.Configuration = configuration;
 
-
+app.APIKeyBuilder();
 app.Run();
 app.UseStaticFiles();
 app.UseHttpsRedirection();
 app.UseRouting();
 app.UseCors("CorsPolicy");
 app.UseAuthentication();
-app.APIKeyBuilder();
+
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllers();
