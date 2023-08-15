@@ -70,13 +70,13 @@ var fileName = Environment.GetEnvironmentVariable("HOSTNAME") ?? "add-on" + "_";
 string f = Path.Combine(Environment.CurrentDirectory, $@"Content\Logs\log-{fileName}.txt");
 
 Log.Logger = (Serilog.ILogger)new LoggerConfiguration()
-    .WriteTo.File(f, rollingInterval: RollingInterval.Day)
-      .MinimumLevel.Debug()
-     .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
-    .MinimumLevel.Override("System", LogEventLevel.Warning)
-   .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
-   .MinimumLevel.Override("Quartz", LogEventLevel.Warning)
-    .Enrich.FromLogContext()
+        .WriteTo.File(f, rollingInterval: RollingInterval.Day)
+        .MinimumLevel.Debug()
+        .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+        .MinimumLevel.Override("System", LogEventLevel.Warning)
+        .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
+        .MinimumLevel.Override("Quartz", LogEventLevel.Warning)
+        .Enrich.FromLogContext()
      .CreateLogger();
 
 APIConfig.Log = Log.Logger;
