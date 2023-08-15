@@ -1,6 +1,5 @@
 ﻿using IMS.Api.Common.Model;
 using IMS.Api.Common.Model.CommonModel;
-using IMS.Api.Common.Model.DataModel;
 using IMS.Api.Common.Model.Params;
 using IMS.Api.Common.Model.RequestModel;
 using IMS.Api.Core.ICoreService;

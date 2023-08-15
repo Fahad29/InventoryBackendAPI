@@ -1,24 +1,16 @@
-﻿using IMS.Api.Common.Model.CommonModel;
-using IMS.Api.Common.Model.DataModel;
-using IMS.Api.Common.Model.Params;
-using IMS.Api.Service.IRepository;
+﻿using IMS.Api.Common.Constant;
+using IMS.Api.Common.Extensions;
+using IMS.Api.Common.Model;
+using IMS.Api.Common.Model.CommonModel;
+using IMS.Api.Core.ICoreService;
+using Microsoft.Extensions.Primitives;
 using Microsoft.IdentityModel.Tokens;
-using Oculus.Extensions;
 using Serilog;
 using System.Diagnostics.CodeAnalysis;
-using static System.Net.Mime.MediaTypeNames;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Claims;
-using System.Text.RegularExpressions;
 using System.Text;
-using IMS.Api.Common.Constant;
-using Microsoft.Extensions.Primitives;
-using IMS.Api.Core.CoreService;
-using IMS.Api.Service.Repository;
-using IMS.Api.Common.Model;
-using IMS.Api.Common.Extensions;
-using IMS.Api.Core.ICoreService;
 
 namespace IMS.MiddleWare
 {
@@ -122,16 +114,17 @@ namespace IMS.MiddleWare
                 string request = await LogRequest(httpContext.Request, endpoint);
                 string response = string.Empty;
 
-                var originalBodyStream = httpContext.Response.Body;
+                var originalResponseBody = httpContext.Response.Body;
 
 
-                using (var responseBody = new System.IO.MemoryStream())
+                using (var responseBody = new MemoryStream())
                 {
 
                     httpContext.Response.Body = responseBody;
-                    response = await LogResponse(httpContext.Response, endpoint);
                     await next.Invoke(httpContext).ConfigureAwait(true);
-                    await responseBody.CopyToAsync(originalBodyStream);
+                    response = await LogResponse(httpContext.Response, endpoint);
+                    await responseBody.CopyToAsync(originalResponseBody);
+
                 }
 
                 Log.Debug($"...endpoint is {endpoint.ToLower()}");
