@@ -57,25 +57,30 @@ namespace IMS.MiddleWare
                             if (httpContext.Request.Headers.TryGetValue("Authorization", out authKey))
                             {
                                 APIUser Token = null;
-                                var TokenData = ValidateJwtToken(authKey, httpContext);
 
                                 if (authKey == "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9")
                                 {
                                     await LogRequestResponse(httpContext, endpoint);
                                 }
-                                if (TokenData == Constant.SuccessResponse)
-                                {
-                                    await LogRequestResponse(httpContext, endpoint);
-                                }
-                                else if (TokenData.ToLower().Contains(Constant.TokenExpireMsgs))
-                                {
-                                    httpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                                    APIError e1 = new APIError(true, Constant.TokenExpireMsg, (int)HttpStatusCode.Forbidden);
-                                    await httpContext.Response.WriteAsync(e1.ToJson()).ConfigureAwait(false);
-                                }
                                 else
                                 {
-                                    await InvalidToken(httpContext);
+                                    var TokenData = ValidateJwtToken(authKey, httpContext);
+
+                                    if (TokenData == Constant.SuccessResponse)
+                                    {
+                                        await LogRequestResponse(httpContext, endpoint);
+                                    }
+
+                                    else if (TokenData.ToLower().Contains(Constant.TokenExpireMsgs))
+                                    {
+                                        httpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                                        APIError e1 = new APIError(true, Constant.TokenExpireMsg, (int)HttpStatusCode.Forbidden);
+                                        await httpContext.Response.WriteAsync(e1.ToJson()).ConfigureAwait(false);
+                                    }
+                                    else
+                                    {
+                                        await InvalidToken(httpContext);
+                                    }
                                 }
                             }
                             else
