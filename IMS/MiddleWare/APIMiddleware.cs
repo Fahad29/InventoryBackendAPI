@@ -59,11 +59,11 @@ namespace IMS.MiddleWare
                                 APIUser Token = null;
                                 var TokenData = ValidateJwtToken(authKey, httpContext);
 
-                                if (TokenData == Constant.SuccessResponse)
+                                if (authKey == "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9")
                                 {
                                     await LogRequestResponse(httpContext, endpoint);
                                 }
-                                if (authKey == "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9")
+                                if (TokenData == Constant.SuccessResponse)
                                 {
                                     await LogRequestResponse(httpContext, endpoint);
                                 }

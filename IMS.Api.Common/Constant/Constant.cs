@@ -38,6 +38,24 @@
         public const string SpUpdateUser = "Usp_update_user";
         #endregion
 
+        #region Branch
+
+        public const string SpGetBranch = "Usp_Get_Branch";
+        public const string SpCreateBranch = "Usp_Create_Branch";
+        public const string SpUpdateBranch = "Usp_Update_Branch";
+
+        #endregion
+
+        #region Warehouse
+
+        public const string SpGetWarehouse = "Usp_Get_Warehouse";
+        public const string SpCreateWarehouse = "Usp_Create_Warehouse";
+        public const string SpUpdateWarehouse = "Usp_Update_Warehouse";
+
+        #endregion
+
+
+
         #region Brand
 
         public const string SpGetAllBrands = "p_GetAll_Brands";
