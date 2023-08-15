@@ -1,7 +1,9 @@
 ﻿using IMS.Api.Common.Model;
 using IMS.Api.Common.Model.CommonModel;
+using IMS.Api.Common.Model.DataModel;
 using IMS.Api.Common.Model.Params;
-using IMS.Api.Core.CoreService;
+using IMS.Api.Common.Model.RequestModel;
+using IMS.Api.Core.ICoreService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Oculus.Extensions;
@@ -10,12 +12,12 @@ namespace IMS.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CompanyController : BaseController
+    public class BranchController : ControllerBase
     {
-        readonly ICompanyCore _companyCore;
-        public CompanyController(ICompanyCore companyCore, APIResponse apiResponse)
+        readonly IBranchCore _branchCore;
+        public BranchController(IBranchCore branchCore)
         {
-            _companyCore = companyCore;
+            _branchCore = branchCore;
         }
 
         [AllowAnonymous, HttpGet, Route("GetAll")]
@@ -23,7 +25,7 @@ namespace IMS.Controllers
         {
             try
             {
-                APIResponse response = await _companyCore.GetAll(model);
+                APIResponse response = await _branchCore.GetAll(model);
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();
@@ -35,11 +37,11 @@ namespace IMS.Controllers
         }
 
         [AllowAnonymous, HttpGet, Route("GetById")]
-        public async Task<IActionResult> GetById(int companyId)
+        public async Task<IActionResult> GetById(int branchId)
         {
             try
             {
-                APIResponse response = await _companyCore.GetById(companyId);
+                APIResponse response = await _branchCore.GetById(branchId);
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();
@@ -51,11 +53,11 @@ namespace IMS.Controllers
         }
 
         [AllowAnonymous, HttpPost, Route("Create")]
-        public async Task<IActionResult> Create(CompanyRequestModel companyRequest)
+        public async Task<IActionResult> Create(BranchRequestModel model)
         {
             try
             {
-                APIResponse response = await _companyCore.Create(companyRequest, new Params() { ContentRootPath = AppConfig.ContentRootPath, UserId = User.GetUserId() });
+                APIResponse response = await _branchCore.Create(model, new Params() { ContentRootPath = AppConfig.ContentRootPath, UserId = User.GetUserId() });
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();
@@ -67,11 +69,11 @@ namespace IMS.Controllers
         }
 
         [AllowAnonymous, HttpPut, Route("Update")]
-        public async Task<IActionResult> Update(CompanyRequestModel companyRequest)
+        public async Task<IActionResult> Update(BranchRequestModel model)
         {
             try
             {
-                APIResponse response = await _companyCore.Update(companyRequest, new Params() { ContentRootPath = AppConfig.ContentRootPath, UserId = User.GetUserId() });
+                APIResponse response = await _branchCore.Update(model, new Params() { ContentRootPath = AppConfig.ContentRootPath, UserId = User.GetUserId() });
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();
@@ -83,11 +85,11 @@ namespace IMS.Controllers
         }
 
         [AllowAnonymous, HttpDelete, Route("Delete")]
-        public async Task<IActionResult> Delete(int companyId)
+        public async Task<IActionResult> Delete(int branchId)
         {
             try
             {
-                APIResponse response = await _companyCore.Delete(companyId, new Params() { ContentRootPath = AppConfig.ContentRootPath, UserId = User.GetUserId() });
+                APIResponse response = await _branchCore.Delete(branchId, new Params() { ContentRootPath = AppConfig.ContentRootPath, UserId = User.GetUserId() });
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();

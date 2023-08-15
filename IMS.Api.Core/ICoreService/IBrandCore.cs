@@ -1,5 +1,5 @@
 ﻿using IMS.Api.Common.Model;
-using IMS.Api.Common.Model.Params;
+using IMS.Api.Common.Model.CommonModel;
 
 namespace IMS.Api.Core.ICoreService
 {

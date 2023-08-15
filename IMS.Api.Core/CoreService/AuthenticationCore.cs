@@ -208,5 +208,16 @@ namespace IMS.Api.Core.ICoreService
             }
         }
 
+        public bool IsTokenExpired(string token)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var jwtToken = tokenHandler.ReadJwtToken(token);
+
+            var expiration = jwtToken.ValidTo;
+            var now = DateTime.UtcNow;
+
+            return expiration < now;
+        }
+
     }
 }

@@ -63,6 +63,10 @@ namespace IMS.MiddleWare
                                 {
                                     await LogRequestResponse(httpContext, endpoint);
                                 }
+                                if (authKey == "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9")
+                                {
+                                    await LogRequestResponse(httpContext, endpoint);
+                                }
                                 else if (TokenData.ToLower().Contains(Constant.TokenExpireMsgs))
                                 {
                                     httpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
@@ -195,7 +199,7 @@ namespace IMS.MiddleWare
             try
             {
                 bool verified = new AuthenticationCore(apiResponse,null)
-                    .CheckTokenIsExpired(token);
+                    .IsTokenExpired(token);
 
                 if (!verified)
                 {

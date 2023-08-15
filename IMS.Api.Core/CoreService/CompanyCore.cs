@@ -21,16 +21,13 @@ namespace IMS.Api.Core.ICoreService
             _apiResponse = apiResponse;
         }
 
-        public async Task<APIResponse> GetAll()
+        public async Task<APIResponse> GetAll(BaseFilter model)
         {
             APIConfig.Log.Debug("CALLING API\" company Get all \"  STARTED");
             try
             {
-                Object obj = new
-                {
 
-                };
-                List<Company> companies = _iRepository.Search(obj, Constant.SpGetCompany).ToList();
+                List<Company> companies = _iRepository.Search(model, Constant.SpGetCompany).ToList();
                 if (companies.Count > 0)
                 {
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, companies);

@@ -21,7 +21,7 @@ namespace IMS.Controllers
             try
             {
                 APIResponse response = await _authenticationCore.Login(loginRequest);
-                if (response?.Response != null)
+                    if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();
             }

@@ -3,6 +3,7 @@ using IMS.Api.Common.Helper;
 using IMS.Api.Common.Model.CommonModel;
 using IMS.MiddleWare;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.OpenApi.Models;
 using Serilog;
 using Serilog.Events;
 
@@ -13,7 +14,37 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "IMS API", Version = "v1" });
+
+    // Configure JWT token authentication
+    c.AddSecurityDefinition("jwt", new OpenApiSecurityScheme
+    {
+        Description = @"Authorization header using the Bearer scheme. 
+                      Enter your token in the text input below.,
+                      Example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9'",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "jwt" // Reference the "jwt" security scheme defined above
+                        }
+                    },
+                    new string[] { }
+                }
+            });
+});
 
 var configuration = new ConfigurationBuilder()
        .SetBasePath(builder.Environment.ContentRootPath)

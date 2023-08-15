@@ -42,6 +42,12 @@ namespace IMS
             services.AddScoped<IRepository<ProductQuantity>, GenericRepository<ProductQuantity>>();
             services.AddScoped<IQuantityCore, QuantityCore>();
 
+            services.AddScoped<IRepository<WareHouse>, GenericRepository<WareHouse>>();
+            services.AddScoped<IWarehouseCore, WarehouseCore>();
+
+            services.AddScoped<IRepository<Branch>, GenericRepository<Branch>>();
+            services.AddScoped<IBranchCore, BranchCore>();
+
             return services;
         }
     }
