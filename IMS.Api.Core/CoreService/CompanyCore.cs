@@ -86,7 +86,6 @@ namespace IMS.Api.Core.ICoreService
             catch (Exception ex)
             {
                 APIConfig.Log.Debug("Exception: " + ex);
-                _apiResponse.StatusCode = HttpStatusCode.BadRequest;
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
      

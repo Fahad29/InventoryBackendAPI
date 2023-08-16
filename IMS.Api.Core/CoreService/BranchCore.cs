@@ -35,7 +35,7 @@ namespace IMS.Api.Core.CoreService
                 }
                 else
                 {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, null);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
                 }
 
 
@@ -43,7 +43,6 @@ namespace IMS.Api.Core.CoreService
             catch (Exception ex)
             {
                 APIConfig.Log.Debug("Exception: " + ex);
-                _apiResponse.StatusCode = HttpStatusCode.BadRequest;
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
         }
@@ -60,13 +59,12 @@ namespace IMS.Api.Core.CoreService
                 }
                 else
                 {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, null);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
                 }
             }
             catch (Exception ex)
             {
                 APIConfig.Log.Debug("Exception: " + ex);
-                _apiResponse.StatusCode = HttpStatusCode.BadRequest;
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
         }
@@ -84,7 +82,6 @@ namespace IMS.Api.Core.CoreService
             catch (Exception ex)
             {
                 APIConfig.Log.Debug("Exception: " + ex);
-                _apiResponse.StatusCode = HttpStatusCode.BadRequest;
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
         }
@@ -103,7 +100,6 @@ namespace IMS.Api.Core.CoreService
             catch (Exception ex)
             {
                 APIConfig.Log.Debug("Exception: " + ex);
-                _apiResponse.StatusCode = HttpStatusCode.BadRequest;
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
         }
@@ -124,14 +120,13 @@ namespace IMS.Api.Core.CoreService
                 }
                 else
                 {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, null);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
                 }
 
             }
             catch (Exception ex)
             {
                 APIConfig.Log.Debug("Exception: " + ex);
-                _apiResponse.StatusCode = HttpStatusCode.BadRequest;
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
 
