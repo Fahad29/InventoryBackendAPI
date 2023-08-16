@@ -114,11 +114,11 @@ APIConfig.Log = Log.Logger;
 APIConfig.Configuration = configuration;
 
 app.APIKeyBuilder();
+app.UseCors("CorsPolicy");
 app.Run();
 app.UseStaticFiles();
 app.UseHttpsRedirection();
 app.UseRouting();
-app.UseCors("CorsPolicy");
 app.UseAuthentication();
 
 app.UseEndpoints(endpoints =>
