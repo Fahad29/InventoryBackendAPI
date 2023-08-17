@@ -29,11 +29,11 @@ namespace IMS.Api.Core.CoreService
                 {
 
                 };
-                List<ProductDetail> companies = _iRepository.Search(obj, Constant.SpGetCompany).ToList();
-                if (companies.Count > 0)
-                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, companies);
+                List<ProductDetail> products = _iRepository.Search(obj, Constant.SpGetProductDetail).ToList();
+                if (products.Count > 0)
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, products);
                 else
-                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, null);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
 
             }
             catch (Exception ex)
@@ -48,14 +48,14 @@ namespace IMS.Api.Core.CoreService
             APIConfig.Log.Debug("CALLING API\" Product GetById \"  STARTED");
             try
             {
-                ProductDetail product = _iRepository.Search(new { ProductId = productId }, Constant.SpGetCompany).FirstOrDefault();
+                ProductDetail? product = _iRepository.Search<ProductDetail>(new { Id = productId }, Constant.SpGetProductDetail).FirstOrDefault();
                 if (product != null)
                 {
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, product);
                 }
                 else
                 {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, null);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
                 }
             }
             catch (Exception ex)
@@ -72,7 +72,7 @@ namespace IMS.Api.Core.CoreService
             {
                 ProductDetail product = productRequest.MapTo<ProductDetail>();
                 //product.CreatedBy = @params.UserId;
-                product = _iRepository.CreateSP<ProductDetail>(product, Constant.SpCreateCompany);
+                product = _iRepository.CreateSP<ProductDetail>(product, Constant.SpCreateProductDetail);
 
                 return _apiResponse.ReturnResponse(HttpStatusCode.Created, product);
 
@@ -92,7 +92,7 @@ namespace IMS.Api.Core.CoreService
                 APIConfig.Log.Debug("CALLING API\" ProductDetail update \"  STARTED");
                 ProductDetail product = productRequest.MapTo<ProductDetail>();
                 //company.UpdatedBy = @params.UserId;
-                product = _iRepository.CreateSP<ProductDetail>(product, Constant.SpUpdateCompany);
+                product = _iRepository.CreateSP<ProductDetail>(product, Constant.SpUpdateProductDetail);
                 return _apiResponse.ReturnResponse(HttpStatusCode.OK, product);
 
             }
@@ -110,10 +110,8 @@ namespace IMS.Api.Core.CoreService
             {
                 if (productId > 0)
                 {
-                    ProductDetail product = new();
-                    product.IsDeleted = Constant.False;
-                    product = _iRepository.CreateSP<ProductDetail>(product, Constant.SpUpdateCompany);
-                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, product);
+                    _iRepository.ExecuteQuery<ProductDetail>(new { Id = productId}, Constant.SpDeleteProductDetail);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.DeleteRecord);
                 }
                 else
                 {

@@ -12,7 +12,7 @@ namespace IMS.Api.Common.Model.RequestModel
         public int CategoryId { get; set; }
         [Required]
         public int ItemQuantityId { get; set; }
-        public int Name { get; set; }
-        public int Description { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
     }
 }

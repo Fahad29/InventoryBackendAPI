@@ -25,21 +25,14 @@ namespace IMS.Api.Core.CoreService
             {
                 List<Brand> brands = _iRepository.Search(null, Constant.SpGetProductBrand).ToList();
                 if (brands.Count > 0)
-                {
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, brands);
-
-                }
                 else
-                {
+                
                     return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
-                }
-
-
             }
             catch (Exception ex)
             {
                 APIConfig.Log.Debug("Exception: " + ex.Message);
-                _apiResponse.StatusCode = HttpStatusCode.BadRequest;
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
         }
@@ -59,7 +52,6 @@ namespace IMS.Api.Core.CoreService
             catch (Exception ex)
             {
                 APIConfig.Log.Debug("Exception: " + ex.Message);
-                _apiResponse.StatusCode = HttpStatusCode.BadRequest;
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
 
@@ -85,7 +77,6 @@ namespace IMS.Api.Core.CoreService
             catch (Exception ex)
             {
                 APIConfig.Log.Debug("Exception: " + ex.Message);
-                _apiResponse.StatusCode = HttpStatusCode.BadRequest;
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
 
