@@ -84,6 +84,13 @@ builder.Services.AddMvc()
 
 var app = builder.Build();
 
+app.UseCors("CorsPolicy");
+app.UseStaticFiles();
+app.UseHttpsRedirection();
+app.UseRouting();
+app.UseAuthentication();
+app.UseAuthorization();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
@@ -114,12 +121,9 @@ APIConfig.Log = Log.Logger;
 APIConfig.Configuration = configuration;
 
 app.APIKeyBuilder();
-app.UseCors("CorsPolicy");
 app.Run();
-app.UseStaticFiles();
-app.UseHttpsRedirection();
-app.UseRouting();
-app.UseAuthentication();
+
+
 
 app.UseEndpoints(endpoints =>
 {

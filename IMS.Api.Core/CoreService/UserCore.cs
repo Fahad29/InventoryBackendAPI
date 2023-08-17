@@ -44,7 +44,7 @@ namespace IMS.Api.Core.CoreService
             }
             catch (Exception ex)
             {
-                APIConfig.Log.Debug("Exception: " + ex);
+                APIConfig.Log.Debug("Exception: " + ex.Message);
                 _apiResponse.StatusCode = HttpStatusCode.BadRequest;
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
@@ -67,7 +67,7 @@ namespace IMS.Api.Core.CoreService
             }
             catch (Exception ex)
             {
-                APIConfig.Log.Debug("Exception: " + ex);
+                APIConfig.Log.Debug("Exception: " + ex.Message);
                 _apiResponse.StatusCode = HttpStatusCode.BadRequest;
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
@@ -85,7 +85,7 @@ namespace IMS.Api.Core.CoreService
             }
             catch (Exception ex)
             {
-                APIConfig.Log.Debug("Exception: " + ex);
+                APIConfig.Log.Debug("Exception: " + ex.Message);
                 _apiResponse.StatusCode = HttpStatusCode.BadRequest;
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
@@ -104,7 +104,7 @@ namespace IMS.Api.Core.CoreService
             }
             catch (Exception ex)
             {
-                APIConfig.Log.Debug("Exception: " + ex);
+                APIConfig.Log.Debug("Exception: " + ex.Message);
                 _apiResponse.StatusCode = HttpStatusCode.BadRequest;
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
@@ -132,7 +132,7 @@ namespace IMS.Api.Core.CoreService
             }
             catch (Exception ex)
             {
-                APIConfig.Log.Debug("Exception: " + ex);
+                APIConfig.Log.Debug("Exception: " + ex.Message);
                 _apiResponse.StatusCode = HttpStatusCode.BadRequest;
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }

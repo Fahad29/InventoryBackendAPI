@@ -27,7 +27,7 @@ namespace IMS.Api.Core.CoreService
                 {
 
                 };
-                List<Category> categories = _iRepository.Search(obj, Constant.SpGetAllCategories).ToList();
+                List<Category> categories = _iRepository.Search(obj, Constant.SpGetAllProductCategories).ToList();
 
                 if (categories.Count > 0)
                 {
@@ -43,7 +43,7 @@ namespace IMS.Api.Core.CoreService
             }
             catch (Exception ex)
             {
-                APIConfig.Log.Debug("Exception: " + ex);
+                APIConfig.Log.Debug("Exception: " + ex.Message);
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
         }
@@ -55,14 +55,14 @@ namespace IMS.Api.Core.CoreService
             {
                 Category category = new Category();
                 category.Name = Name;
-                category = _iRepository.CreateSP<Category>(category, Constant.SpCreateCategory);
+                category = _iRepository.CreateSP<Category>(category, Constant.SpCreateProductCategory);
 
                 return _apiResponse.ReturnResponse(HttpStatusCode.Created, category);
 
             }
             catch (Exception ex)
             {
-                APIConfig.Log.Debug("Exception: " + ex);
+                APIConfig.Log.Debug("Exception: " + ex.Message);
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
 
@@ -75,7 +75,7 @@ namespace IMS.Api.Core.CoreService
             {
                 if (categoryId > 0)
                 {
-                    _iRepository.CreateSP<Category>(new { CategoryId = categoryId }, Constant.SpDeleteCategory);
+                    _iRepository.CreateSP<Category>(new { CategoryId = categoryId }, Constant.SpDeleteProductCategory);
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.DeleteRecord);
                 }
                 else
@@ -85,7 +85,7 @@ namespace IMS.Api.Core.CoreService
             }
             catch (Exception ex)
             {
-                APIConfig.Log.Debug("Exception: " + ex);
+                APIConfig.Log.Debug("Exception: " + ex.Message);
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
         }

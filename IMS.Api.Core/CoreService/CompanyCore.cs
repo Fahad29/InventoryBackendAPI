@@ -42,7 +42,7 @@ namespace IMS.Api.Core.ICoreService
             }
             catch (Exception ex)
             {
-                APIConfig.Log.Debug("Exception: " + ex);
+                APIConfig.Log.Debug("Exception: " + ex.Message);
                 _apiResponse.StatusCode = HttpStatusCode.BadRequest;
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
@@ -65,7 +65,7 @@ namespace IMS.Api.Core.ICoreService
             }
             catch (Exception ex)
             {
-                APIConfig.Log.Debug("Exception: " + ex);
+                APIConfig.Log.Debug("Exception: " + ex.Message);
                 _apiResponse.StatusCode = HttpStatusCode.BadRequest;
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
@@ -85,7 +85,7 @@ namespace IMS.Api.Core.ICoreService
             }
             catch (Exception ex)
             {
-                APIConfig.Log.Debug("Exception: " + ex);
+                APIConfig.Log.Debug("Exception: " + ex.Message);
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
      
@@ -104,7 +104,7 @@ namespace IMS.Api.Core.ICoreService
             }
             catch (Exception ex)
             {
-                APIConfig.Log.Debug("Exception: " + ex);
+                APIConfig.Log.Debug("Exception: " + ex.Message);
                 _apiResponse.StatusCode = HttpStatusCode.BadRequest;
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
 
@@ -119,24 +119,21 @@ namespace IMS.Api.Core.ICoreService
             APIConfig.Log.Debug("CALLING API\" company delete \"  STARTED");
             try
             {
-                Company company = _iRepository.CreateSP<Company>(new { CompanyId = CompanyId }, Constant.SpGetCompany);
-                if (company == null)
+                if (CompanyId > 0)
                 {
-                    company.IsActive = Constant.False;
-                    //company.IsDeleted = Constant.True;
-                    //company.UpdatedBy = @params.UserId;
-                    company = _iRepository.CreateSP<Company>(company, Constant.SpUpdateCompany);
-                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, company);
+
+                    _iRepository.CreateSP<Company>(new { Id = CompanyId, UpdatedBy = @params.UserId }, Constant.SpDeleteCompany);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.DeleteRecord);
                 }
                 else
                 {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, null);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.InValidRecordId);
                 }
            
             }
             catch (Exception ex)
             {
-                APIConfig.Log.Debug("Exception: " + ex);
+                APIConfig.Log.Debug("Exception: " + ex.Message);
                 _apiResponse.StatusCode = HttpStatusCode.BadRequest;
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }

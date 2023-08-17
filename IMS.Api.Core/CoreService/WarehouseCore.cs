@@ -8,6 +8,7 @@ using System.Net;
 using IMS.Api.Common.Constant;
 using IMS.Api.Common.Extensions;
 using IMS.Api.Common.Model.RequestModel;
+using System.ComponentModel.Design;
 
 namespace IMS.Api.Core.CoreService
 {
@@ -42,7 +43,7 @@ namespace IMS.Api.Core.CoreService
             }
             catch (Exception ex)
             {
-                APIConfig.Log.Debug("Exception: " + ex);
+                APIConfig.Log.Debug("Exception: " + ex.Message);
                 _apiResponse.StatusCode = HttpStatusCode.BadRequest;
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
@@ -65,7 +66,7 @@ namespace IMS.Api.Core.CoreService
             }
             catch (Exception ex)
             {
-                APIConfig.Log.Debug("Exception: " + ex);
+                APIConfig.Log.Debug("Exception: " + ex.Message);
                 _apiResponse.StatusCode = HttpStatusCode.BadRequest;
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
@@ -83,7 +84,7 @@ namespace IMS.Api.Core.CoreService
             }
             catch (Exception ex)
             {
-                APIConfig.Log.Debug("Exception: " + ex);
+                APIConfig.Log.Debug("Exception: " + ex.Message);
                 _apiResponse.StatusCode = HttpStatusCode.BadRequest;
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
@@ -102,7 +103,7 @@ namespace IMS.Api.Core.CoreService
             }
             catch (Exception ex)
             {
-                APIConfig.Log.Debug("Exception: " + ex);
+                APIConfig.Log.Debug("Exception: " + ex.Message);
                 _apiResponse.StatusCode = HttpStatusCode.BadRequest;
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
@@ -113,24 +114,21 @@ namespace IMS.Api.Core.CoreService
             APIConfig.Log.Debug("CALLING API\" Warehouse delete \"  STARTED");
             try
             {
-                WareHouse wareHouse = _iRepository.CreateSP<WareHouse>(new { WareHouseId = WareHouseId }, Constant.SpGetWarehouse);
-                if (wareHouse == null)
+                if (WareHouseId > 0)
                 {
-                    wareHouse.IsActive = false;
-                    wareHouse.IsDeleted = Constant.True;
-                    wareHouse.UpdatedBy = @params.UserId;
-                    wareHouse = _iRepository.CreateSP<WareHouse>(wareHouse, Constant.SpUpdateWarehouse);
-                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, wareHouse);
+
+                    _iRepository.CreateSP<Company>(new { Id = WareHouseId, UpdatedBy = @params.UserId }, Constant.SpDeleteCompanyWarehouse);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.DeleteRecord);
                 }
                 else
                 {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, null);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.InValidRecordId);
                 }
 
             }
             catch (Exception ex)
             {
-                APIConfig.Log.Debug("Exception: " + ex);
+                APIConfig.Log.Debug("Exception: " + ex.Message);
                 _apiResponse.StatusCode = HttpStatusCode.BadRequest;
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }

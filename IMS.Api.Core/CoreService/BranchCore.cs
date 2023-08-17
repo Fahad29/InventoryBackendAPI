@@ -7,6 +7,7 @@ using IMS.Api.Common.Model.Params;
 using IMS.Api.Common.Model.RequestModel;
 using IMS.Api.Core.ICoreService;
 using IMS.Api.Service.IRepository;
+using System.ComponentModel.Design;
 using System.Net;
 
 namespace IMS.Api.Core.CoreService
@@ -42,7 +43,7 @@ namespace IMS.Api.Core.CoreService
             }
             catch (Exception ex)
             {
-                APIConfig.Log.Debug("Exception: " + ex);
+                APIConfig.Log.Debug("Exception: " + ex.Message);
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
         }
@@ -64,7 +65,7 @@ namespace IMS.Api.Core.CoreService
             }
             catch (Exception ex)
             {
-                APIConfig.Log.Debug("Exception: " + ex);
+                APIConfig.Log.Debug("Exception: " + ex.Message);
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
         }
@@ -81,7 +82,7 @@ namespace IMS.Api.Core.CoreService
             }
             catch (Exception ex)
             {
-                APIConfig.Log.Debug("Exception: " + ex);
+                APIConfig.Log.Debug("Exception: " + ex.Message);
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
         }
@@ -99,7 +100,7 @@ namespace IMS.Api.Core.CoreService
             }
             catch (Exception ex)
             {
-                APIConfig.Log.Debug("Exception: " + ex);
+                APIConfig.Log.Debug("Exception: " + ex.Message);
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
         }
@@ -109,24 +110,21 @@ namespace IMS.Api.Core.CoreService
             APIConfig.Log.Debug("CALLING API\" branches delete \"  STARTED");
             try
             {
-                Branch branch = _iRepository.CreateSP<Branch>(new { BranchId = BranchId }, Constant.SpGetBranch);
-                if (branch == null)
+                if (BranchId > 0)
                 {
-                    branch.IsActive = false;
-                    branch.IsDeleted = Constant.True;
-                    branch.UpdatedBy = @params.UserId;
-                    branch = _iRepository.CreateSP<Branch>(branch, Constant.SpUpdateBranch);
-                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, branch);
+
+                    _iRepository.CreateSP<Company>(new { Id = BranchId, UpdatedBy = @params.UserId }, Constant.SpDeleteCompanyBranch);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.DeleteRecord);
                 }
                 else
                 {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.InValidRecordId);
                 }
 
             }
             catch (Exception ex)
             {
-                APIConfig.Log.Debug("Exception: " + ex);
+                APIConfig.Log.Debug("Exception: " + ex.Message);
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
 

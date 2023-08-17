@@ -10,6 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Text;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace IMS.Api.Core.ICoreService
 {
@@ -28,9 +29,9 @@ namespace IMS.Api.Core.ICoreService
             try
             {
                 LoginResponseModel loginResponseModel = new LoginResponseModel();
-                if (!string.IsNullOrEmpty(loginRequest.Username) && !string.IsNullOrEmpty(loginRequest.Password))
+                if (!string.IsNullOrEmpty(loginRequest?.Username) && !string.IsNullOrEmpty(loginRequest?.Password))
                 {
-                    loginRequest.Password = loginRequest.Password.MD5Encrypt();
+                    loginRequest.Password = loginRequest?.Password?.MD5Encrypt();
                     User user = _iRepository.CreateSP<User>(loginRequest, Constant.SpGetUser);
                     if (user != null)
                     {
@@ -38,22 +39,22 @@ namespace IMS.Api.Core.ICoreService
                         if (user.IsActive)
                         {
                             loginResponseModel.Token = ExtensionMethod.GenerateJSONWebToken(user, expiry);
-                            loginResponseModel.UserId = (int)user.UserId;
-                            loginResponseModel.UserName = user.FirstName + " " + user.LastName;
-                            loginResponseModel.Email = user.Email;
-                            loginResponseModel.IsActive = user.IsActive;
+                            loginResponseModel.UserId = Convert.ToInt32(user?.UserId);
+                            loginResponseModel.UserName = user?.FirstName + " " + user?.LastName;
+                            loginResponseModel.Email = user?.Email;
+                            loginResponseModel.IsActive = Convert.ToBoolean(user?.IsActive);
                             _apiResponse.Response = loginResponseModel;
                         }
 
                         else
                         {
-                            return _apiResponse.ReturnResponse(HttpStatusCode.Unauthorized, null);
+                            return _apiResponse.ReturnResponse(HttpStatusCode.Unauthorized, Constant.NotActive);
                         }
 
                     }
                     else
                     {
-                        return _apiResponse.ReturnResponse(HttpStatusCode.NotFound, null);
+                        return _apiResponse.ReturnResponse(HttpStatusCode.Unauthorized, Constant.InvalidUser);
                     }
 
                 }
@@ -70,31 +71,38 @@ namespace IMS.Api.Core.ICoreService
             APIConfig.Log.Debug("CALLING API\" user create \"  STARTED");
             try
             {
-                Company company = new Company();
-                company.CompanyName = model.CompanyName;
-                company = _iRepository.CreateSP<Company>(company, Constant.SpCreateCompany);
-                if (company?.CompanyId != null && company?.CompanyId > 0)
+                int? CompanyId = _iRepository.CreateSP<Company>(new { CompanyName = model.CompanyName }, Constant.SpGetCompany)?.CompanyId;
+                if(CompanyId == null || CompanyId == 0)
                 {
-                    User user = new User();
-                    user.FirstName = model?.FirstName;
-                    user.LastName = model?.Lastname;
-                    user.Email = model?.Email;
-                    user.CompanyId = Convert.ToInt32(company?.CompanyId);
-                    user.MobileNo = model?.PhoneNumber;
-                    user.PasswordHash = model.Password != null ? model.Password.MD5Encrypt() : ExtensionMethod.GenPassword();
+                    Company company = new Company();
+                    company.CompanyName = model.CompanyName;
+                    company = _iRepository.CreateSP<Company>(company, Constant.SpCreateCompany);
+                    if (company?.CompanyId != null && company?.CompanyId > 0)
+                    {
+                        User user = new User();
+                        user.FirstName = model?.FirstName;
+                        user.LastName = model?.Lastname;
+                        user.Email = model?.Email;
+                        user.CompanyId = Convert.ToInt32(company?.CompanyId);
+                        user.MobileNo = model?.PhoneNumber;
+                        user.PasswordHash = model.Password != null ? model.Password.MD5Encrypt() : ExtensionMethod.GenPassword();
 
-                    user = _iRepository.CreateSP<User>(user, Constant.SpCreateUser);
+                        user = _iRepository.CreateSP<User>(user, Constant.SpCreateUser);
+                    }
+                    return _apiResponse.ReturnResponse(HttpStatusCode.Created, company);
                 }
-                _apiResponse.StatusCode = HttpStatusCode.Created;
+                else
+                {
+                    return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, "Company Already Exist!");
+                }
 
             }
             catch (Exception ex)
             {
-                APIConfig.Log.Debug("Exception: " + ex);
-                _apiResponse.StatusCode = HttpStatusCode.BadRequest;
+                APIConfig.Log.Debug("Exception: " + ex.Message);
+                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex.Message);
             }
             APIConfig.Log.Debug("CALLING API\" user create \"  ENDED");
-            return _apiResponse.ReturnResponse(_apiResponse.StatusCode, _apiResponse.Response);
         }
         public async Task<APIResponse> ForgotPassword(string Email)
         {

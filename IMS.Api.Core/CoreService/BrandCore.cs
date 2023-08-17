@@ -23,7 +23,7 @@ namespace IMS.Api.Core.CoreService
             APIConfig.Log.Debug("CALLING API\" Brand Get all \"  STARTED");
             try
             {
-                List<Brand> brands = _iRepository.Search(null, Constant.SpGetAllBrands).ToList();
+                List<Brand> brands = _iRepository.Search(null, Constant.SpGetProductBrand).ToList();
                 if (brands.Count > 0)
                 {
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, brands);
@@ -38,7 +38,7 @@ namespace IMS.Api.Core.CoreService
             }
             catch (Exception ex)
             {
-                APIConfig.Log.Debug("Exception: " + ex);
+                APIConfig.Log.Debug("Exception: " + ex.Message);
                 _apiResponse.StatusCode = HttpStatusCode.BadRequest;
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
@@ -51,14 +51,14 @@ namespace IMS.Api.Core.CoreService
             {
                 Brand brand = new Brand();
                 brand.Name = Name;
-                brand = _iRepository.CreateSP<Brand>(brand, Constant.SpCreateBrand);
+                brand = _iRepository.CreateSP<Brand>(brand, Constant.SpCreateProductBrand);
 
                 return _apiResponse.ReturnResponse(HttpStatusCode.Created, brand);
 
             }
             catch (Exception ex)
             {
-                APIConfig.Log.Debug("Exception: " + ex);
+                APIConfig.Log.Debug("Exception: " + ex.Message);
                 _apiResponse.StatusCode = HttpStatusCode.BadRequest;
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
@@ -73,7 +73,7 @@ namespace IMS.Api.Core.CoreService
                 if (BrandId > 0)
                 {
 
-                    _iRepository.CreateSP<Brand>(new { BrandId = BrandId }, Constant.SpDeleteBrand);
+                    _iRepository.CreateSP<Brand>(new { BrandId = BrandId }, Constant.SpDeleteProductBrand);
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.DeleteRecord);
                 }
                 else
@@ -84,7 +84,7 @@ namespace IMS.Api.Core.CoreService
             }
             catch (Exception ex)
             {
-                APIConfig.Log.Debug("Exception: " + ex);
+                APIConfig.Log.Debug("Exception: " + ex.Message);
                 _apiResponse.StatusCode = HttpStatusCode.BadRequest;
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }

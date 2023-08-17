@@ -12,5 +12,7 @@
 
         public DateTime? FromDate { get; set; } 
         public DateTime? ToDate { get; set; }
+        public int? PageNo { get; set; } = 1;
+        public int? RecordLimit { get; set; } = 100;
     }
 }
