@@ -34,23 +34,22 @@
         public const string SpCreateCompany = "Usp_create_company";
         public const string SpUpdateCompany = "Usp_update_company";
         public const string SpGetCompany = "Usp_get_company";
-        public const string SpCreateUser = "Usp_create_user";
-        public const string SpUpdateUser = "Usp_update_user";
+
         #endregion
 
         #region Branch
 
-        public const string SpGetBranch = "Usp_Get_Branch";
-        public const string SpCreateBranch = "Usp_Create_Branch";
-        public const string SpUpdateBranch = "Usp_Update_Branch";
+        public const string SpGetBranch = "Usp_Get_CompanyBranches";
+        public const string SpCreateBranch = "Usp_Create_CompanyBranches";
+        public const string SpUpdateBranch = "Usp_Update_CompanyBranches";
 
         #endregion
 
         #region Warehouse
 
-        public const string SpGetWarehouse = "Usp_Get_Warehouse";
-        public const string SpCreateWarehouse = "Usp_Create_Warehouse";
-        public const string SpUpdateWarehouse = "Usp_Update_Warehouse";
+        public const string SpGetWarehouse = "Usp_Get_CompanyWarehouse";
+        public const string SpCreateWarehouse = "Usp_Create_CompanyWarehouse";
+        public const string SpUpdateWarehouse = "Usp_Update_CompanyWarehouse";
 
         #endregion
 
@@ -64,8 +63,14 @@
 
         #endregion
 
-        #region Category
+        #region Brand
+        public const string SpCreateUser = "Usp_create_user";
+        public const string SpUpdateUser = "Usp_update_user";
         public const string SpGetUser = "Usp_get_user";
+        #endregion
+
+        #region Category
+
 
         public const string SpGetAllCategories = "p_GetAll_Categories";
         public const string SpCreateCategory = "p_Create_Category";
