@@ -75,7 +75,7 @@ namespace IMS.Api.Core.CoreService
             {
                 if (categoryId > 0)
                 {
-                    _iRepository.CreateSP<Category>(new { CategoryId = categoryId }, Constant.SpDeleteProductCategory);
+                    _iRepository.CreateSP<Category>(new { Id = categoryId }, Constant.SpDeleteProductCategory);
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.DeleteRecord);
                 }
                 else

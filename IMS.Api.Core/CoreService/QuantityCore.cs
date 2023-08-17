@@ -69,7 +69,7 @@ namespace IMS.Api.Core.CoreService
             {
                 if (QuantityId > 0)
                 {
-                    _iRepository.CreateSP<ProductQuantity>(new { QuantityId = QuantityId }, Constant.SpDeleteQuantity);
+                    _iRepository.CreateSP<ProductQuantity>(new { Id = QuantityId }, Constant.SpDeleteQuantity);
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.DeleteRecord);
                 }
                 else

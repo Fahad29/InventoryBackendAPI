@@ -73,7 +73,7 @@ namespace IMS.Api.Core.CoreService
                 if (BrandId > 0)
                 {
 
-                    _iRepository.CreateSP<Brand>(new { BrandId = BrandId }, Constant.SpDeleteProductBrand);
+                    _iRepository.CreateSP<Brand>(new { Id = BrandId }, Constant.SpDeleteProductBrand);
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.DeleteRecord);
                 }
                 else
