@@ -108,7 +108,26 @@ namespace IMS.Api.Core.CoreService
         }
 
         public async Task<APIResponse> GetById(int BranchId)
-
+        {
+            APIConfig.Log.Debug("CALLING API\" branches GetById \"  STARTED");
+            try
+            {
+                Branch user = _iRepository.Search(new { Id = BranchId }, Constant.SpGetBranch).FirstOrDefault();
+                if (user != null)
+                {
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, user);
+                }
+                else
+                {
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
+                }
+            }
+            catch (Exception ex)
+            {
+                APIConfig.Log.Debug("Exception: " + ex.Message);
+                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
+            }
+        }
 
     }
 }

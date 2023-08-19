@@ -46,12 +46,12 @@ namespace IMS.Api.Core.CoreService
             }
         }
 
-        public async Task<APIResponse> GetById(int CompanyId)
+        public async Task<APIResponse> GetById(int Id)
         {
             APIConfig.Log.Debug("CALLING API\" user GetById \"  STARTED");
             try
             {
-                User user = _iRepository.Search(new { CompanyId = CompanyId }, Constant.SpGetUser).FirstOrDefault();
+                User user = _iRepository.Search(new { Id = Id }, Constant.SpGetUser).FirstOrDefault();
                 if (user != null)
                 {
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, user);
@@ -106,23 +106,20 @@ namespace IMS.Api.Core.CoreService
             }
         }
 
-        public async Task<APIResponse> Delete(int UserId)
+        public async Task<APIResponse> Delete(int Id)
         {
             APIConfig.Log.Debug("CALLING API\" User delete \"  STARTED");
             try
             {
-                User user = _iRepository.CreateSP<User>(new { UsersId = UserId }, Constant.SpGetCompany);
-                if (user == null)
+                if (Id > 0)
                 {
-                    user.IsActive = false;
-                    //company.IsDeleted = Constant.True;
-                    //company.UpdatedBy = @params.UserId;
-                    user = _iRepository.CreateSP<User>(user, Constant.SpUpdateCompany);
-                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, user);
+
+                    _iRepository.CreateSP<User>(new { UserId  = Id }, Constant.SpDeleteUser);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.DeleteRecord);
                 }
                 else
                 {
-                    return  _apiResponse.ReturnResponse(HttpStatusCode.NoContent, null);
+                    return  _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
                 }
 
             }

@@ -85,7 +85,7 @@ builder.Services.AddMvc()
 var app = builder.Build();
 
 app.UseCors("CorsPolicy");
-app.UseStaticFiles();
+//app.UseStaticFiles();
 app.UseHttpsRedirection();
 app.UseRouting();
 app.UseAuthentication();
@@ -100,7 +100,6 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
     app.UseDeveloperExceptionPage();
 }
 
-app.UseHttpsRedirection();
 app.MapControllers();
 
 var fileName = Environment.GetEnvironmentVariable("HOSTNAME") ?? "add-on" + "_";
@@ -121,12 +120,5 @@ APIConfig.Configuration = configuration;
 
 app.APIKeyBuilder();
 app.Run();
-
-
-
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllers();
-});
 
 

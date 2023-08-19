@@ -1,7 +1,5 @@
 ﻿using IMS.Api.Common.Model;
 using IMS.Api.Common.Model.CommonModel;
-using IMS.Api.Common.Model.DataModel;
-using IMS.Api.Common.Model.Params;
 using IMS.Api.Common.Model.RequestModel;
 using IMS.Api.Core.ICoreService;
 using Microsoft.AspNetCore.Authorization;
@@ -19,7 +17,7 @@ namespace IMS.Controllers
             _userCore = userCore;
         }
 
-        [AllowAnonymous, HttpGet, Route("Search")]
+        [AllowAnonymous, HttpPost, Route("Search")]
         public async Task<IActionResult> Search(BaseFilter model)
         {
             try
