@@ -22,54 +22,6 @@ namespace IMS.Api.Core.CoreService
             _apiResponse = apiResponse;
         }
 
-        public async Task<APIResponse> GetAll(BaseFilter model)
-        {
-            APIConfig.Log.Debug("CALLING API\" branches Get all \"  STARTED");
-            try
-            {
-
-                List<Branch> branches = _iRepository.Search(model, Constant.SpGetBranch).ToList();
-                if (branches.Count > 0)
-                {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, branches);
-
-                }
-                else
-                {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
-                }
-
-
-            }
-            catch (Exception ex)
-            {
-                APIConfig.Log.Debug("Exception: " + ex.Message);
-                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
-            }
-        }
-
-        public async Task<APIResponse> GetById(int BranchId)
-        {
-            APIConfig.Log.Debug("CALLING API\" branches GetById \"  STARTED");
-            try
-            {
-                Branch user = _iRepository.Search(new { BranchId = BranchId }, Constant.SpGetBranch).FirstOrDefault();
-                if (user != null)
-                {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, user);
-                }
-                else
-                {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
-                }
-            }
-            catch (Exception ex)
-            {
-                APIConfig.Log.Debug("Exception: " + ex.Message);
-                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
-            }
-        }
-
         public async Task<APIResponse> Create(BranchRequestModel model,Params @params)
         {
             APIConfig.Log.Debug("CALLING API\" branches create \"  STARTED");
@@ -129,5 +81,34 @@ namespace IMS.Api.Core.CoreService
             }
 
         }
+        public async Task<APIResponse> Search(BaseFilter model)
+        {
+            APIConfig.Log.Debug("CALLING API\" branches Get all \"  STARTED");
+            try
+            {
+
+                List<Branch> branches = _iRepository.Search(model, Constant.SpGetBranch).ToList();
+                if (branches.Count > 0)
+                {
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, branches);
+
+                }
+                else
+                {
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                APIConfig.Log.Debug("Exception: " + ex.Message);
+                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
+            }
+        }
+
+        public async Task<APIResponse> GetById(int BranchId)
+
+
     }
 }

@@ -18,12 +18,12 @@ namespace IMS.Controllers
             _companyCore = companyCore;
         }
 
-        [AllowAnonymous, HttpGet, Route("GetAll")]
-        public async Task<IActionResult> GetAll(BaseFilter model)
+        [AllowAnonymous, HttpPost, Route("Search")]
+        public async Task<IActionResult> Search(BaseFilter model)
         {
             try
             {
-                APIResponse response = await _companyCore.GetAll(model);
+                APIResponse response = await _companyCore.Search(model);
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();

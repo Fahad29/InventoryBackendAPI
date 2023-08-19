@@ -20,16 +20,12 @@ namespace IMS.Api.Core.CoreService
             _apiResponse = apiResponse;
         }
 
-        public async Task<APIResponse> GetAll()
+        public async Task<APIResponse> Search(BaseFilter model)
         {
-            APIConfig.Log.Debug("CALLING API\" company Get all \"  STARTED");
+            APIConfig.Log.Debug("CALLING API\" user Get all \"  STARTED");
             try
             {
-                Object obj = new
-                {
-
-                };
-                List<User> users = _iRepository.Search(obj, Constant.SpGetCompany).ToList();
+                List<User> users = _iRepository.Search(model, Constant.SpGetUser).ToList();
                 if (users.Count > 0)
                 {
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, users);
@@ -37,7 +33,7 @@ namespace IMS.Api.Core.CoreService
                 }
                 else
                 {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, null);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
                 }
 
 
@@ -52,17 +48,17 @@ namespace IMS.Api.Core.CoreService
 
         public async Task<APIResponse> GetById(int CompanyId)
         {
-            APIConfig.Log.Debug("CALLING API\" company GetById \"  STARTED");
+            APIConfig.Log.Debug("CALLING API\" user GetById \"  STARTED");
             try
             {
-                User user = _iRepository.Search(new { CompanyId = CompanyId }, Constant.SpGetCompany).FirstOrDefault();
+                User user = _iRepository.Search(new { CompanyId = CompanyId }, Constant.SpGetUser).FirstOrDefault();
                 if (user != null)
                 {
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, user);
                 }
                 else
                 {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, null);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
                 }
             }
             catch (Exception ex)
@@ -75,7 +71,7 @@ namespace IMS.Api.Core.CoreService
 
         public async Task<APIResponse> Create(UserRequest model)
         {
-            APIConfig.Log.Debug("CALLING API\" company create \"  STARTED");
+            APIConfig.Log.Debug("CALLING API\" user create \"  STARTED");
             try
             {
                 User user = model.MapTo<User>();
@@ -95,7 +91,7 @@ namespace IMS.Api.Core.CoreService
         {
             try
             {
-                APIConfig.Log.Debug("CALLING API\" company update \"  STARTED");
+                APIConfig.Log.Debug("CALLING API\" user update \"  STARTED");
                 User user = model.MapTo<User>();
                 //company.UpdatedBy = @params.UserId;
                 user = _iRepository.CreateSP<User>(user, Constant.SpUpdateCompany);
@@ -112,7 +108,7 @@ namespace IMS.Api.Core.CoreService
 
         public async Task<APIResponse> Delete(int UserId)
         {
-            APIConfig.Log.Debug("CALLING API\" company delete \"  STARTED");
+            APIConfig.Log.Debug("CALLING API\" User delete \"  STARTED");
             try
             {
                 User user = _iRepository.CreateSP<User>(new { UsersId = UserId }, Constant.SpGetCompany);
@@ -126,7 +122,7 @@ namespace IMS.Api.Core.CoreService
                 }
                 else
                 {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, null);
+                    return  _apiResponse.ReturnResponse(HttpStatusCode.NoContent, null);
                 }
 
             }

@@ -21,7 +21,7 @@ namespace IMS.Api.Core.ICoreService
             _apiResponse = apiResponse;
         }
 
-        public async Task<APIResponse> GetAll(BaseFilter model)
+        public async Task<APIResponse> Search(BaseFilter model)
         {
             APIConfig.Log.Debug("CALLING API\" company Get all \"  STARTED");
             try
@@ -53,14 +53,14 @@ namespace IMS.Api.Core.ICoreService
             APIConfig.Log.Debug("CALLING API\" company GetById \"  STARTED");
             try
             {
-                Company company = _iRepository.Search(new { CompanyId = CompanyId }, Constant.SpGetCompany).FirstOrDefault();
+                Company company = _iRepository.Search(new { Id = CompanyId }, Constant.SpGetCompany).FirstOrDefault();
                 if (company != null)
                 {
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, company);
                 }
                 else
                 {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent,null);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent,Constant.RecordNotFound);
                 }
             }
             catch (Exception ex)

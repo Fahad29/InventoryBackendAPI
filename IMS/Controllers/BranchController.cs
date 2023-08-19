@@ -19,12 +19,12 @@ namespace IMS.Controllers
             _branchCore = branchCore;
         }
 
-        [AllowAnonymous, HttpGet, Route("GetAll")]
-        public async Task<IActionResult> GetAll(BaseFilter model)
+        [AllowAnonymous, HttpPost, Route("Search")]
+        public async Task<IActionResult> Search(BaseFilter model)
         {
             try
             {
-                APIResponse response = await _branchCore.GetAll(model);
+                APIResponse response = await _branchCore.Search(model);
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();
@@ -98,5 +98,6 @@ namespace IMS.Controllers
                 throw;
             }
         }
+
     }
 }

@@ -96,7 +96,6 @@
         #endregion
 
         #region Quality
-
         public const string SpGetAllQuantities = "Usp_Get_ProductQuantity";
         public const string SpCreateQuantity = "Usp_Create_ProductQuantity";
         public const string SpUpdateQuantity = "Usp_Update_ProductQuantity";
@@ -122,14 +121,12 @@
         public const string SpCreateRole = "Usp_create_Role";
         public const string SpUpdateRole = "Usp_update_Role";
         public const string SpGetRole = "Usp_get_Role";
-        public const string SpDeleteRole = "Usp_Delete_Role";
         #endregion
 
         #region UserRole
         public const string SpCreateUserRole = "Usp_create_userrole";
         public const string SpUpdateUserRole = "Usp_update_userrole";
         public const string SpGetUserRole = "Usp_get_userrole";
-        public const string SpDeleteUserRole = "Usp_Delete_UserRole";
         #endregion
 
         #endregion

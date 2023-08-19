@@ -2,6 +2,7 @@
 using IMS.Api.Common.Model;
 using IMS.Api.Common.Model.CommonModel;
 using IMS.Api.Common.Model.DataModel;
+using IMS.Api.Common.Model.ResponseModel.DropDown;
 using IMS.Api.Core.ICoreService;
 using IMS.Api.Service.IRepository;
 using System.Net;
@@ -80,6 +81,33 @@ namespace IMS.Api.Core.CoreService
                 }
                 else
                     return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, "Invalid Category Selected");
+
+
+            }
+            catch (Exception ex)
+            {
+                APIConfig.Log.Debug("Exception: " + ex.Message);
+                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
+            }
+        }
+
+        public async Task<APIResponse> DropDown()
+        {
+            APIConfig.Log.Debug("CALLING API\" Category DropDown \"  STARTED");
+            try
+            {
+
+                List<DropDown> dropDownList = _iRepository.Search<DropDown>(null, Constant.SpGetAllProductCategories).ToList();
+
+                if (dropDownList.Count > 0)
+                {
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, dropDownList);
+
+                }
+                else
+                {
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
+                }
 
 
             }

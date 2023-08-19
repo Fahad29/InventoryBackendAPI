@@ -4,6 +4,7 @@ using IMS.Api.Common.Model;
 using IMS.Api.Common.Model.CommonModel;
 using IMS.Api.Common.Model.DataModel;
 using IMS.Api.Common.Model.RequestModel;
+using IMS.Api.Common.Model.ResponseModel.DropDown;
 using IMS.Api.Core.ICoreService;
 using IMS.Api.Service.IRepository;
 using System.Net;
@@ -20,16 +21,12 @@ namespace IMS.Api.Core.CoreService
             _apiResponse = apiResponse;
         }
 
-        public async Task<APIResponse> GetAll()
+        public async Task<APIResponse> Search(BaseFilter model)
         {
-            APIConfig.Log.Debug("CALLING API\" Product Get all \"  STARTED");
+            APIConfig.Log.Debug("CALLING API\" Product search \"  STARTED");
             try
             {
-                Object obj = new
-                {
-
-                };
-                List<ProductDetail> companies = _iRepository.Search(obj, Constant.SpGetCompany).ToList();
+                List<ProductDetail> companies = _iRepository.Search(model, Constant.SpGetProductBrand).ToList();
                 if (companies.Count > 0)
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, companies);
                 else
@@ -48,7 +45,7 @@ namespace IMS.Api.Core.CoreService
             APIConfig.Log.Debug("CALLING API\" Product GetById \"  STARTED");
             try
             {
-                ProductDetail product = _iRepository.Search(new { ProductId = productId }, Constant.SpGetCompany).FirstOrDefault();
+                ProductDetail product = _iRepository.Search(new { Id = productId }, Constant.SpGetProductBrand).FirstOrDefault();
                 if (product != null)
                 {
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, product);
@@ -72,7 +69,7 @@ namespace IMS.Api.Core.CoreService
             {
                 ProductDetail product = productRequest.MapTo<ProductDetail>();
                 //product.CreatedBy = @params.UserId;
-                product = _iRepository.CreateSP<ProductDetail>(product, Constant.SpCreateCompany);
+                product = _iRepository.CreateSP<ProductDetail>(product, Constant.SpCreateProductBrand);
 
                 return _apiResponse.ReturnResponse(HttpStatusCode.Created, product);
 
@@ -92,7 +89,7 @@ namespace IMS.Api.Core.CoreService
                 APIConfig.Log.Debug("CALLING API\" ProductDetail update \"  STARTED");
                 ProductDetail product = productRequest.MapTo<ProductDetail>();
                 //company.UpdatedBy = @params.UserId;
-                product = _iRepository.CreateSP<ProductDetail>(product, Constant.SpUpdateCompany);
+                product = _iRepository.CreateSP<ProductDetail>(product, Constant.SpUpdateProductBrand);
                 return _apiResponse.ReturnResponse(HttpStatusCode.OK, product);
 
             }
@@ -110,10 +107,9 @@ namespace IMS.Api.Core.CoreService
             {
                 if (productId > 0)
                 {
-                    ProductDetail product = new();
-                    product.IsDeleted = Constant.False;
-                    product = _iRepository.CreateSP<ProductDetail>(product, Constant.SpUpdateCompany);
-                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, product);
+
+                    _iRepository.CreateSP<ProductDetail>(new { Id = productId}, Constant.SpDeleteProductBrand);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.DeleteRecord);
                 }
                 else
                 {
@@ -127,6 +123,25 @@ namespace IMS.Api.Core.CoreService
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
 
+        }
+
+        public async Task<APIResponse> DropDown()
+        {
+            APIConfig.Log.Debug("CALLING API\" Product Drop Down \"  STARTED");
+            try
+            {
+                List<DropDown> dropDownList = _iRepository.Search<DropDown>(null, Constant.SpGetProductBrand).ToList();
+                if (dropDownList.Count > 0)
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, dropDownList);
+                else
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
+
+            }
+            catch (Exception ex)
+            {
+                APIConfig.Log.Debug("Exception: " + ex.Message);
+                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
+            }
         }
     }
 

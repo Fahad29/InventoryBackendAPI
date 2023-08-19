@@ -1,6 +1,5 @@
 ﻿using IMS.Api.Common.Model;
 using IMS.Api.Common.Model.CommonModel;
-using IMS.Api.Common.Model.DataModel;
 using IMS.Api.Common.Model.Params;
 using IMS.Api.Common.Model.RequestModel;
 using IMS.Api.Core.ICoreService;
@@ -20,12 +19,12 @@ namespace IMS.Controllers
             _warehouseCore = warehouseCore;
         }
 
-        [AllowAnonymous, HttpGet, Route("GetAll")]
-        public async Task<IActionResult> GetAll(BaseFilter model)
+        [AllowAnonymous, HttpPost, Route("Search")]
+        public async Task<IActionResult> Search(BaseFilter model)
         {
             try
             {
-                APIResponse response = await _warehouseCore.GetAll(model);
+                APIResponse response = await _warehouseCore.Search(model);
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();
@@ -90,6 +89,22 @@ namespace IMS.Controllers
             try
             {
                 APIResponse response = await _warehouseCore.Delete(warehouseId, new Params() { ContentRootPath = AppConfig.ContentRootPath, UserId = User.GetUserId() });
+                if (response?.Response != null)
+                    return Ok(response);
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        [AllowAnonymous, HttpGet, Route("DropDown")]
+        public async Task<IActionResult> DropDown()
+        {
+            try
+            {
+                APIResponse response = await _warehouseCore.DropDown();
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();

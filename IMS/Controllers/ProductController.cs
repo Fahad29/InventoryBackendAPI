@@ -1,4 +1,5 @@
 ﻿using IMS.Api.Common.Model;
+using IMS.Api.Common.Model.CommonModel;
 using IMS.Api.Common.Model.RequestModel;
 using IMS.Api.Core.ICoreService;
 using Microsoft.AspNetCore.Authorization;
@@ -17,12 +18,12 @@ namespace IMS.Controllers
             _productCore = productCore;
         }
 
-        [AllowAnonymous, HttpGet, Route("GetAll")]
-        public async Task<IActionResult> GetAll()
+        [AllowAnonymous, HttpPost, Route("Search")]
+        public async Task<IActionResult> Search(BaseFilter model)
         {
             try
             {
-                APIResponse response = await _productCore.GetAll();
+                APIResponse response = await _productCore.Search(model);
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();
@@ -87,6 +88,22 @@ namespace IMS.Controllers
             try
             {
                 APIResponse response = await _productCore.Delete(productId);
+                if (response?.Response != null)
+                    return Ok(response);
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        [AllowAnonymous, HttpGet, Route("DropDown")]
+        public async Task<IActionResult> DropDown()
+        {
+            try
+            {
+                APIResponse response = await _productCore.DropDown();
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();

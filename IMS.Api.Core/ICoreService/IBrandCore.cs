@@ -8,5 +8,6 @@ namespace IMS.Api.Core.ICoreService
         Task<APIResponse> GetAll();
         Task<APIResponse> Create(string Name);
         Task<APIResponse> Delete(int brandId);
+        Task<APIResponse> DropDown();
     }
 }

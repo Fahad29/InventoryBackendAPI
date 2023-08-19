@@ -9,6 +9,7 @@ using IMS.Api.Common.Constant;
 using IMS.Api.Common.Extensions;
 using IMS.Api.Common.Model.RequestModel;
 using System.ComponentModel.Design;
+using IMS.Api.Common.Model.ResponseModel.DropDown;
 
 namespace IMS.Api.Core.CoreService
 {
@@ -22,7 +23,7 @@ namespace IMS.Api.Core.CoreService
             _apiResponse = apiResponse;
         }
 
-        public async Task<APIResponse> GetAll(BaseFilter model)
+        public async Task<APIResponse> Search(BaseFilter model)
         {
             APIConfig.Log.Debug("CALLING API\" Warehouse Get all \"  STARTED");
             try
@@ -124,6 +125,32 @@ namespace IMS.Api.Core.CoreService
                 {
                     return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.InValidRecordId);
                 }
+
+            }
+            catch (Exception ex)
+            {
+                APIConfig.Log.Debug("Exception: " + ex.Message);
+                _apiResponse.StatusCode = HttpStatusCode.BadRequest;
+                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
+            }
+        }
+        public async Task<APIResponse> DropDown()
+        {
+            APIConfig.Log.Debug("CALLING API\" Warehouse DropDown \"  STARTED");
+            try
+            {
+
+                List<DropDown> dropDownList = _iRepository.Search<DropDown>(null, Constant.SpGetWarehouse).ToList();
+                if (dropDownList.Count > 0)
+                {
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, dropDownList);
+
+                }
+                else
+                {
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
+                }
+
 
             }
             catch (Exception ex)

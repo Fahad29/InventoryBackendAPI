@@ -1,5 +1,4 @@
 ﻿using IMS.Api.Common.Model;
-using IMS.Api.Common.Model.CommonModel;
 using IMS.Api.Core.ICoreService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -54,6 +53,22 @@ namespace IMS.Controllers
             try
             {
                 APIResponse response = await _BrandCore.Delete(brandId);
+                if (response?.Response != null)
+                    return Ok(response);
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        [AllowAnonymous, HttpGet, Route("DropDown")]
+        public async Task<IActionResult> DropDown()
+        {
+            try
+            {
+                APIResponse response = await _BrandCore.DropDown();
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();

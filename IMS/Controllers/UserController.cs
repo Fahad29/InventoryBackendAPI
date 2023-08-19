@@ -1,4 +1,6 @@
 ﻿using IMS.Api.Common.Model;
+using IMS.Api.Common.Model.CommonModel;
+using IMS.Api.Common.Model.DataModel;
 using IMS.Api.Common.Model.Params;
 using IMS.Api.Common.Model.RequestModel;
 using IMS.Api.Core.ICoreService;
@@ -17,12 +19,12 @@ namespace IMS.Controllers
             _userCore = userCore;
         }
 
-        [AllowAnonymous, HttpGet, Route("GetAll")]
-        public async Task<IActionResult> GetAll()
+        [AllowAnonymous, HttpGet, Route("Search")]
+        public async Task<IActionResult> Search(BaseFilter model)
         {
             try
             {
-                APIResponse response = await _userCore.GetAll();
+                APIResponse response = await _userCore.Search(model);
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();

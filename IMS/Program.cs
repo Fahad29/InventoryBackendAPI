@@ -101,7 +101,6 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 }
 
 app.UseHttpsRedirection();
-app.UseAuthorization();
 app.MapControllers();
 
 var fileName = Environment.GetEnvironmentVariable("HOSTNAME") ?? "add-on" + "_";
