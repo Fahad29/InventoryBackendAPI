@@ -30,7 +30,7 @@ namespace IMS.Api.Core.CoreService
                 if (companies.Count > 0)
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, companies);
                 else
-                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, null);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
 
             }
             catch (Exception ex)
@@ -45,14 +45,14 @@ namespace IMS.Api.Core.CoreService
             APIConfig.Log.Debug("CALLING API\" Product GetById \"  STARTED");
             try
             {
-                ProductDetail product = _iRepository.Search(new { Id = productId }, Constant.SpGetProductBrand).FirstOrDefault();
+                ProductDetail? product = _iRepository.Search<ProductDetail>(new { Id = productId }, Constant.SpGetProductDetail).FirstOrDefault();
                 if (product != null)
                 {
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, product);
                 }
                 else
                 {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, null);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
                 }
             }
             catch (Exception ex)
@@ -69,7 +69,7 @@ namespace IMS.Api.Core.CoreService
             {
                 ProductDetail product = productRequest.MapTo<ProductDetail>();
                 //product.CreatedBy = @params.UserId;
-                product = _iRepository.CreateSP<ProductDetail>(product, Constant.SpCreateProductBrand);
+                product = _iRepository.CreateSP<ProductDetail>(product, Constant.SpCreateProductDetail);
 
                 return _apiResponse.ReturnResponse(HttpStatusCode.Created, product);
 
@@ -89,7 +89,7 @@ namespace IMS.Api.Core.CoreService
                 APIConfig.Log.Debug("CALLING API\" ProductDetail update \"  STARTED");
                 ProductDetail product = productRequest.MapTo<ProductDetail>();
                 //company.UpdatedBy = @params.UserId;
-                product = _iRepository.CreateSP<ProductDetail>(product, Constant.SpUpdateProductBrand);
+                product = _iRepository.CreateSP<ProductDetail>(product, Constant.SpUpdateProductDetail);
                 return _apiResponse.ReturnResponse(HttpStatusCode.OK, product);
 
             }
