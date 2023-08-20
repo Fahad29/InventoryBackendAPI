@@ -1,15 +1,14 @@
-﻿using IMS.Api.Common.Model.CommonModel;
+﻿using IMS.Api.Common.Constant;
+using IMS.Api.Common.Extensions;
+using IMS.Api.Common.Model;
+using IMS.Api.Common.Model.CommonModel;
 using IMS.Api.Common.Model.DataModel;
 using IMS.Api.Common.Model.Params;
-using IMS.Api.Common.Model;
+using IMS.Api.Common.Model.RequestModel;
+using IMS.Api.Common.Model.ResponseModel;
 using IMS.Api.Core.ICoreService;
 using IMS.Api.Service.IRepository;
 using System.Net;
-using IMS.Api.Common.Constant;
-using IMS.Api.Common.Extensions;
-using IMS.Api.Common.Model.RequestModel;
-using System.ComponentModel.Design;
-using IMS.Api.Common.Model.ResponseModel.DropDown;
 
 namespace IMS.Api.Core.CoreService
 {
@@ -140,7 +139,7 @@ namespace IMS.Api.Core.CoreService
             try
             {
 
-                List<DropDown> dropDownList = _iRepository.Search<DropDown>(null, Constant.SpGetWarehouse).ToList();
+                List<DropdownResponse> dropDownList = _iRepository.Search<DropdownResponse>(null, Constant.SpGetWarehouse).ToList();
                 if (dropDownList.Count > 0)
                 {
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, dropDownList);

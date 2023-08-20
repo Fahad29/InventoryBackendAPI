@@ -22,7 +22,7 @@ namespace IMS.Api.Core.CoreService
             _apiResponse = apiResponse;
         }
 
-        public async Task<APIResponse> Create(BranchRequestModel model,Params @params)
+        public async Task<APIResponse> Create(BranchRequestModel model, Params @params)
         {
             APIConfig.Log.Debug("CALLING API\" branches create \"  STARTED");
             try
@@ -108,7 +108,22 @@ namespace IMS.Api.Core.CoreService
         }
 
         public async Task<APIResponse> GetById(int BranchId)
+        {
+            APIConfig.Log.Debug("CALLING API\" company GetById \"  STARTED");
+            try
+            {
+                Branch branch = _iRepository.Search(new { Id = BranchId }, Constant.SpGetCompany).FirstOrDefault();
+                if (branch != null)
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, branch);
+                else
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
+            }
+            catch (Exception ex)
+            {
+                APIConfig.Log.Debug("Exception: " + ex.Message);
+                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
+            }
 
-
+        }
     }
 }
