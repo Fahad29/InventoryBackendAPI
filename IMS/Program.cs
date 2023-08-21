@@ -46,6 +46,8 @@ builder.Services.AddSwaggerGen(c =>
             });
 });
 
+APIConfig.ContentRootPath = builder.Environment.ContentRootPath;
+
 var configuration = new ConfigurationBuilder()
        .SetBasePath(builder.Environment.ContentRootPath)
        .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)

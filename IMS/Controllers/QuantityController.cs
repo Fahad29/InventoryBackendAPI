@@ -50,21 +50,21 @@ namespace IMS.Controllers
             }
         }
 
-        [AllowAnonymous, HttpDelete, Route("Delete")]
-        public async Task<IActionResult> Delete(int QuantityId)
-        {
-            try
-            {
-                APIResponse response = await _quantityCore.Delete(QuantityId);
-                if (response?.Response != null)
-                    return Ok(response);
-                return BadRequest();
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
+        //[AllowAnonymous, HttpDelete, Route("Delete")]
+        //public async Task<IActionResult> Delete(int QuantityId)
+        //{
+        //    try
+        //    {
+        //        APIResponse response = await _quantityCore.Delete(QuantityId);
+        //        if (response?.Response != null)
+        //            return Ok(response);
+        //        return BadRequest();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw;
+        //    }
+        //}
 
     }
 }

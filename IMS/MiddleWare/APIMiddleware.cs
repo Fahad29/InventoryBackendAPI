@@ -41,6 +41,9 @@ namespace IMS.MiddleWare
 
                     case "login":
                     case "register":
+                    case "getotp":
+                    case "verifyotp":
+
 
                         await LogRequestResponse(httpContext, Path);
                         break;

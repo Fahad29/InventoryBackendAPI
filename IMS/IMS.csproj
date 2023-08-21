@@ -26,4 +26,8 @@
     <ProjectReference Include="..\IMS.Api.Service\IMS.Api.Service.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Content\EmailTemplates\" />
+  </ItemGroup>
+
 </Project>

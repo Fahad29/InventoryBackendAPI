@@ -1,6 +1,7 @@
 ﻿using IMS.Api.Common.Model;
 using IMS.Api.Common.Model.CommonModel;
 using IMS.Api.Common.Model.Params;
+using IMS.Api.Common.Model.RequestModel;
 using IMS.Api.Core.CoreService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -67,7 +68,7 @@ namespace IMS.Controllers
         }
 
         [AllowAnonymous, HttpPut, Route("Update")]
-        public async Task<IActionResult> Update(CompanyRequestModel companyRequest)
+        public async Task<IActionResult> Update(CompanyUpdateRequestModel companyRequest)
         {
             try
             {

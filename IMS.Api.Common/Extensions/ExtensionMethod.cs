@@ -314,5 +314,24 @@ namespace IMS.Api.Common.Extensions
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
+
+        public static string CreateEmailBody(string TemplatePath)
+        {
+            string body = string.Empty;
+
+            using (StreamReader reader = new StreamReader(TemplatePath))
+            {
+                body = reader.ReadToEnd();
+            }
+            return body;
+
+        }
+
+        public static int Generate5DigitOTP()
+        {
+            Random _random = new Random();
+            return _random.Next(10000, 100000); // Generates a random number between 10000 and 99999
+        }
+
     }
 }

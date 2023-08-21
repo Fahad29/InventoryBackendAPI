@@ -1,4 +1,7 @@
 ﻿using IMS.Api.Common.Model;
+using IMS.Api.Common.Model.CommonModel;
+using IMS.Api.Common.Model.Params;
+using IMS.Api.Common.Model.RequestModel;
 using IMS.Api.Core.CoreService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -51,6 +54,38 @@ namespace IMS.Controllers
             try
             {
                 APIResponse response = await _authenticationCore.ForgotPassword(emailAddress);
+                if (response?.Response != null)
+                    return Ok(response);
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        [AllowAnonymous, HttpGet, Route("GetOTP")]
+        public IActionResult GetOTP(string emailAddress)
+        {
+            try
+            {
+                APIResponse response = _authenticationCore.GetOTP(emailAddress, new Params { ContentRootPath = APIConfig.ContentRootPath });
+                if (response?.Response != null)
+                    return Ok(response);
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        [AllowAnonymous, HttpPost, Route("VerifyOTP")]
+        public IActionResult VerifyOTP(OTPVerificationRequestModel model)
+        {
+            try
+            {
+                APIResponse response = _authenticationCore.VerifyOTP(model);
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();

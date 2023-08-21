@@ -9,6 +9,8 @@
         public string PasswordHash { get; set; }
         public string Email { get; set; }
         public string IsEmailVerified { get; set; }
+        public string OTP { get; set; }
+        public DateTime? OTPExpire { get; set; }
         public string MobileNo { get; set; }
         public string IsMobileNoVerified { get; set; }
 

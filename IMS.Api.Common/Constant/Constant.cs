@@ -12,6 +12,11 @@
         public const string DeleteRecord = "Record Deleted Successfully.";
         public const string UpdateRecord = "Record Updated Successfully.";
         public const string InValidRecordId = "In Valid Record Id.";
+        public const string OTPSendResponse = "Please Check Inbox.";
+        public const string UnAuthorized = "Unauthorized Access.";
+        public const string OTPExpired = "Your OTP has been expired";
+        public const string OTPNotCorrect = "OTP Not Correct";
+        public const string OTPVerified = "OTP Verified";
 
         public const string RecordNotFound = "Record Not Found";
 
@@ -49,7 +54,7 @@
 
         #region Warehouse
         public const string SpGetWarehouse = "Usp_Get_CompanyWarehouse";
-        public const string SpCreateWarehouse = "Usp_Create_CompanyWarehouse";
+        public const string SpCreateWarehouse = "Usp_Create_Company_Warehouse";
         public const string SpUpdateWarehouse = "Usp_Update_CompanyWarehouse";
         public const string SpDeleteCompanyWarehouse = "Usp_Delete_CompanyWarehouse";
         #endregion
@@ -131,6 +136,29 @@
 
         #endregion
 
+
+        #region Email Constant
+
+
+        public const string ContactNumber = "03001200000";
+        public const string supportemail = "support@IMS.com";
+        public const string supporturl = "https://www.support.zakhaer.com";
+        public const string CompanyEmail = "zakhaer2022@gmail.com";
+        public const string CompanyName = "IMS";
+        public const string Port = "587";
+        public const bool   EnableSSL = true;
+        public const string SMTPuser = "zakhaer2022@gmail.com";
+        public const string SMTPpassword = "ugyaslqtljbomzug";
+        public const string Host = "smtp.gmail.com";
+        public const string WebLink = "https://www.dashboard.IMS.com/";
+        public const string LogoUrl = "https://www.IMS.com/images/Logo/logo.jpg";
+        public const string ImageExtension = "Please Upload image of type .jpg,.png.";
+        #endregion
+
+
+        #region  Email Templates 
+        public const string SendOTP = "\\Content\\EmailTemplates\\SendOTP.html";
+        #endregion
     }
 }
 

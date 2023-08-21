@@ -3,12 +3,15 @@ using IMS.Api.Common.Extensions;
 using IMS.Api.Common.Model;
 using IMS.Api.Common.Model.CommonModel;
 using IMS.Api.Common.Model.DataModel;
+using IMS.Api.Common.Model.Params;
+using IMS.Api.Common.Model.RequestModel;
 using IMS.Api.Common.Model.ResponseModel;
 using IMS.Api.Core.CoreService;
 using IMS.Api.Service.IRepository;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
+using System.Net.Mail;
 using System.Text;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
@@ -72,7 +75,7 @@ namespace IMS.Api.Core.ICoreService
             try
             {
                 int? CompanyId = _iRepository.CreateSP<Company>(new { CompanyName = model.CompanyName }, Constant.SpGetCompany)?.CompanyId;
-                if(CompanyId == null || CompanyId == 0)
+                if (CompanyId == null || CompanyId == 0)
                 {
                     Company company = new Company();
                     company.CompanyName = model.CompanyName;
@@ -227,5 +230,86 @@ namespace IMS.Api.Core.ICoreService
             return expiration < now;
         }
 
+        public APIResponse GetOTP(string emailAddress, Params @params)
+        {
+            User  user= _iRepository.Search<User>(new { UserName = emailAddress }, Constant.SpGetUser)?.FirstOrDefault();
+            if (user  != null && emailAddress != null)
+            {
+                user.OTPExpire = DateTime.UtcNow;
+                user.OTP = ExtensionMethod.Generate5DigitOTP().ToString();
+
+                user =  _iRepository.Search<User>(user, Constant.SpUpdateUser)?.FirstOrDefault();
+
+                @params.ContentRootPath = @params.ContentRootPath.MapPath(Constant.SendOTP);
+
+                using (MailMessage mm = new MailMessage(Constant.CompanyEmail, emailAddress))
+                {
+                    mm.Subject = "OTP Verification Code";
+
+                    string body = string.Empty;
+                    body = ExtensionMethod.CreateEmailBody(@params.ContentRootPath);
+
+                    body = body.Replace("{{phonenumber}}", Constant.ContactNumber);
+                    body = body.Replace("{{supportemail}}", Constant.supportemail);
+                    body = body.Replace("{{supporturl}}", Constant.supporturl);
+                    body = body.Replace("{{CompanyName}}", Constant.CompanyName);
+                    body = body.Replace("{{email}}", Constant.CompanyEmail);
+                    body = body.Replace("{{Weblink}}", Constant.WebLink);
+                    body = body.Replace("{{Websitelink}}", Constant.WebLink);
+                    body = body.Replace("{{Logo}}", Constant.LogoUrl);
+                    body = body.Replace("{{OTP}}", user?.OTP);
+
+                    mm.Body = body;
+                    mm.IsBodyHtml = true;
+                    SmtpClient smtp = new SmtpClient();
+                    smtp.Host = Constant.Host;
+                    smtp.EnableSsl = true;
+
+                    NetworkCredential NetworkCred = new NetworkCredential(Constant.SMTPuser, Constant.SMTPpassword);
+                    smtp.UseDefaultCredentials = Convert.ToBoolean(Constant.EnableSSL);
+                    smtp.Credentials = NetworkCred;
+                    smtp.Port = int.Parse(Constant.Port);
+                    smtp.Send(mm);
+
+                }
+                return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.OTPSendResponse);
+            }
+            else
+            {
+                return _apiResponse.ReturnResponse(HttpStatusCode.Unauthorized, Constant.UnAuthorized);
+            }
+           
+        }
+
+        public APIResponse VerifyOTP(OTPVerificationRequestModel model)
+        {
+            User user  = _iRepository.Search<User>(new { UserName = model.EmailAddress }, Constant.SpGetUser)?.FirstOrDefault();
+            if (user == null)
+            {
+                if(user?.OTPExpire?.AddMinutes(1) <= DateTime.UtcNow)
+                {
+                    if(user.OTP == model.OTP)
+                    {
+                        user.OTP = null;
+                        user.OTPExpire = null;
+                        _iRepository.Search(user, Constant.SpUpdateUser)?.FirstOrDefault();
+                        return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.OTPVerified);
+                    }
+                    else
+                    {
+                        return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, Constant.OTPNotCorrect);
+                    }
+
+                }
+                else
+                {
+                    return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, Constant.OTPExpired);
+                }
+            }
+            else
+            {
+                return _apiResponse.ReturnResponse(HttpStatusCode.Unauthorized, Constant.UnAuthorized);
+            }
+        }
     }
 }

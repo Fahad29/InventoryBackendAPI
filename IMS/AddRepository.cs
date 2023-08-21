@@ -48,6 +48,12 @@ namespace IMS
             services.AddScoped<IRepository<Branch>, GenericRepository<Branch>>();
             services.AddScoped<IBranchCore, BranchCore>();
 
+            services.AddScoped<IRepository<City>, GenericRepository<City>>();
+            services.AddScoped<ICityCore, CityCore>();
+
+            services.AddScoped<IRepository<Country>, GenericRepository<Country>>();
+            services.AddScoped<ICountryCore, CountryCore>();
+
             return services;
         }
     }

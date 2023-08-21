@@ -1,4 +1,6 @@
 ﻿using IMS.Api.Common.Model;
+using IMS.Api.Common.Model.CommonModel;
+using IMS.Api.Common.Model.RequestModel;
 using IMS.Api.Core.ICoreService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -7,20 +9,20 @@ namespace IMS.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CategoryController : ControllerBase
+    public class CityController : ControllerBase
     {
-        readonly ICategoryCore _categoryCore;
-        public CategoryController(ICategoryCore categoryCore)
+        readonly ICityCore _cityCore;
+        public CityController(ICityCore cityCore)
         {
-            _categoryCore = categoryCore;
+            _cityCore = cityCore;
         }
 
-        [AllowAnonymous, HttpGet, Route("GetAll")]
-        public async Task<IActionResult> GetAll()
+        [AllowAnonymous, HttpPost, Route("Search")]
+        public async Task<IActionResult> GetAll(BaseFilter model)
         {
             try
             {
-                APIResponse response = await _categoryCore.GetAll();
+                APIResponse response = await _cityCore.Search(model);
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();
@@ -33,11 +35,11 @@ namespace IMS.Controllers
 
 
         [AllowAnonymous, HttpPost, Route("Create")]
-        public async Task<IActionResult> Create(string Name)
+        public async Task<IActionResult> Create(CityRequestModel model)
         {
             try
             {
-                APIResponse response = await _categoryCore.Create(Name);
+                APIResponse response = await _cityCore.Create(model);
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();
@@ -48,29 +50,13 @@ namespace IMS.Controllers
             }
         }
 
-        //[AllowAnonymous, HttpDelete, Route("Delete")]
-        //public async Task<IActionResult> Delete(int categoryId)
-        //{
-        //    try
-        //    {
-        //        APIResponse response = await _categoryCore.Delete(categoryId);
-        //        if (response?.Response != null)
-        //            return Ok(response);
-        //        return BadRequest();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw;
-        //    }
-        //}
-
 
         [AllowAnonymous, HttpGet, Route("DropDown")]
         public async Task<IActionResult> DropDown()
         {
             try
             {
-                APIResponse response = await _categoryCore.DropDown();
+                APIResponse response = await _cityCore.DropDown();
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();

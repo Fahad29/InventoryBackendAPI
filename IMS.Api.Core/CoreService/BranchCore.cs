@@ -7,7 +7,6 @@ using IMS.Api.Common.Model.Params;
 using IMS.Api.Common.Model.RequestModel;
 using IMS.Api.Core.ICoreService;
 using IMS.Api.Service.IRepository;
-using System.ComponentModel.Design;
 using System.Net;
 
 namespace IMS.Api.Core.CoreService
@@ -131,4 +130,3 @@ namespace IMS.Api.Core.CoreService
 
         }
     }
-}

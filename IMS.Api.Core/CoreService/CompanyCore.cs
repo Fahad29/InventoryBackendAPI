@@ -4,6 +4,7 @@ using IMS.Api.Common.Model;
 using IMS.Api.Common.Model.CommonModel;
 using IMS.Api.Common.Model.DataModel;
 using IMS.Api.Common.Model.Params;
+using IMS.Api.Common.Model.RequestModel;
 using IMS.Api.Core.CoreService;
 using IMS.Api.Service.IRepository;
 using System.Net;
@@ -91,13 +92,14 @@ namespace IMS.Api.Core.ICoreService
      
         }
 
-        public async Task<APIResponse> Update(CompanyRequestModel model, Params @params)
+        public async Task<APIResponse> Update(CompanyUpdateRequestModel model, Params @params)
         {
             try
             {
                 APIConfig.Log.Debug("CALLING API\" company update \"  STARTED");
                 Company company = model.MapTo<Company>();
-                //company.UpdatedBy = @params.UserId;
+                company.UpdatedBy = @params.UserId;
+                company.UpdatedOn =DateTime.UtcNow;
                 company = _iRepository.CreateSP<Company>(company, Constant.SpUpdateCompany);
                 return _apiResponse.ReturnResponse(HttpStatusCode.OK, company);
 

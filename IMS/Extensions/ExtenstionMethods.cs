@@ -61,8 +61,6 @@ namespace Oculus.Extensions
             return b; 
         }
 
-
-
     }
 
 
