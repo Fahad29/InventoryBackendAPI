@@ -22,7 +22,7 @@ namespace IMS.Api.Core.CoreService
             _apiResponse = apiResponse;
         }
 
-        public async Task<APIResponse> Create(BranchRequestModel model,Params @params)
+        public async Task<APIResponse> Create(BranchRequestModel model, Params @params)
         {
             APIConfig.Log.Debug("CALLING API\" branches create \"  STARTED");
             try
@@ -129,5 +129,6 @@ namespace IMS.Api.Core.CoreService
             }
         }
 
+        }
     }
 }

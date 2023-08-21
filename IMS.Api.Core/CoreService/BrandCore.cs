@@ -2,7 +2,7 @@
 using IMS.Api.Common.Model;
 using IMS.Api.Common.Model.CommonModel;
 using IMS.Api.Common.Model.DataModel;
-using IMS.Api.Common.Model.ResponseModel.DropDown;
+using IMS.Api.Common.Model.ResponseModel;
 using IMS.Api.Core.ICoreService;
 using IMS.Api.Service.IRepository;
 using System.Net;
@@ -28,7 +28,6 @@ namespace IMS.Api.Core.CoreService
                 if (brands.Count > 0)
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, brands);
                 else
-                
                     return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
             }
             catch (Exception ex)
@@ -80,7 +79,6 @@ namespace IMS.Api.Core.CoreService
                 APIConfig.Log.Debug("Exception: " + ex.Message);
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
-
         }
 
         public async Task<APIResponse> DropDown()
@@ -88,7 +86,7 @@ namespace IMS.Api.Core.CoreService
             APIConfig.Log.Debug("CALLING API\" Brand DropDown \"  STARTED");
             try
             {
-                List<DropDown> dropDownList = _iRepository.Search<DropDown>(null, Constant.SpGetProductBrand).ToList();
+                List<DropdownResponse> dropDownList = _iRepository.Search<DropdownResponse>(null, Constant.SpGetProductBrand).ToList();
                 if (dropDownList.Count > 0)
                 {
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, dropDownList);

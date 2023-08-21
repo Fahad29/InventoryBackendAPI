@@ -139,7 +139,7 @@ namespace IMS.Api.Core.CoreService
             try
             {
 
-                List<DropDown> dropDownList = _iRepository.Search<DropDown>(null, Constant.SpGetWarehouse).ToList();
+                List<DropdownResponse> dropDownList = _iRepository.Search<DropdownResponse>(null, Constant.SpGetWarehouse).ToList();
                 if (dropDownList.Count > 0)
                 {
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, dropDownList);
