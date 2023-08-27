@@ -4,6 +4,8 @@ namespace IMS.Api.Common.Model.RequestModel
 {
     public  class CustomerCreateRequestModel
     {
+
+        public int CompanyId { get; set; }
         public string Name { get; set; }
         public string Address { get; set; }
         public string Fax { get; set; }
