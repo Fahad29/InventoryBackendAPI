@@ -8,14 +8,15 @@ using IMS.Api.Common.Model.RequestModel;
 using IMS.Api.Core.CoreService;
 using IMS.Api.Service.IRepository;
 using System.Net;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace IMS.Api.Core.ICoreService
 {
-    public class CompanyCore : ICompanyCore
+    public class DealCore : IDealCore
     {
-        IRepository<Company> _iRepository;
+        IRepository<Deal> _iRepository;
         APIResponse _apiResponse;
-        public CompanyCore(IRepository<Company> iRepository, APIResponse apiResponse)
+        public DealCore(IRepository<Deal> iRepository, APIResponse apiResponse)
         {
             _iRepository = iRepository;
             _apiResponse = apiResponse;
@@ -23,14 +24,14 @@ namespace IMS.Api.Core.ICoreService
 
         public async Task<APIResponse> Search(BaseFilter model)
         {
-            APIConfig.Log.Debug("CALLING API\" Company Get all \"  STARTED");
+            APIConfig.Log.Debug("CALLING API\" deal Get all \"  STARTED");
             try
             {
 
-                List<Company> companies = _iRepository.Search(model, Constant.SpGetCompany).ToList();
-                if (companies.Count > 0)
+                List<Deal> deal = _iRepository.Search(model, Constant.SpGetDeal).ToList();
+                if (deal.Count > 0)
                 {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, companies);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, deal);
 
                 }
                 else
@@ -48,15 +49,15 @@ namespace IMS.Api.Core.ICoreService
             }
         }
 
-        public async Task<APIResponse> GetById(int CompanyId)
+        public async Task<APIResponse> GetById(int DealId)
         {
-            APIConfig.Log.Debug("CALLING API\" Company GetById \"  STARTED");
+            APIConfig.Log.Debug("CALLING API\" deal GetById \"  STARTED");
             try
             {
-                Company Company = _iRepository.Search(new { Id = CompanyId }, Constant.SpGetCompany).FirstOrDefault();
-                if (Company != null)
+                Deal deal = _iRepository.Search(new { Id = DealId }, Constant.SpGetDeal).FirstOrDefault();
+                if (deal != null)
                 {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, Company);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, deal);
                 }
                 else
                 {
@@ -71,16 +72,16 @@ namespace IMS.Api.Core.ICoreService
             }
         }
 
-        public async Task<APIResponse> Create(CompanyRequestModel model, Params @params)
+        public async Task<APIResponse> Create(DealCreateRequestModel model, Params @params)
         {
-            APIConfig.Log.Debug("CALLING API\" Company create \"  STARTED");
+            APIConfig.Log.Debug("CALLING API\" deal create \"  STARTED");
             try
             {
-                Company Company = model.MapTo<Company>();
-                Company.CreatedBy = @params.UserId;
-                Company = _iRepository.CreateSP<Company>(Company, Constant.SpCreateCompany);
+                Deal deal = model.MapTo<Deal>();
+                deal.CreatedBy = @params.UserId;
+                deal = _iRepository.CreateSP<Deal>(deal, Constant.SpCreateDeal);
 
-                return _apiResponse.ReturnResponse(HttpStatusCode.Created, Company);
+                return _apiResponse.ReturnResponse(HttpStatusCode.Created, deal);
                 
             }
             catch (Exception ex)
@@ -91,16 +92,16 @@ namespace IMS.Api.Core.ICoreService
      
         }
 
-        public async Task<APIResponse> Update(CompanyUpdateRequestModel model, Params @params)
+        public async Task<APIResponse> Update(DealUpdateRequestModel model, Params @params)
         {
             try
             {
-                APIConfig.Log.Debug("CALLING API\" Company update \"  STARTED");
-                Company Company = model.MapTo<Company>();
-                Company.UpdatedBy = @params.UserId;
-                Company.UpdatedOn =DateTime.UtcNow;
-                Company = _iRepository.CreateSP<Company>(Company, Constant.SpUpdateCompany);
-                return _apiResponse.ReturnResponse(HttpStatusCode.OK, Company);
+                APIConfig.Log.Debug("CALLING API\" deal update \"  STARTED");
+                Deal deal = model.MapTo<Deal>();
+                deal.UpdatedBy = @params.UserId;
+                deal.UpdatedOn =DateTime.UtcNow;
+                deal = _iRepository.CreateSP<Deal>(deal, Constant.SpUpdateDeal);
+                return _apiResponse.ReturnResponse(HttpStatusCode.OK, deal);
 
             }
             catch (Exception ex)
@@ -115,15 +116,15 @@ namespace IMS.Api.Core.ICoreService
 
         }
 
-        public async Task<APIResponse> Delete(int CompanyId, Params @params)
+        public async Task<APIResponse> Delete(int DealId, Params @params)
         {
-            APIConfig.Log.Debug("CALLING API\" Company delete \"  STARTED");
+            APIConfig.Log.Debug("CALLING API\" deal delete \"  STARTED");
             try
             {
-                if (CompanyId > 0)
+                if (DealId > 0)
                 {
 
-                    _iRepository.CreateSP<Company>(new { Id = CompanyId, UpdatedBy = @params.UserId }, Constant.SpDeleteCompany);
+                    _iRepository.CreateSP<Deal>(new { Id = DealId, UpdatedBy = @params.UserId }, Constant.SpDeleteDeal);
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.DeleteRecord);
                 }
                 else

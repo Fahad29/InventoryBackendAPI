@@ -11,11 +11,11 @@ using System.Net;
 
 namespace IMS.Api.Core.ICoreService
 {
-    public class CompanyCore : ICompanyCore
+    public class CustomerCore : ICustomerCore
     {
-        IRepository<Company> _iRepository;
+        IRepository<Customer> _iRepository;
         APIResponse _apiResponse;
-        public CompanyCore(IRepository<Company> iRepository, APIResponse apiResponse)
+        public CustomerCore(IRepository<Customer> iRepository, APIResponse apiResponse)
         {
             _iRepository = iRepository;
             _apiResponse = apiResponse;
@@ -23,11 +23,11 @@ namespace IMS.Api.Core.ICoreService
 
         public async Task<APIResponse> Search(BaseFilter model)
         {
-            APIConfig.Log.Debug("CALLING API\" Company Get all \"  STARTED");
+            APIConfig.Log.Debug("CALLING API\" customer Get all \"  STARTED");
             try
             {
 
-                List<Company> companies = _iRepository.Search(model, Constant.SpGetCompany).ToList();
+                List<Customer> companies = _iRepository.Search(model, Constant.SpGetCustomer).ToList();
                 if (companies.Count > 0)
                 {
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, companies);
@@ -48,15 +48,15 @@ namespace IMS.Api.Core.ICoreService
             }
         }
 
-        public async Task<APIResponse> GetById(int CompanyId)
+        public async Task<APIResponse> GetById(int CustomerId)
         {
-            APIConfig.Log.Debug("CALLING API\" Company GetById \"  STARTED");
+            APIConfig.Log.Debug("CALLING API\" customer GetById \"  STARTED");
             try
             {
-                Company Company = _iRepository.Search(new { Id = CompanyId }, Constant.SpGetCompany).FirstOrDefault();
-                if (Company != null)
+                Customer customer = _iRepository.Search(new { Id = CustomerId }, Constant.SpGetCustomer).FirstOrDefault();
+                if (customer != null)
                 {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, Company);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, customer);
                 }
                 else
                 {
@@ -71,16 +71,16 @@ namespace IMS.Api.Core.ICoreService
             }
         }
 
-        public async Task<APIResponse> Create(CompanyRequestModel model, Params @params)
+        public async Task<APIResponse> Create(CustomerCreateRequestModel model, Params @params)
         {
-            APIConfig.Log.Debug("CALLING API\" Company create \"  STARTED");
+            APIConfig.Log.Debug("CALLING API\" customer create \"  STARTED");
             try
             {
-                Company Company = model.MapTo<Company>();
-                Company.CreatedBy = @params.UserId;
-                Company = _iRepository.CreateSP<Company>(Company, Constant.SpCreateCompany);
+                Customer customer = model.MapTo<Customer>();
+                customer.CreatedBy = @params.UserId;
+                customer = _iRepository.CreateSP<Customer>(customer, Constant.SpCreateCustomer);
 
-                return _apiResponse.ReturnResponse(HttpStatusCode.Created, Company);
+                return _apiResponse.ReturnResponse(HttpStatusCode.Created, customer);
                 
             }
             catch (Exception ex)
@@ -91,16 +91,16 @@ namespace IMS.Api.Core.ICoreService
      
         }
 
-        public async Task<APIResponse> Update(CompanyUpdateRequestModel model, Params @params)
+        public async Task<APIResponse> Update(CustomerUpdateRequestModel model, Params @params)
         {
             try
             {
-                APIConfig.Log.Debug("CALLING API\" Company update \"  STARTED");
-                Company Company = model.MapTo<Company>();
-                Company.UpdatedBy = @params.UserId;
-                Company.UpdatedOn =DateTime.UtcNow;
-                Company = _iRepository.CreateSP<Company>(Company, Constant.SpUpdateCompany);
-                return _apiResponse.ReturnResponse(HttpStatusCode.OK, Company);
+                APIConfig.Log.Debug("CALLING API\" customer update \"  STARTED");
+                Customer customer = model.MapTo<Customer>();
+                customer.UpdatedBy = @params.UserId;
+                customer.UpdatedOn =DateTime.UtcNow;
+                customer = _iRepository.CreateSP<Customer>(customer, Constant.SpUpdateCustomer);
+                return _apiResponse.ReturnResponse(HttpStatusCode.OK, customer);
 
             }
             catch (Exception ex)
@@ -115,15 +115,15 @@ namespace IMS.Api.Core.ICoreService
 
         }
 
-        public async Task<APIResponse> Delete(int CompanyId, Params @params)
+        public async Task<APIResponse> Delete(int CustomerId, Params @params)
         {
-            APIConfig.Log.Debug("CALLING API\" Company delete \"  STARTED");
+            APIConfig.Log.Debug("CALLING API\" customer delete \"  STARTED");
             try
             {
-                if (CompanyId > 0)
+                if (CustomerId > 0)
                 {
 
-                    _iRepository.CreateSP<Company>(new { Id = CompanyId, UpdatedBy = @params.UserId }, Constant.SpDeleteCompany);
+                    _iRepository.CreateSP<Customer>(new { Id = CustomerId, UpdatedBy = @params.UserId }, Constant.SpDeleteCustomer);
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.DeleteRecord);
                 }
                 else

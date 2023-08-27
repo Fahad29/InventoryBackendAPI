@@ -5,13 +5,13 @@ using IMS.Api.Common.Model.RequestModel;
 
 namespace IMS.Api.Core.CoreService
 {
-    public interface ICompanyCore
+    public interface IDealCore
     {
         Task<APIResponse> Search(BaseFilter model);
         Task<APIResponse> GetById(int Id);
-        Task<APIResponse> Create(CompanyRequestModel companyRequest ,Params @params);
-        Task<APIResponse> Update(CompanyUpdateRequestModel companyRequest, Params @params);
-        Task<APIResponse> Delete(int CompanyId, Params @params);
+        Task<APIResponse> Create(DealCreateRequestModel companyRequest ,Params @params);
+        Task<APIResponse> Update(DealUpdateRequestModel companyRequest, Params @params);
+        Task<APIResponse> Delete(int Id, Params @params);
 
     }
 }

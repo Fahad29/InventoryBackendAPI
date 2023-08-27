@@ -1,0 +1,4 @@
+Inshal Server
+Name/ Ip Address: ec2-16-16-207-20.eu-north-1.compute.amazonaws.com / 172.31.21.200
+Username: Administrator
+Password: yNL36IgDMc*141@Xm5N.T040tq(6sm8o

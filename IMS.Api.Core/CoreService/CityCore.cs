@@ -25,12 +25,11 @@ namespace IMS.Api.Core.CoreService
             APIConfig.Log.Debug("CALLING API\" City Get all \"  STARTED");
             try
             {
-                List<City> categories = _iRepository.Search(model, Constant.SpGetCity).ToList();
+                List<CitySearchResponseModel> categories = _iRepository.Search<CitySearchResponseModel>(model, Constant.SpGetCity).ToList();
 
                 if (categories.Count > 0)
                 {
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, categories);
-
                 }
                 else
                 {

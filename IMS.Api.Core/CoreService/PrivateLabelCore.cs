@@ -11,11 +11,11 @@ using System.Net;
 
 namespace IMS.Api.Core.ICoreService
 {
-    public class CompanyCore : ICompanyCore
+    public class PrivateLabelCore : IPrivateLabelCore
     {
-        IRepository<Company> _iRepository;
+        IRepository<PrivateLabel> _iRepository;
         APIResponse _apiResponse;
-        public CompanyCore(IRepository<Company> iRepository, APIResponse apiResponse)
+        public PrivateLabelCore(IRepository<PrivateLabel> iRepository, APIResponse apiResponse)
         {
             _iRepository = iRepository;
             _apiResponse = apiResponse;
@@ -23,14 +23,14 @@ namespace IMS.Api.Core.ICoreService
 
         public async Task<APIResponse> Search(BaseFilter model)
         {
-            APIConfig.Log.Debug("CALLING API\" Company Get all \"  STARTED");
+            APIConfig.Log.Debug("CALLING API\" privateLabel Get all \"  STARTED");
             try
             {
 
-                List<Company> companies = _iRepository.Search(model, Constant.SpGetCompany).ToList();
-                if (companies.Count > 0)
+                List<PrivateLabel> privateLabel = _iRepository.Search(model, Constant.SpGetPrivateLabel).ToList();
+                if (privateLabel.Count > 0)
                 {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, companies);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, privateLabel);
 
                 }
                 else
@@ -48,15 +48,15 @@ namespace IMS.Api.Core.ICoreService
             }
         }
 
-        public async Task<APIResponse> GetById(int CompanyId)
+        public async Task<APIResponse> GetById(int PrivateLabelId)
         {
-            APIConfig.Log.Debug("CALLING API\" Company GetById \"  STARTED");
+            APIConfig.Log.Debug("CALLING API\" privateLabel GetById \"  STARTED");
             try
             {
-                Company Company = _iRepository.Search(new { Id = CompanyId }, Constant.SpGetCompany).FirstOrDefault();
-                if (Company != null)
+                PrivateLabel privateLabel = _iRepository.Search(new { Id = PrivateLabelId }, Constant.SpGetPrivateLabel).FirstOrDefault();
+                if (privateLabel != null)
                 {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, Company);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, privateLabel);
                 }
                 else
                 {
@@ -71,16 +71,16 @@ namespace IMS.Api.Core.ICoreService
             }
         }
 
-        public async Task<APIResponse> Create(CompanyRequestModel model, Params @params)
+        public async Task<APIResponse> Create(PrivateLabelCreateRequestModel model, Params @params)
         {
-            APIConfig.Log.Debug("CALLING API\" Company create \"  STARTED");
+            APIConfig.Log.Debug("CALLING API\" privateLabel create \"  STARTED");
             try
             {
-                Company Company = model.MapTo<Company>();
-                Company.CreatedBy = @params.UserId;
-                Company = _iRepository.CreateSP<Company>(Company, Constant.SpCreateCompany);
+                PrivateLabel privateLabel = model.MapTo<PrivateLabel>();
+                privateLabel.CreatedBy = @params.UserId;
+                privateLabel = _iRepository.CreateSP<PrivateLabel>(privateLabel, Constant.SpCreatePrivateLabel);
 
-                return _apiResponse.ReturnResponse(HttpStatusCode.Created, Company);
+                return _apiResponse.ReturnResponse(HttpStatusCode.Created, privateLabel);
                 
             }
             catch (Exception ex)
@@ -91,16 +91,16 @@ namespace IMS.Api.Core.ICoreService
      
         }
 
-        public async Task<APIResponse> Update(CompanyUpdateRequestModel model, Params @params)
+        public async Task<APIResponse> Update(PrivateLabelUpdateRequestModel model, Params @params)
         {
             try
             {
-                APIConfig.Log.Debug("CALLING API\" Company update \"  STARTED");
-                Company Company = model.MapTo<Company>();
-                Company.UpdatedBy = @params.UserId;
-                Company.UpdatedOn =DateTime.UtcNow;
-                Company = _iRepository.CreateSP<Company>(Company, Constant.SpUpdateCompany);
-                return _apiResponse.ReturnResponse(HttpStatusCode.OK, Company);
+                APIConfig.Log.Debug("CALLING API\" privateLabel update \"  STARTED");
+                PrivateLabel privateLabel = model.MapTo<PrivateLabel>();
+                privateLabel.UpdatedBy = @params.UserId;
+                privateLabel.UpdatedOn =DateTime.UtcNow;
+                privateLabel = _iRepository.CreateSP<PrivateLabel>(privateLabel, Constant.SpUpdatePrivateLabel);
+                return _apiResponse.ReturnResponse(HttpStatusCode.OK, privateLabel);
 
             }
             catch (Exception ex)
@@ -115,15 +115,15 @@ namespace IMS.Api.Core.ICoreService
 
         }
 
-        public async Task<APIResponse> Delete(int CompanyId, Params @params)
+        public async Task<APIResponse> Delete(int PrivateLabelId, Params @params)
         {
-            APIConfig.Log.Debug("CALLING API\" Company delete \"  STARTED");
+            APIConfig.Log.Debug("CALLING API\" privateLabel delete \"  STARTED");
             try
             {
-                if (CompanyId > 0)
+                if (PrivateLabelId > 0)
                 {
 
-                    _iRepository.CreateSP<Company>(new { Id = CompanyId, UpdatedBy = @params.UserId }, Constant.SpDeleteCompany);
+                    _iRepository.CreateSP<PrivateLabel>(new { Id = PrivateLabelId, UpdatedBy = @params.UserId }, Constant.SpDeletePrivateLabel);
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.DeleteRecord);
                 }
                 else

@@ -54,7 +54,7 @@ namespace IMS.Api.Core.CoreService
             APIConfig.Log.Debug("CALLING API\" Warehouse GetById \"  STARTED");
             try
             {
-                WareHouse user = _iRepository.Search(new { WareHouseId = WareHouseId }, Constant.SpGetWarehouse).FirstOrDefault();
+                CitySearchResponseModel user = _iRepository.Search<CitySearchResponseModel>(new { WareHouseId = WareHouseId }, Constant.SpGetWarehouse).FirstOrDefault();
                 if (user != null)
                 {
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, user);

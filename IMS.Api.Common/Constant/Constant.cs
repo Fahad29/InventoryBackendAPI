@@ -45,11 +45,32 @@
         public const string SpDeleteCompany= "Usp_Delete_Company";
         #endregion
 
+        #region Customer
+        public const string SpCreateCustomer = "Usp_create_Customer";
+        public const string SpUpdateCustomer = "Usp_update_Customer";
+        public const string SpGetCustomer = "Usp_get_Customer";
+        public const string SpDeleteCustomer = "Usp_Delete_Customer";
+        #endregion
+
+        #region PrivateLabel
+        public const string SpCreatePrivateLabel = "Usp_create_PrivateLabel";
+        public const string SpUpdatePrivateLabel = "Usp_update_PrivateLabel";
+        public const string SpGetPrivateLabel = "Usp_get_PrivateLabel";
+        public const string SpDeletePrivateLabel = "Usp_Delete_PrivateLabel";
+        #endregion
+
+        #region Deal
+        public const string SpCreateDeal = "Usp_create_Deal";
+        public const string SpUpdateDeal = "Usp_update_Deal";
+        public const string SpGetDeal = "Usp_get_Deal";
+        public const string SpDeleteDeal = "Usp_Delete_Deal";
+        #endregion
+
         #region Branch
         public const string SpGetBranch = "Usp_Get_CompanyBranches";
         public const string SpCreateBranch = "Usp_Create_CompanyBranches";
         public const string SpUpdateBranch = "Usp_Update_CompanyBranches";
-        public const string SpDeleteCompanyBranch = "Usp_Delete_CompanyBranches";
+        public const string SpDeleteCompanyBranch = "Usp_Delete_CompanyBranch";
         #endregion
 
         #region Warehouse
@@ -148,7 +169,7 @@
         public const string Port = "587";
         public const bool   EnableSSL = true;
         public const string SMTPuser = "zakhaer2022@gmail.com";
-        public const string SMTPpassword = "ugyaslqtljbomzug";
+        public const string SMTPpassword = "zxdmxfzvarsvaycd";
         public const string Host = "smtp.gmail.com";
         public const string WebLink = "https://www.dashboard.IMS.com/";
         public const string LogoUrl = "https://www.IMS.com/images/Logo/logo.jpg";
