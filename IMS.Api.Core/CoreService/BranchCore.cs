@@ -5,6 +5,7 @@ using IMS.Api.Common.Model.CommonModel;
 using IMS.Api.Common.Model.DataModel;
 using IMS.Api.Common.Model.Params;
 using IMS.Api.Common.Model.RequestModel;
+using IMS.Api.Common.Model.ResponseModel;
 using IMS.Api.Core.ICoreService;
 using IMS.Api.Service.IRepository;
 using System.Net;
@@ -86,7 +87,7 @@ namespace IMS.Api.Core.CoreService
             try
             {
 
-                List<Branch> branches = _iRepository.Search(model, Constant.SpGetBranch).ToList();
+                List<BranchSearchResponseModel> branches = _iRepository.Search<BranchSearchResponseModel>(model, Constant.SpGetBranch).ToList();
                 if (branches.Count > 0)
                 {
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, branches);
@@ -111,7 +112,7 @@ namespace IMS.Api.Core.CoreService
             APIConfig.Log.Debug("CALLING API\" branches GetById \"  STARTED");
             try
             {
-                Branch user = _iRepository.Search(new { Id = BranchId }, Constant.SpGetBranch).FirstOrDefault();
+                Branch user = _iRepository.Search(new { Id = BranchId }, Constant.SpGetBranchById).FirstOrDefault();
                 if (user != null)
                 {
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, user);
@@ -128,5 +129,56 @@ namespace IMS.Api.Core.CoreService
             }
         }
 
+        public async Task<APIResponse> TotalCount(int? CompanyId)
+        {
+            APIConfig.Log.Debug("CALLING API\" Branch TotalCount \"  STARTED");
+            try
+            {
+                int? TotalCount = _iRepository.Search<int>(new { CompanyId = CompanyId }, Constant.SpGetBranchTotalCount).FirstOrDefault();
+                if (TotalCount > 0)
+                {
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, new { TotalCount = TotalCount });
+                }
+                else
+                {
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
+                }
+            }
+            catch (Exception ex)
+            {
+                APIConfig.Log.Debug("Exception: " + ex.Message);
+                _apiResponse.StatusCode = HttpStatusCode.BadRequest;
+                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
+            }
         }
+
+        public async Task<APIResponse> DropDown(int? CompanyId)
+        {
+            APIConfig.Log.Debug("CALLING API\" Branch DropDown \"  STARTED");
+            try
+            {
+
+                List<DropdownResponse> dropDownList = _iRepository.Search<DropdownResponse>(new { CompanyId = CompanyId }, Constant.SpGetBranch).ToList();
+                if (dropDownList.Count > 0)
+                {
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, dropDownList);
+
+                }
+                else
+                {
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                APIConfig.Log.Debug("Exception: " + ex.Message);
+                _apiResponse.StatusCode = HttpStatusCode.BadRequest;
+                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
+            }
+        }
+
+
+    }
     }

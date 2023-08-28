@@ -59,14 +59,9 @@
         public const string SpDeletePrivateLabel = "Usp_Delete_PrivateLabel";
         #endregion
 
-        #region Deal
-        public const string SpCreateDeal = "Usp_create_Deal";
-        public const string SpUpdateDeal = "Usp_update_Deal";
-        public const string SpGetDeal = "Usp_get_Deal";
-        public const string SpDeleteDeal = "Usp_Delete_Deal";
-        #endregion
-
         #region Branch
+        public const string SpGetBranchById = "Usp_Get_CompanyBranchById";
+        public const string SpGetBranchTotalCount = "Usp_Get_CompanyBranchTotalCount";
         public const string SpGetBranch = "Usp_Get_CompanyBranches";
         public const string SpCreateBranch = "Usp_Create_CompanyBranches";
         public const string SpUpdateBranch = "Usp_Update_CompanyBranches";
@@ -74,6 +69,8 @@
         #endregion
 
         #region Warehouse
+        public const string SpGetWarehouseById = "Usp_Get_CompanyWarehouseById";
+        public const string SpGetWarehouseTotalCount = "Usp_Get_CompanyWarehouseTotalCount";
         public const string SpGetWarehouse = "Usp_Get_CompanyWarehouse";
         public const string SpCreateWarehouse = "Usp_Create_Company_Warehouse";
         public const string SpUpdateWarehouse = "Usp_Update_CompanyWarehouse";
@@ -98,10 +95,12 @@
         #endregion
 
         #region Deals
-        public const string SpCreateProductDeal = "Usp_create_productdeal";
-        public const string SpUpdateProductDeal = "Usp_update_productdeal";
-        public const string SpGetProductDeal = "Usp_get_productdeal";
-        public const string SpDeleteProductDeal = "Usp_Delete_ProductDeal";
+        public const string SpGetDealById = "Usp_Get_CompanyDealById";
+        public const string SpGetDealTotalCount = "Usp_Get_CompanyDealTotalCount";
+        public const string SpCreateDeal = "Usp_create_Deal";
+        public const string SpUpdateDeal = "Usp_update_Deal";
+        public const string SpGetDeal = "Usp_get_Deal";
+        public const string SpDeleteDeal = "Usp_Delete_Deal";
         #endregion
 
         #region Detail

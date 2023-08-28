@@ -12,6 +12,8 @@ namespace IMS.Api.Core.ICoreService
         Task<APIResponse> Create(BranchRequestModel model, Params @params);
         Task<APIResponse> Update(BranchRequestModel model, Params @params);
         Task<APIResponse> Delete(int BranchId, Params @params);
+        Task<APIResponse> DropDown(int? CompanyId);
+        Task<APIResponse> TotalCount(int? CompanyId);
 
 
     }

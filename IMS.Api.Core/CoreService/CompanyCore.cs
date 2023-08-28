@@ -5,6 +5,7 @@ using IMS.Api.Common.Model.CommonModel;
 using IMS.Api.Common.Model.DataModel;
 using IMS.Api.Common.Model.Params;
 using IMS.Api.Common.Model.RequestModel;
+using IMS.Api.Common.Model.ResponseModel;
 using IMS.Api.Core.CoreService;
 using IMS.Api.Service.IRepository;
 using System.Net;
@@ -27,7 +28,7 @@ namespace IMS.Api.Core.ICoreService
             try
             {
 
-                List<Company> companies = _iRepository.Search(model, Constant.SpGetCompany).ToList();
+                List<CompanyResponseModel> companies = _iRepository.Search<CompanyResponseModel>(model, Constant.SpGetCompany).ToList();
                 if (companies.Count > 0)
                 {
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, companies);

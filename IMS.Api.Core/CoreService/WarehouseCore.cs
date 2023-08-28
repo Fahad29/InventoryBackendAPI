@@ -28,7 +28,7 @@ namespace IMS.Api.Core.CoreService
             try
             {
 
-                List<WareHouse> Warehouse = _iRepository.Search(model, Constant.SpGetWarehouse).ToList();
+                List<WareHouseSearchResponseModel> Warehouse = _iRepository.Search<WareHouseSearchResponseModel>(model, Constant.SpGetWarehouse).ToList();
                 if (Warehouse.Count > 0)
                 {
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, Warehouse);
@@ -36,7 +36,7 @@ namespace IMS.Api.Core.CoreService
                 }
                 else
                 {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, null);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
                 }
 
 
@@ -49,19 +49,19 @@ namespace IMS.Api.Core.CoreService
             }
         }
 
-        public async Task<APIResponse> GetById(int WareHouseId)
+        public async Task<APIResponse> GetById(int Id)
         {
             APIConfig.Log.Debug("CALLING API\" Warehouse GetById \"  STARTED");
             try
             {
-                CitySearchResponseModel user = _iRepository.Search<CitySearchResponseModel>(new { WareHouseId = WareHouseId }, Constant.SpGetWarehouse).FirstOrDefault();
-                if (user != null)
+                WareHouse wareHouse = _iRepository.Search(new { Id = Id }, Constant.SpGetWarehouseById).FirstOrDefault();
+                if (wareHouse != null)
                 {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, user);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, wareHouse);
                 }
                 else
                 {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, null);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
                 }
             }
             catch (Exception ex)
@@ -72,7 +72,30 @@ namespace IMS.Api.Core.CoreService
             }
         }
 
-        public async Task<APIResponse> Create(WareHouseRequestModel model, Params @params)
+        public async Task<APIResponse> TotalCount(int? CompanyId)
+        {
+            APIConfig.Log.Debug("CALLING API\" Warehouse TotalCount \"  STARTED");
+            try
+            {
+                int? TotalCount  = _iRepository.Search<int>(new { CompanyId = CompanyId }, Constant.SpGetWarehouseTotalCount).FirstOrDefault();
+                if (TotalCount > 0)
+                {
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, new {TotalCount = TotalCount});
+                }
+                else
+                {
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
+                }
+            }
+            catch (Exception ex)
+            {
+                APIConfig.Log.Debug("Exception: " + ex.Message);
+                _apiResponse.StatusCode = HttpStatusCode.BadRequest;
+                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
+            }
+        }
+
+        public async Task<APIResponse> Create(WareHouseCreateRequestModel model, Params @params)
         {
             APIConfig.Log.Debug("CALLING API\" Warehouse create \"  STARTED");
             try
@@ -90,7 +113,7 @@ namespace IMS.Api.Core.CoreService
             }
         }
 
-        public async Task<APIResponse> Update(WareHouseRequestModel model, Params @params)
+        public async Task<APIResponse> Update(WareHouseUpdateRequestModel model, Params @params)
         {
             try
             {
@@ -98,7 +121,7 @@ namespace IMS.Api.Core.CoreService
                 WareHouse wareHouse = model.MapTo<WareHouse>();
                 wareHouse.UpdatedBy = @params.UserId;
                 wareHouse = _iRepository.CreateSP<WareHouse>(wareHouse, Constant.SpUpdateWarehouse);
-                return _apiResponse.ReturnResponse(HttpStatusCode.OK, wareHouse);
+                return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.UpdateRecord);
 
             }
             catch (Exception ex)
@@ -133,13 +156,14 @@ namespace IMS.Api.Core.CoreService
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
         }
-        public async Task<APIResponse> DropDown()
+        
+        public async Task<APIResponse> DropDown(int? CompanyId)
         {
             APIConfig.Log.Debug("CALLING API\" Warehouse DropDown \"  STARTED");
             try
             {
 
-                List<DropdownResponse> dropDownList = _iRepository.Search<DropdownResponse>(null, Constant.SpGetWarehouse).ToList();
+                List<DropdownResponse> dropDownList = _iRepository.Search<DropdownResponse>(new {CompanyId = CompanyId}, Constant.SpGetWarehouse).ToList();
                 if (dropDownList.Count > 0)
                 {
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, dropDownList);

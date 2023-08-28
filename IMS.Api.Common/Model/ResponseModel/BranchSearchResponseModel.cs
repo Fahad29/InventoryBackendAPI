@@ -2,7 +2,7 @@
 
 namespace IMS.Api.Common.Model.ResponseModel
 {
-    public class BranchResponseModel : BranchRequestModel
+    public class BranchSearchResponseModel : BranchRequestModel
     {
         public string? CompanyName { get; set; }
         public string? CountryName { get; set; }

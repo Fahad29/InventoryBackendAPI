@@ -50,9 +50,26 @@ namespace IMS.Controllers
                 throw;
             }
         }
+       
+        [AllowAnonymous, HttpGet, Route("TotalCount")]
+        public async Task<IActionResult> TotalCount(int? CompanyId)
+        {
+            try
+            {
+                APIResponse response = await _warehouseCore.TotalCount(CompanyId);
+                if (response?.Response != null)
+                    return Ok(response);
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
 
         [AllowAnonymous, HttpPost, Route("Create")]
-        public async Task<IActionResult> Create(WareHouseRequestModel model)
+        public async Task<IActionResult> Create(WareHouseCreateRequestModel model)
         {
             try
             {
@@ -68,7 +85,7 @@ namespace IMS.Controllers
         }
 
         [AllowAnonymous, HttpPut, Route("Update")]
-        public async Task<IActionResult> Update(WareHouseRequestModel model)
+        public async Task<IActionResult> Update(WareHouseUpdateRequestModel model)
         {
             try
             {
@@ -100,11 +117,11 @@ namespace IMS.Controllers
         }
 
         [AllowAnonymous, HttpGet, Route("DropDown")]
-        public async Task<IActionResult> DropDown()
+        public async Task<IActionResult> DropDown(int? CompanyId)
         {
             try
             {
-                APIResponse response = await _warehouseCore.DropDown();
+                APIResponse response = await _warehouseCore.DropDown(CompanyId);
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();
