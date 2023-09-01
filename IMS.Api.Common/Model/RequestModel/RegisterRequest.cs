@@ -13,6 +13,7 @@ namespace IMS.Api.Common.Model
         [Required]
         public string PhoneNumber { get; set; }
         public string Password { get; set; }
+        public int UserRoleId { get; set; }
         [Required]
         public string CompanyName { get; set; }
 

@@ -8,6 +8,7 @@
         public string LastName { get; set; }
         public string PasswordHash { get; set; }
         public string Email { get; set; }
+        public int UserRoleId { get; set; }
         public string IsEmailVerified { get; set; }
         public string OTP { get; set; }
         public DateTime? OTPExpire { get; set; }

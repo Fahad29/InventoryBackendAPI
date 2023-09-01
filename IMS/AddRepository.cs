@@ -54,6 +54,15 @@ namespace IMS
             services.AddScoped<IRepository<Country>, GenericRepository<Country>>();
             services.AddScoped<ICountryCore, CountryCore>();
 
+            services.AddScoped<IRepository<PrivateLabel>, GenericRepository<PrivateLabel>>();
+            services.AddScoped<IPrivateLabelCore, PrivateLabelCore>();
+
+            services.AddScoped<IRepository<Deal>, GenericRepository<Deal>>();
+            services.AddScoped<IDealCore, DealCore>();
+
+            services.AddScoped<IRepository<Customer>, GenericRepository<Customer>>();
+            services.AddScoped<ICustomerCore, CustomerCore>();
+
             return services;
         }
     }

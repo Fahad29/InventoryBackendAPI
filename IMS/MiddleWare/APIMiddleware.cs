@@ -5,6 +5,7 @@ using IMS.Api.Common.Model.CommonModel;
 using IMS.Api.Core.ICoreService;
 using Microsoft.Extensions.Primitives;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json.Linq;
 using Serilog;
 using System.Diagnostics.CodeAnalysis;
 using System.IdentityModel.Tokens.Jwt;
@@ -184,12 +185,12 @@ namespace IMS.MiddleWare
 
             //...and copy it into a string
             string text = await new System.IO.StreamReader(response.Body).ReadToEndAsync();
-
+            string lowercaseText = ConvertPropertiesToLowercase(text);
             //We need to reset the reader for the response so that the client can read it.
             response.Body.Seek(0, System.IO.SeekOrigin.Begin);
-            Log.Information($"{response.StatusCode}: {text}");
+            Log.Information($"{response.StatusCode}: {lowercaseText}");
          
-            return text;
+            return lowercaseText;
         }
 
         public string ValidateJwtToken(string token, HttpContext httpcontext)
@@ -267,6 +268,41 @@ namespace IMS.MiddleWare
             await httpContext.Response.WriteAsync(e1.ToJson()).ConfigureAwait(false);
             return true;
         }
+        private string ConvertPropertiesToLowercase(string json)
+        {
+            var jToken = JToken.Parse(json);
+            ConvertJTokenPropertiesToLowercase(jToken);
+            return jToken.ToString();
+        }
+
+        private void ConvertJTokenPropertiesToLowercase(JToken jToken)
+        {
+            if (jToken.Type == JTokenType.Object)
+            {
+                var jObject = (JObject)jToken;
+                var properties = jObject.Properties().ToList();
+
+                foreach (var property in properties)
+                {
+                    property.Remove();
+                    jObject.Add(property.Name.ToLower(), property.Value);
+                }
+
+                foreach (var property in jObject.Properties())
+                {
+                    ConvertJTokenPropertiesToLowercase(property.Value);
+                }
+            }
+            else if (jToken.Type == JTokenType.Array)
+            {
+                var jArray = (JArray)jToken;
+                foreach (var item in jArray)
+                {
+                    ConvertJTokenPropertiesToLowercase(item);
+                }
+            }
+        }
+
     }
     public static class APIMiddleApp
     {

@@ -6,6 +6,10 @@
         #region Contant Variable
         public const bool True = true;
         public const bool False = false;
+        public const string FileTypeOfLogo = "Logo";
+        public const string PLSidebarLogoDirPath = "~/Content/Logos/SidebarLogo/";
+        public const string PLFavLogoDirPath = "~/Content/Logos/FavLogo/";
+        public const string PLLoginLogoDirPath = "~/Content/Logos/LoginLogo/";
         #endregion
         #region Response Message
         public const string SuccessResponse = "Success";
@@ -56,6 +60,7 @@
         public const string SpCreatePrivateLabel = "Usp_create_PrivateLabel";
         public const string SpUpdatePrivateLabel = "Usp_update_PrivateLabel";
         public const string SpGetPrivateLabel = "Usp_get_PrivateLabel";
+        public const string SpGetPrivateLabelById = "Usp_get_PrivateLabelById";
         public const string SpDeletePrivateLabel = "Usp_Delete_PrivateLabel";
         #endregion
 

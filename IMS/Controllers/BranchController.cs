@@ -2,6 +2,7 @@
 using IMS.Api.Common.Model.CommonModel;
 using IMS.Api.Common.Model.Params;
 using IMS.Api.Common.Model.RequestModel;
+using IMS.Api.Common.Model.RequestModel.SearchModel;
 using IMS.Api.Core.CoreService;
 using IMS.Api.Core.ICoreService;
 using Microsoft.AspNetCore.Authorization;
@@ -21,7 +22,7 @@ namespace IMS.Controllers
         }
 
         [AllowAnonymous, HttpPost, Route("Search")]
-        public async Task<IActionResult> Search(BaseFilter model)
+        public async Task<IActionResult> Search(BranchSearchRequestModel model)
         {
             try
             {
@@ -53,7 +54,7 @@ namespace IMS.Controllers
         }
 
         [AllowAnonymous, HttpPost, Route("Create")]
-        public async Task<IActionResult> Create(BranchRequestModel model)
+        public async Task<IActionResult> Create(BranchCreateRequestModel model)
         {
             try
             {
@@ -69,7 +70,7 @@ namespace IMS.Controllers
         }
 
         [AllowAnonymous, HttpPut, Route("Update")]
-        public async Task<IActionResult> Update(BranchRequestModel model)
+        public async Task<IActionResult> Update(BranchUpdateRequestModel model)
         {
             try
             {

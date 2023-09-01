@@ -2,6 +2,7 @@
 using IMS.Api.Common.Model.CommonModel;
 using IMS.Api.Common.Model.Params;
 using IMS.Api.Common.Model.RequestModel;
+using IMS.Api.Common.Model.RequestModel.SearchModel;
 using IMS.Api.Core.CoreService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,7 +21,7 @@ namespace IMS.Controllers
         }
 
         [AllowAnonymous, HttpPost, Route("Search")]
-        public async Task<IActionResult> Search(BaseFilter model)
+        public async Task<IActionResult> Search(PrivateLabelSearchRequestModel model)
         {
             try
             {
@@ -56,7 +57,7 @@ namespace IMS.Controllers
         {
             try
             {
-                APIResponse response = await _PrivateLabelCore.Create(PrivateLabelRequest, new Params() { ContentRootPath = AppConfig.ContentRootPath, UserId = User.GetUserId() });
+                APIResponse response = await _PrivateLabelCore.Create(PrivateLabelRequest, new Params() { ContentRootPath = APIConfig.ContentRootPath, UserId = User.GetUserId() });
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();
@@ -72,7 +73,7 @@ namespace IMS.Controllers
         {
             try
             {
-                APIResponse response = await _PrivateLabelCore.Update(PrivateLabelRequest, new Params() { ContentRootPath = AppConfig.ContentRootPath, UserId = User.GetUserId() });
+                APIResponse response = await _PrivateLabelCore.Update(PrivateLabelRequest, new Params() { ContentRootPath = APIConfig.ContentRootPath, UserId = User.GetUserId() });
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();

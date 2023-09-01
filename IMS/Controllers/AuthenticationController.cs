@@ -33,6 +33,7 @@ namespace IMS.Controllers
                 throw;
             }
         }
+       
         [AllowAnonymous, HttpPost, Route("Register")]
         public async Task<IActionResult> Register(RegisterRequest registerRequest)
         {
@@ -48,6 +49,7 @@ namespace IMS.Controllers
                 throw;
             }
         }
+       
         [AllowAnonymous, HttpGet, Route("ForgotPassword")]
         public async Task<IActionResult> ForgotPassword(string emailAddress)
         {

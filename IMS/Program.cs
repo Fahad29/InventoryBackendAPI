@@ -84,6 +84,8 @@ builder.Services.AddMvc()
      options.SerializerSettings.ContractResolver = new LowercaseContractResolver();
  });
 
+
+
 var app = builder.Build();
 
 app.UseCors("CorsPolicy");

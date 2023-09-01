@@ -2,7 +2,7 @@
 
 namespace IMS.Api.Common.Model.ResponseModel
 {
-    public class WareHouseSearchResponseModel :WareHouseCreateRequestModel
+    public class WareHouseSearchResponseModel :WareHouseUpdateRequestModel
     {
         public string? CompanyName { get; set; }
     }

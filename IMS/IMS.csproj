@@ -28,6 +28,9 @@
 
   <ItemGroup>
     <Folder Include="Content\EmailTemplates\" />
+    <Folder Include="Content\Logos\LoginLogo\" />
+    <Folder Include="Content\Logos\FavLogo\" />
+    <Folder Include="Content\Logos\SidebarLogo\" />
   </ItemGroup>
 
 </Project>

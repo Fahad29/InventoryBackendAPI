@@ -5,6 +5,7 @@ using IMS.Api.Common.Model.CommonModel;
 using IMS.Api.Common.Model.DataModel;
 using IMS.Api.Common.Model.Params;
 using IMS.Api.Common.Model.RequestModel;
+using IMS.Api.Common.Model.RequestModel.SearchModel;
 using IMS.Api.Common.Model.ResponseModel;
 using IMS.Api.Core.ICoreService;
 using IMS.Api.Service.IRepository;
@@ -16,13 +17,14 @@ namespace IMS.Api.Core.CoreService
     {
         IRepository<Branch> _iRepository;
         APIResponse _apiResponse;
+
         public BranchCore(IRepository<Branch> iRepository, APIResponse apiResponse)
         {
             _iRepository = iRepository;
             _apiResponse = apiResponse;
         }
 
-        public async Task<APIResponse> Create(BranchRequestModel model, Params @params)
+        public async Task<APIResponse> Create(BranchCreateRequestModel model, Params @params)
         {
             APIConfig.Log.Debug("CALLING API\" branches create \"  STARTED");
             try
@@ -39,7 +41,7 @@ namespace IMS.Api.Core.CoreService
             }
         }
 
-        public async Task<APIResponse> Update(BranchRequestModel model, Params @params)
+        public async Task<APIResponse> Update(BranchUpdateRequestModel model, Params @params)
         {
             try
             {
@@ -47,7 +49,7 @@ namespace IMS.Api.Core.CoreService
                 Branch branch = model.MapTo<Branch>();
                 branch.UpdatedBy = @params.UserId;
                 branch = _iRepository.CreateSP<Branch>(branch, Constant.SpUpdateBranch);
-                return _apiResponse.ReturnResponse(HttpStatusCode.OK, branch);
+                return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.UpdateRecord);
 
             }
             catch (Exception ex)
@@ -81,7 +83,8 @@ namespace IMS.Api.Core.CoreService
             }
 
         }
-        public async Task<APIResponse> Search(BaseFilter model)
+        
+        public async Task<APIResponse> Search(BranchSearchRequestModel model)
         {
             APIConfig.Log.Debug("CALLING API\" branches Get all \"  STARTED");
             try

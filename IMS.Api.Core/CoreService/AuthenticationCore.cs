@@ -13,6 +13,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Net.Mail;
 using System.Text;
+using static IMS.Api.Common.Enumerations.Eumeration;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace IMS.Api.Core.ICoreService
@@ -42,10 +43,11 @@ namespace IMS.Api.Core.ICoreService
                         if (user.IsActive)
                         {
                             loginResponseModel.Token = ExtensionMethod.GenerateJSONWebToken(user, expiry);
-                            loginResponseModel.UserId = Convert.ToInt32(user?.UserId);
+                            loginResponseModel.UserId = user?.UserId;
                             loginResponseModel.UserName = user?.FirstName + " " + user?.LastName;
                             loginResponseModel.Email = user?.Email;
-                            loginResponseModel.IsActive = Convert.ToBoolean(user?.IsActive);
+                            loginResponseModel.IsActive = user?.IsActive;
+                            loginResponseModel.UserRoleId = user?.UserRoleId;
                             _apiResponse.Response = loginResponseModel;
                         }
 
@@ -69,6 +71,7 @@ namespace IMS.Api.Core.ICoreService
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
         }
+
         public async Task<APIResponse> Register(RegisterRequest model)
         {
             APIConfig.Log.Debug("CALLING API\" user create \"  STARTED");
@@ -86,13 +89,14 @@ namespace IMS.Api.Core.ICoreService
                         user.FirstName = model?.FirstName;
                         user.LastName = model?.Lastname;
                         user.Email = model?.Email;
+                        user.UserRoleId = model?.UserRoleId != null ? model.UserRoleId : (int)UserRoleEnum.Company;
                         user.CompanyId = Convert.ToInt32(company?.CompanyId);
                         user.MobileNo = model?.PhoneNumber;
                         user.PasswordHash = model.Password != null ? model.Password.MD5Encrypt() : ExtensionMethod.GenPassword();
 
                         user = _iRepository.CreateSP<User>(user, Constant.SpCreateUser);
                     }
-                    return _apiResponse.ReturnResponse(HttpStatusCode.Created, company);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.Created, Constant.SuccessResponse);
                 }
                 else
                 {
@@ -244,35 +248,43 @@ namespace IMS.Api.Core.ICoreService
 
                 using (MailMessage mm = new MailMessage(Constant.CompanyEmail, emailAddress))
                 {
-                    mm.Subject = "OTP Verification Code";
+                    try
+                    {
+                        mm.Subject = "OTP Verification Code";
 
-                    string body = string.Empty;
-                    body = ExtensionMethod.CreateEmailBody(@params.ContentRootPath);
+                        string body = string.Empty;
+                        body = ExtensionMethod.CreateEmailBody(@params.ContentRootPath);
 
-                    body = body.Replace("{{phonenumber}}", Constant.ContactNumber);
-                    body = body.Replace("{{supportemail}}", Constant.supportemail);
-                    body = body.Replace("{{supporturl}}", Constant.supporturl);
-                    body = body.Replace("{{CompanyName}}", Constant.CompanyName);
-                    body = body.Replace("{{email}}", Constant.CompanyEmail);
-                    body = body.Replace("{{Weblink}}", Constant.WebLink);
-                    body = body.Replace("{{Websitelink}}", Constant.WebLink);
-                    body = body.Replace("{{Logo}}", Constant.LogoUrl);
-                    body = body.Replace("{{OTP}}", user?.OTP);
+                        body = body.Replace("{{phonenumber}}", Constant.ContactNumber);
+                        body = body.Replace("{{supportemail}}", Constant.supportemail);
+                        body = body.Replace("{{supporturl}}", Constant.supporturl);
+                        body = body.Replace("{{CompanyName}}", Constant.CompanyName);
+                        body = body.Replace("{{email}}", Constant.CompanyEmail);
+                        body = body.Replace("{{Weblink}}", Constant.WebLink);
+                        body = body.Replace("{{Websitelink}}", Constant.WebLink);
+                        body = body.Replace("{{Logo}}", Constant.LogoUrl);
+                        body = body.Replace("{{OTP}}", user?.OTP);
 
-                    mm.Body = body;
-                    mm.IsBodyHtml = true;
-                    SmtpClient smtp = new SmtpClient();
-                    smtp.Host = Constant.Host;
-                    smtp.EnableSsl = true;
+                        mm.Body = body;
+                        mm.IsBodyHtml = true;
+                        SmtpClient smtp = new SmtpClient();
+                        smtp.Host = Constant.Host;
+                        smtp.EnableSsl = true;
 
-                    NetworkCredential NetworkCred = new NetworkCredential(Constant.SMTPuser, Constant.SMTPpassword);
-                    smtp.UseDefaultCredentials = Convert.ToBoolean(Constant.EnableSSL);
-                    smtp.Credentials = NetworkCred;
-                    smtp.Port = int.Parse(Constant.Port);
-                    smtp.Send(mm);
+                        NetworkCredential NetworkCred = new NetworkCredential(Constant.SMTPuser, Constant.SMTPpassword);
+                        smtp.UseDefaultCredentials = Convert.ToBoolean(Constant.EnableSSL);
+                        smtp.Credentials = NetworkCred;
+                        smtp.Port = int.Parse(Constant.Port);
+                        smtp.Send(mm);
+                    }
+                    catch(Exception ex)
+                    {
+                        APIConfig.Log.Debug("Sending OTP Email Exception :"+ex.Message);
+                    }
 
                 }
-                return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.OTPSendResponse);
+                //return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.OTPSendResponse);
+                return _apiResponse.ReturnResponse(HttpStatusCode.OK, new {OTP = user.OTP,ExpiryTime = "1 Minute" });
             }
             else
             {
@@ -283,8 +295,8 @@ namespace IMS.Api.Core.ICoreService
 
         public APIResponse VerifyOTP(OTPVerificationRequestModel model)
         {
-            User user  = _iRepository.Search<User>(new { UserName = model.EmailAddress }, Constant.SpGetUser)?.FirstOrDefault();
-            if (user == null)
+            User user = _iRepository.Search<User>(new { UserName = model.EmailAddress }, Constant.SpGetUser)?.FirstOrDefault();
+            if (user != null)
             {
                 if(user?.OTPExpire?.AddMinutes(1) <= DateTime.UtcNow)
                 {

@@ -4,9 +4,11 @@
     {
         public enum UserRoleEnum
         {
-            Administrator = 1,
-            Company = 2,
-            Customer = 3
+            SuperAdmin = 1 ,
+            Administrator ,
+            Company ,
+            CompanyUser,
+            Customer 
         }
     }
 }
