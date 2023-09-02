@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace IMS.Api.Common.Model
+namespace IMS.Api.Common.Model.RequestModel
 {
-    public  class LoginRequest
+    public class LoginRequest
     {
         [Required]
         public string Username { get; set; }

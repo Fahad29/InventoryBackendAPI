@@ -1,6 +1,6 @@
-﻿using IMS.Api.Common.Model;
-using IMS.Api.Common.Model.Params;
+﻿using IMS.Api.Common.Model.Params;
 using IMS.Api.Common.Model.RequestModel;
+using IMS.Api.Common.Model.ResponseModel;
 
 namespace IMS.Api.Core.CoreService
 {

@@ -1,4 +1,4 @@
-﻿namespace IMS.Api.Common.Model
+﻿namespace IMS.Api.Common.Model.RequestModel
 {
     public class CompanyRequestModel
     {

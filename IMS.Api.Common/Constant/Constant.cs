@@ -62,6 +62,7 @@
         public const string SpGetPrivateLabel = "Usp_get_PrivateLabel";
         public const string SpGetPrivateLabelById = "Usp_get_PrivateLabelById";
         public const string SpDeletePrivateLabel = "Usp_Delete_PrivateLabel";
+        public const string SpGetPrivateLabelTotalCount = "Usp_Get_PrivateLabelTotalCount";
         #endregion
 
         #region Branch
@@ -100,8 +101,8 @@
         #endregion
 
         #region Deals
-        public const string SpGetDealById = "Usp_Get_CompanyDealById";
-        public const string SpGetDealTotalCount = "Usp_Get_CompanyDealTotalCount";
+        public const string SpGetDealById = "Usp_Get_DealById";
+        public const string SpGetDealTotalCount = "Usp_Get_DealTotalCount";
         public const string SpCreateDeal = "Usp_create_Deal";
         public const string SpUpdateDeal = "Usp_update_Deal";
         public const string SpGetDeal = "Usp_get_Deal";

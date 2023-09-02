@@ -1,11 +1,12 @@
 ﻿using IMS.Api.Common.Constant;
 using IMS.Api.Common.Extensions;
-using IMS.Api.Common.Model;
 using IMS.Api.Common.Model.CommonModel;
 using IMS.Api.Common.Model.DataModel;
 using IMS.Api.Common.Model.Params;
 using IMS.Api.Common.Model.RequestModel;
-using IMS.Api.Common.Model.RequestModel.SearchModel;
+using IMS.Api.Common.Model.RequestModel.Search;
+using IMS.Api.Common.Model.ResponseModel;
+using IMS.Api.Common.Model.ResponseModel.Search;
 using IMS.Api.Core.CoreService;
 using IMS.Api.Service.IRepository;
 using System.Net;
@@ -28,7 +29,7 @@ namespace IMS.Api.Core.ICoreService
             try
             {
 
-                List<PrivateLabel> privateLabel = _iRepository.Search(model, Constant.SpGetPrivateLabel).ToList();
+                List<PrivateLableSearchResponseModel> privateLabel = _iRepository.Search<PrivateLableSearchResponseModel>(model, Constant.SpGetPrivateLabel).ToList();
                 if (privateLabel.Count > 0)
                 {
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, privateLabel);
@@ -36,7 +37,7 @@ namespace IMS.Api.Core.ICoreService
                 }
                 else
                 {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, null);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
                 }
 
 
@@ -155,7 +156,7 @@ namespace IMS.Api.Core.ICoreService
                 privateLabel.CreatedBy = @params.UserId;
                 privateLabel = _iRepository.CreateSP<PrivateLabel>(privateLabel, Constant.SpCreatePrivateLabel);
 
-                return _apiResponse.ReturnResponse(HttpStatusCode.Created, privateLabel);
+                return _apiResponse.ReturnResponse(HttpStatusCode.Created, Constant.SuccessResponse);
 
             }
             catch (Exception ex)
@@ -249,7 +250,7 @@ namespace IMS.Api.Core.ICoreService
                 privateLabel.FromEmail = model?.FromEmail;
                 privateLabel.UpdatedBy = @params.UserId;
                 privateLabel = _iRepository.CreateSP<PrivateLabel>(privateLabel, Constant.SpUpdatePrivateLabel);
-                return _apiResponse.ReturnResponse(HttpStatusCode.OK, privateLabel);
+                return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.UpdateRecord);
 
             }
             catch (Exception ex)
@@ -290,6 +291,28 @@ namespace IMS.Api.Core.ICoreService
 
         }
 
+        public async Task<APIResponse> TotalCount(int? CompanyId)
+        {
+            APIConfig.Log.Debug("CALLING API\" PrivateLabel TotalCount \"  STARTED");
+            try
+            {
+                int? TotalCount = _iRepository.Search<int>(new { CompanyId = CompanyId }, Constant.SpGetPrivateLabelTotalCount).FirstOrDefault();
+                if (TotalCount > 0)
+                {
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, new { TotalCount = TotalCount });
+                }
+                else
+                {
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
+                }
+            }
+            catch (Exception ex)
+            {
+                APIConfig.Log.Debug("Exception: " + ex.Message);
+                _apiResponse.StatusCode = HttpStatusCode.BadRequest;
+                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
+            }
+        }
 
     }
 }

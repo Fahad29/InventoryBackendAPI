@@ -1,6 +1,6 @@
 ﻿using IMS.Api.Common.Model.CommonModel;
 
-namespace IMS.Api.Common.Model.RequestModel.SearchModel
+namespace IMS.Api.Common.Model.RequestModel.Search
 {
     public class BranchSearchRequestModel : BaseFilter
     {

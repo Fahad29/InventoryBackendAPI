@@ -1,5 +1,4 @@
 ﻿using IMS.Api.Common.Constant;
-using IMS.Api.Common.Model;
 using IMS.Api.Common.Model.CommonModel;
 using IMS.Api.Common.Model.DataModel;
 using IMS.Api.Common.Model.ResponseModel;
@@ -58,7 +57,7 @@ namespace IMS.Api.Core.CoreService
                 category.Name = Name;
                 category = _iRepository.CreateSP<Category>(category, Constant.SpCreateProductCategory);
 
-                return _apiResponse.ReturnResponse(HttpStatusCode.Created, category);
+                return _apiResponse.ReturnResponse(HttpStatusCode.Created, Constant.SuccessResponse);
 
             }
             catch (Exception ex)

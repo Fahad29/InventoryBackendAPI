@@ -1,9 +1,10 @@
-﻿using IMS.Api.Common.Model;
-using IMS.Api.Common.Model.CommonModel;
+﻿using IMS.Api.Common.Model.CommonModel;
 using IMS.Api.Common.Model.Params;
 using IMS.Api.Common.Model.RequestModel;
-using IMS.Api.Common.Model.RequestModel.SearchModel;
+using IMS.Api.Common.Model.RequestModel.Search;
+using IMS.Api.Common.Model.ResponseModel;
 using IMS.Api.Core.CoreService;
+using IMS.Api.Core.ICoreService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Oculus.Extensions;
@@ -90,6 +91,22 @@ namespace IMS.Controllers
             try
             {
                 APIResponse response = await _PrivateLabelCore.Delete(PrivateLabelId, new Params() { ContentRootPath = AppConfig.ContentRootPath, UserId = User.GetUserId() });
+                if (response?.Response != null)
+                    return Ok(response);
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        [AllowAnonymous, HttpGet, Route("TotalCount")]
+        public async Task<IActionResult> TotalCount(int? CompanyId)
+        {
+            try
+            {
+                APIResponse response = await _PrivateLabelCore.TotalCount(CompanyId);
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();

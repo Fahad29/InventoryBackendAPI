@@ -2,7 +2,7 @@
 using System.Net;
 using System.Text.Json.Serialization;
 
-namespace IMS.Api.Common.Model
+namespace IMS.Api.Common.Model.ResponseModel
 {
     public class APIResponse
     {
@@ -13,7 +13,7 @@ namespace IMS.Api.Common.Model
 
         public APIResponse ReturnResponse(HttpStatusCode StatusCode, object response)
         {
-            APIConfig.Log.Debug("CALLING API ENDED WITH RESPONSE",response);
+            APIConfig.Log.Debug("CALLING API ENDED WITH RESPONSE", response);
             switch (StatusCode)
             {
                 case HttpStatusCode.OK:
@@ -40,9 +40,9 @@ namespace IMS.Api.Common.Model
                 default:
                     StatusMessage = "Not Found"; break;
             }
-            this.StatusCode = (StatusCode);
-            this.Response = response;
-            this.StatusMessage = StatusMessage;
+            this.StatusCode = StatusCode;
+            Response = response;
+            StatusMessage = StatusMessage;
 
             return this;
         }

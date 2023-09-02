@@ -1,9 +1,9 @@
-﻿namespace IMS.Api.Common.Model.DataModel
+﻿namespace IMS.Api.Common.Model.ResponseModel.Search
 {
-    public class PrivateLabel : BaseModel
+    public class PrivateLableSearchResponseModel
     {
         public int Id { get; set; }
-        public int CompanyId { get; set; }
+        public string CompanyName { get; set; }
         public string CustomURL { get; set; }
         public string LoginLogo { get; set; }
         public string SidebarLogo { get; set; }
@@ -16,5 +16,6 @@
         public string HeaderTextColor { get; set; }
         public string FromEmail { get; set; }
         public string SupportURL { get; set; }
+
     }
 }

@@ -1,10 +1,12 @@
 ﻿using IMS.Api.Common.Constant;
 using IMS.Api.Common.Extensions;
-using IMS.Api.Common.Model;
 using IMS.Api.Common.Model.CommonModel;
 using IMS.Api.Common.Model.DataModel;
 using IMS.Api.Common.Model.Params;
 using IMS.Api.Common.Model.RequestModel;
+using IMS.Api.Common.Model.RequestModel.Search;
+using IMS.Api.Common.Model.ResponseModel;
+using IMS.Api.Common.Model.ResponseModel.Search;
 using IMS.Api.Core.CoreService;
 using IMS.Api.Service.IRepository;
 using System.Net;
@@ -22,13 +24,13 @@ namespace IMS.Api.Core.ICoreService
             _apiResponse = apiResponse;
         }
 
-        public async Task<APIResponse> Search(BaseFilter model)
+        public async Task<APIResponse> Search(DealSearchRequestModel model)
         {
             APIConfig.Log.Debug("CALLING API\" deal Get all \"  STARTED");
             try
             {
 
-                List<Deal> deal = _iRepository.Search(model, Constant.SpGetDeal).ToList();
+                List<DealSearchResponseModel> deal = _iRepository.Search<DealSearchResponseModel>(model, Constant.SpGetDeal).ToList();
                 if (deal.Count > 0)
                 {
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, deal);
@@ -54,7 +56,7 @@ namespace IMS.Api.Core.ICoreService
             APIConfig.Log.Debug("CALLING API\" deal GetById \"  STARTED");
             try
             {
-                Deal deal = _iRepository.Search(new { Id = DealId }, Constant.SpGetDeal).FirstOrDefault();
+                Deal deal = _iRepository.Search(new { Id = DealId }, Constant.SpGetDealById).FirstOrDefault();
                 if (deal != null)
                 {
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, deal);
@@ -72,16 +74,22 @@ namespace IMS.Api.Core.ICoreService
             }
         }
 
-        public async Task<APIResponse> Create(DealCreateRequestModel model, Params @params)
+        public async Task<APIResponse> Create(List<DealCreateRequestModel>  model, Params @params)
         {
             APIConfig.Log.Debug("CALLING API\" deal create \"  STARTED");
             try
             {
-                Deal deal = model.MapTo<Deal>();
-                deal.CreatedBy = @params.UserId;
-                deal = _iRepository.CreateSP<Deal>(deal, Constant.SpCreateDeal);
+                List<Deal> dealList = new List<Deal>();
+                foreach(var item in model)
+                {
+                    Deal deal =  item.MapTo<Deal>();
+                    deal.CreatedBy = @params.UserId;
+                    _iRepository.CreateSP(deal, Constant.SpCreateDeal);
+                    dealList.Add(deal);
+                }
+                //_iRepository.InsertInBulk<Deal>(dealList,"Deal",null);
 
-                return _apiResponse.ReturnResponse(HttpStatusCode.Created, deal);
+                return _apiResponse.ReturnResponse(HttpStatusCode.Created, Constant.SuccessResponse);
                 
             }
             catch (Exception ex)
@@ -100,8 +108,8 @@ namespace IMS.Api.Core.ICoreService
                 Deal deal = model.MapTo<Deal>();
                 deal.UpdatedBy = @params.UserId;
                 deal.UpdatedOn =DateTime.UtcNow;
-                deal = _iRepository.CreateSP<Deal>(deal, Constant.SpUpdateDeal);
-                return _apiResponse.ReturnResponse(HttpStatusCode.OK, deal);
+                _iRepository.CreateSP(deal, Constant.SpUpdateDeal);
+                return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.UpdateRecord);
 
             }
             catch (Exception ex)
@@ -140,6 +148,29 @@ namespace IMS.Api.Core.ICoreService
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
            
+        }
+
+        public async Task<APIResponse> TotalCount(int? CompanyId)
+        {
+            APIConfig.Log.Debug("CALLING API\" Deal TotalCount \"  STARTED");
+            try
+            {
+                int? TotalCount = _iRepository.Search<int>(new { CompanyId = CompanyId }, Constant.SpGetDealTotalCount).FirstOrDefault();
+                if (TotalCount > 0)
+                {
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, new { TotalCount = TotalCount });
+                }
+                else
+                {
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
+                }
+            }
+            catch (Exception ex)
+            {
+                APIConfig.Log.Debug("Exception: " + ex.Message);
+                _apiResponse.StatusCode = HttpStatusCode.BadRequest;
+                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
+            }
         }
 
 

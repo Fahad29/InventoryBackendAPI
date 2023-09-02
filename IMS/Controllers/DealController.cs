@@ -1,8 +1,10 @@
-﻿using IMS.Api.Common.Model;
-using IMS.Api.Common.Model.CommonModel;
+﻿using IMS.Api.Common.Model.CommonModel;
 using IMS.Api.Common.Model.Params;
 using IMS.Api.Common.Model.RequestModel;
+using IMS.Api.Common.Model.RequestModel.Search;
+using IMS.Api.Common.Model.ResponseModel;
 using IMS.Api.Core.CoreService;
+using IMS.Api.Core.ICoreService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Oculus.Extensions;
@@ -20,7 +22,7 @@ namespace IMS.Controllers
         }
 
         [AllowAnonymous, HttpPost, Route("Search")]
-        public async Task<IActionResult> Search(BaseFilter model)
+        public async Task<IActionResult> Search(DealSearchRequestModel model)
         {
             try
             {
@@ -52,11 +54,11 @@ namespace IMS.Controllers
         }
 
         [AllowAnonymous, HttpPost, Route("Create")]
-        public async Task<IActionResult> Create(DealCreateRequestModel dealRequest)
+        public async Task<IActionResult> Create(List<DealCreateRequestModel> dealRequestList)
         {
             try
             {
-                APIResponse response = await _dealCore.Create(dealRequest, new Params() { ContentRootPath = AppConfig.ContentRootPath, UserId = User.GetUserId() });
+                APIResponse response = await _dealCore.Create(dealRequestList, new Params() { ContentRootPath = AppConfig.ContentRootPath, UserId = User.GetUserId() });
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();
@@ -89,6 +91,23 @@ namespace IMS.Controllers
             try
             {
                 APIResponse response = await _dealCore.Delete(dealId, new Params() { ContentRootPath = AppConfig.ContentRootPath, UserId = User.GetUserId() });
+                if (response?.Response != null)
+                    return Ok(response);
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+
+        [AllowAnonymous, HttpGet, Route("TotalCount")]
+        public async Task<IActionResult> TotalCount(int? CompanyId)
+        {
+            try
+            {
+                APIResponse response = await _dealCore.TotalCount(CompanyId);
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();

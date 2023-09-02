@@ -1,7 +1,7 @@
 ﻿using IMS.Api.Common.Constant;
 using IMS.Api.Common.Extensions;
-using IMS.Api.Common.Model;
 using IMS.Api.Common.Model.CommonModel;
+using IMS.Api.Common.Model.ResponseModel;
 using IMS.Api.Core.ICoreService;
 using Microsoft.Extensions.Primitives;
 using Microsoft.IdentityModel.Tokens;
