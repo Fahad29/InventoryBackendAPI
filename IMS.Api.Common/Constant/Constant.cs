@@ -10,6 +10,7 @@
         public const string PLSidebarLogoDirPath = "~/Content/Logos/SidebarLogo/";
         public const string PLFavLogoDirPath = "~/Content/Logos/FavLogo/";
         public const string PLLoginLogoDirPath = "~/Content/Logos/LoginLogo/";
+        public const string OTPSubject = "OTP Verification Code";
         #endregion
         #region Response Message
         public const string SuccessResponse = "Success";
@@ -109,11 +110,13 @@
         public const string SpDeleteDeal = "Usp_Delete_Deal";
         #endregion
 
-        #region Detail
+        #region ProdcutDetail
         public const string SpCreateProductDetail = "Usp_create_productDetail";
         public const string SpUpdateProductDetail = "Usp_update_productDetail";
         public const string SpGetProductDetail = "Usp_Get_productDetail";
+        public const string SpGetProductDetailById = "Usp_Get_productDetailById";
         public const string SpDeleteProductDetail = "Usp_Delete_ProductDetail";
+        public const string SpProductDetailTotalCount = "Usp_Get_productDetailTotalCount";
         #endregion
 
         #region Category
@@ -184,6 +187,12 @@
 
         #region  Email Templates 
         public const string SendOTP = "\\Content\\EmailTemplates\\SendOTP.html";
+        #endregion
+
+
+        #region From Email
+        public const string FromEmail = "info@IMS.com";
+
         #endregion
     }
 }

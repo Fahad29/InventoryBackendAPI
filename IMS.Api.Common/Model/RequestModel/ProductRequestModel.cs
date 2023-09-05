@@ -2,10 +2,9 @@
 
 namespace IMS.Api.Common.Model.RequestModel
 {
-    public class ProductRequestModel
+    public class ProductCreateRequestModel
     {
-        [Key]
-        public int Id { get; set; }
+
         [Required]
         public int BrandId { get; set; }
         [Required]
@@ -15,4 +14,12 @@ namespace IMS.Api.Common.Model.RequestModel
         public string Name { get; set; }
         public string Description { get; set; }
     }
+
+    public class ProductUpdateRequestModel : ProductCreateRequestModel
+    {
+        [Key]
+        public int Id { get; set; }
+      
+    }
+
 }

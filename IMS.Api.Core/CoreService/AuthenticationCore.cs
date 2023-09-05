@@ -1,5 +1,6 @@
 ﻿using IMS.Api.Common.Constant;
 using IMS.Api.Common.Extensions;
+using IMS.Api.Common.Helper;
 using IMS.Api.Common.Model.CommonModel;
 using IMS.Api.Common.Model.DataModel;
 using IMS.Api.Common.Model.Params;
@@ -8,6 +9,7 @@ using IMS.Api.Common.Model.ResponseModel;
 using IMS.Api.Core.CoreService;
 using IMS.Api.Service.IRepository;
 using Microsoft.IdentityModel.Tokens;
+using SendGrid.Helpers.Mail.Model;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Net.Mail;
@@ -47,6 +49,7 @@ namespace IMS.Api.Core.ICoreService
                             loginResponseModel.Email = user?.Email;
                             loginResponseModel.IsActive = user?.IsActive;
                             loginResponseModel.UserRoleId = user?.UserRoleId;
+                            loginResponseModel.CompanyId = user?.CompanyId;
                             _apiResponse.Response = loginResponseModel;
                         }
 
@@ -235,61 +238,60 @@ namespace IMS.Api.Core.ICoreService
 
         public APIResponse GetOTP(string emailAddress, Params @params)
         {
-            User  user= _iRepository.Search<User>(new { UserName = emailAddress }, Constant.SpGetUser)?.FirstOrDefault();
-            if (user  != null && emailAddress != null)
+            string Htmlcontent = string.Empty;
+            User user = _iRepository.Search<User>(new { UserName = emailAddress }, Constant.SpGetUser)?.FirstOrDefault();
+            if (user != null && emailAddress != null)
             {
                 user.OTPExpire = DateTime.UtcNow;
                 user.OTP = ExtensionMethod.Generate5DigitOTP().ToString();
 
-                user =  _iRepository.Search<User>(user, Constant.SpUpdateUser)?.FirstOrDefault();
+                user = _iRepository.Search<User>(user, Constant.SpUpdateUser)?.FirstOrDefault();
 
+                Htmlcontent = ExtensionMethod.CreateEmailBody(@params.ContentRootPath.MapPath(Constant.SendOTP));
                 @params.ContentRootPath = @params.ContentRootPath.MapPath(Constant.SendOTP);
 
                 using (MailMessage mm = new MailMessage(Constant.CompanyEmail, emailAddress))
                 {
                     try
                     {
+                        SendEmailView emailmodel = new SendEmailView();
+
                         mm.Subject = "OTP Verification Code";
 
                         string body = string.Empty;
                         body = ExtensionMethod.CreateEmailBody(@params.ContentRootPath);
 
-                        body = body.Replace("{{phonenumber}}", Constant.ContactNumber);
-                        body = body.Replace("{{supportemail}}", Constant.supportemail);
-                        body = body.Replace("{{supporturl}}", Constant.supporturl);
-                        body = body.Replace("{{CompanyName}}", Constant.CompanyName);
-                        body = body.Replace("{{email}}", Constant.CompanyEmail);
-                        body = body.Replace("{{Weblink}}", Constant.WebLink);
-                        body = body.Replace("{{Websitelink}}", Constant.WebLink);
-                        body = body.Replace("{{Logo}}", Constant.LogoUrl);
-                        body = body.Replace("{{OTP}}", user?.OTP);
+                        Htmlcontent = Htmlcontent.Replace("{{phonenumber}}", Constant.ContactNumber);
+                        Htmlcontent = Htmlcontent.Replace("{{supportemail}}", Constant.supportemail);
+                        Htmlcontent = Htmlcontent.Replace("{{supporturl}}", Constant.supporturl);
+                        Htmlcontent = Htmlcontent.Replace("{{CompanyName}}", Constant.CompanyName);
+                        Htmlcontent = Htmlcontent.Replace("{{email}}", Constant.CompanyEmail);
+                        Htmlcontent = Htmlcontent.Replace("{{Weblink}}", Constant.WebLink);
+                        Htmlcontent = Htmlcontent.Replace("{{Websitelink}}", Constant.WebLink);
+                        Htmlcontent = Htmlcontent.Replace("{{Logo}}", Constant.LogoUrl);
+                        Htmlcontent = Htmlcontent.Replace("{{OTP}}", user?.OTP);
 
-                        mm.Body = body;
-                        mm.IsBodyHtml = true;
-                        SmtpClient smtp = new SmtpClient();
-                        smtp.Host = Constant.Host;
-                        smtp.EnableSsl = true;
-
-                        NetworkCredential NetworkCred = new NetworkCredential(Constant.SMTPuser, Constant.SMTPpassword);
-                        smtp.UseDefaultCredentials = Convert.ToBoolean(Constant.EnableSSL);
-                        smtp.Credentials = NetworkCred;
-                        smtp.Port = int.Parse(Constant.Port);
-                        smtp.Send(mm);
+                        EmailProvider.CreateEmail(Constant.FromEmail, new List<string>() { emailAddress })
+                        .CC()
+                        .BCC()
+                        .WithSubject(Constant.OTPSubject)
+                        .WithHtmlContent(Htmlcontent)
+                        .Send();
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
-                        APIConfig.Log.Debug("Sending OTP Email Exception :"+ex.Message);
+                        APIConfig.Log.Debug("Sending OTP Email Exception :" + ex.Message);
                     }
 
                 }
                 //return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.OTPSendResponse);
-                return _apiResponse.ReturnResponse(HttpStatusCode.OK, new {OTP = user.OTP,ExpiryTime = "1 Minute" });
+                return _apiResponse.ReturnResponse(HttpStatusCode.OK, new { OTP = user.OTP, ExpiryTime = "1 Minute" });
             }
             else
             {
                 return _apiResponse.ReturnResponse(HttpStatusCode.Unauthorized, Constant.UnAuthorized);
             }
-           
+
         }
 
         public APIResponse VerifyOTP(OTPVerificationRequestModel model)
@@ -297,9 +299,9 @@ namespace IMS.Api.Core.ICoreService
             User user = _iRepository.Search<User>(new { UserName = model.EmailAddress }, Constant.SpGetUser)?.FirstOrDefault();
             if (user != null)
             {
-                if(user?.OTPExpire?.AddMinutes(1) <= DateTime.UtcNow)
+                if (user?.OTPExpire?.AddMinutes(1) <= DateTime.UtcNow)
                 {
-                    if(user.OTP == model.OTP)
+                    if (user.OTP == model.OTP)
                     {
                         user.OTP = null;
                         user.OTPExpire = null;

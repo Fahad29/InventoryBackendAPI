@@ -3,7 +3,9 @@ using IMS.Api.Common.Extensions;
 using IMS.Api.Common.Model.CommonModel;
 using IMS.Api.Common.Model.DataModel;
 using IMS.Api.Common.Model.RequestModel;
+using IMS.Api.Common.Model.RequestModel.Search;
 using IMS.Api.Common.Model.ResponseModel;
+using IMS.Api.Common.Model.ResponseModel.Search;
 using IMS.Api.Core.ICoreService;
 using IMS.Api.Service.IRepository;
 using System.Net;
@@ -20,14 +22,14 @@ namespace IMS.Api.Core.CoreService
             _apiResponse = apiResponse;
         }
 
-        public async Task<APIResponse> Search(BaseFilter model)
+        public async Task<APIResponse> Search(ProductSearchRequestModel model)
         {
             APIConfig.Log.Debug("CALLING API\" Product search \"  STARTED");
             try
             {
-                List<ProductDetail> companies = _iRepository.Search(model, Constant.SpGetProductBrand).ToList();
-                if (companies.Count > 0)
-                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, companies);
+                List<ProductSearchResponseModel> productList = _iRepository.Search<ProductSearchResponseModel>(model, Constant.SpGetProductDetail).ToList();
+                if (productList.Count > 0)
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, productList);
                 else
                     return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
 
@@ -44,7 +46,7 @@ namespace IMS.Api.Core.CoreService
             APIConfig.Log.Debug("CALLING API\" Product GetById \"  STARTED");
             try
             {
-                ProductDetail? product = _iRepository.Search<ProductDetail>(new { Id = productId }, Constant.SpGetProductDetail).FirstOrDefault();
+                ProductDetail? product = _iRepository.Search<ProductDetail>(new { Id = productId }, Constant.SpGetProductDetailById).FirstOrDefault();
                 if (product != null)
                 {
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, product);
@@ -61,7 +63,7 @@ namespace IMS.Api.Core.CoreService
             }
         }
 
-        public async Task<APIResponse> Create(ProductRequestModel productRequest)
+        public async Task<APIResponse> Create(ProductCreateRequestModel productRequest)
         {
             APIConfig.Log.Debug("CALLING API\" ProductDetail create \"  STARTED");
             try
@@ -81,7 +83,7 @@ namespace IMS.Api.Core.CoreService
 
         }
 
-        public async Task<APIResponse> Update(ProductRequestModel productRequest)
+        public async Task<APIResponse> Update(ProductUpdateRequestModel productRequest)
         {
             try
             {
@@ -107,7 +109,7 @@ namespace IMS.Api.Core.CoreService
                 if (productId > 0)
                 {
 
-                    _iRepository.CreateSP<ProductDetail>(new { Id = productId}, Constant.SpDeleteProductBrand);
+                    _iRepository.CreateSP<ProductDetail>(new { Id = productId}, Constant.SpDeleteProductDetail);
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.DeleteRecord);
                 }
                 else
@@ -129,7 +131,7 @@ namespace IMS.Api.Core.CoreService
             APIConfig.Log.Debug("CALLING API\" Product Drop Down \"  STARTED");
             try
             {
-                List<DropdownResponse> dropDownList = _iRepository.Search<DropdownResponse>(null, Constant.SpGetProductBrand).ToList();
+                List<DropdownResponse> dropDownList = _iRepository.Search<DropdownResponse>(null, Constant.SpGetProductDetail).ToList();
                 if (dropDownList.Count > 0)
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, dropDownList);
                 else
@@ -139,6 +141,29 @@ namespace IMS.Api.Core.CoreService
             catch (Exception ex)
             {
                 APIConfig.Log.Debug("Exception: " + ex.Message);
+                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
+            }
+        }
+
+        public async Task<APIResponse> TotalCount(int? CompanyId)
+        {
+            APIConfig.Log.Debug("CALLING API\" Product TotalCount \"  STARTED");
+            try
+            {
+                int? TotalCount = _iRepository.Search<int>(new { CompanyId = CompanyId }, Constant.SpProductDetailTotalCount).FirstOrDefault();
+                if (TotalCount > 0)
+                {
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, new { TotalCount = TotalCount });
+                }
+                else
+                {
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
+                }
+            }
+            catch (Exception ex)
+            {
+                APIConfig.Log.Debug("Exception: " + ex.Message);
+                _apiResponse.StatusCode = HttpStatusCode.BadRequest;
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
         }

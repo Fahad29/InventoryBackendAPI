@@ -1,15 +1,18 @@
 ﻿using IMS.Api.Common.Constant;
 using IMS.Api.Common.Extensions;
+using IMS.Api.Common.Helper;
 using IMS.Api.Common.Model.CommonModel;
 using IMS.Api.Common.Model.ResponseModel;
 using IMS.Api.Core.ICoreService;
 using Microsoft.Extensions.Primitives;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Serilog;
 using System.Diagnostics.CodeAnalysis;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
+using System.Reflection.PortableExecutable;
 using System.Security.Claims;
 using System.Text;
 
@@ -127,7 +130,9 @@ namespace IMS.MiddleWare
                     httpContext.Response.Body = responseBody;
                     await next.Invoke(httpContext).ConfigureAwait(true);
                     response = await LogResponse(httpContext.Response, endpoint);
+                    
                     await responseBody.CopyToAsync(originalResponseBody);
+                    
 
                 }
 
@@ -177,7 +182,6 @@ namespace IMS.MiddleWare
             }
         }
 
-        [ExcludeFromCodeCoverage]
         private async Task<string> LogResponse(HttpResponse response, string endpoint)
         {
             //We need to read the response stream from the beginning...
@@ -185,12 +189,12 @@ namespace IMS.MiddleWare
 
             //...and copy it into a string
             string text = await new System.IO.StreamReader(response.Body).ReadToEndAsync();
-            string lowercaseText = ConvertPropertiesToLowercase(text);
+            text = text.ToLower();
             //We need to reset the reader for the response so that the client can read it.
             response.Body.Seek(0, System.IO.SeekOrigin.Begin);
-            Log.Information($"{response.StatusCode}: {lowercaseText}");
+            Log.Information($"{response.StatusCode}: {text}");
          
-            return lowercaseText;
+            return text;
         }
 
         public string ValidateJwtToken(string token, HttpContext httpcontext)
@@ -268,40 +272,8 @@ namespace IMS.MiddleWare
             await httpContext.Response.WriteAsync(e1.ToJson()).ConfigureAwait(false);
             return true;
         }
-        private string ConvertPropertiesToLowercase(string json)
-        {
-            var jToken = JToken.Parse(json);
-            ConvertJTokenPropertiesToLowercase(jToken);
-            return jToken.ToString();
-        }
+       
 
-        private void ConvertJTokenPropertiesToLowercase(JToken jToken)
-        {
-            if (jToken.Type == JTokenType.Object)
-            {
-                var jObject = (JObject)jToken;
-                var properties = jObject.Properties().ToList();
-
-                foreach (var property in properties)
-                {
-                    property.Remove();
-                    jObject.Add(property.Name.ToLower(), property.Value);
-                }
-
-                foreach (var property in jObject.Properties())
-                {
-                    ConvertJTokenPropertiesToLowercase(property.Value);
-                }
-            }
-            else if (jToken.Type == JTokenType.Array)
-            {
-                var jArray = (JArray)jToken;
-                foreach (var item in jArray)
-                {
-                    ConvertJTokenPropertiesToLowercase(item);
-                }
-            }
-        }
 
     }
     public static class APIMiddleApp
