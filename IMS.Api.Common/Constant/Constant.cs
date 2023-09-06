@@ -159,6 +159,18 @@
         public const string SpGetUserRole = "Usp_get_userrole";
         #endregion
 
+        #region Dropdown
+        public const string SpGetModules= "p_GetAll_Modules";
+        public const string SpGetDropdownbyModule= "p_GetDropdown_ByModuleId";
+
+
+        #endregion
+        public const string SpGetRoleRights = "GetAll_RoleRightsByRoleId";
+
+        #region AssignRights
+
+        #endregion
+
         #endregion
 
 
