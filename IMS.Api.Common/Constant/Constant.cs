@@ -161,11 +161,12 @@
 
         #region Dropdown
         public const string SpGetModules= "p_GetAll_Modules";
-        public const string SpGetDropdownbyModule= "p_GetDropdown_ByModuleId";
+        public const string SpGetDropdownbyModule= "p_GetAll_DropdownByModuleId";
 
 
         #endregion
         public const string SpGetRoleRights = "GetAll_RoleRightsByRoleId";
+        public const string SpInsertUpdateRoleRights = "usp_create_update_rolerights";
 
         #region AssignRights
 

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using IMS.Api.Core.CoreService;
+using IMS.Api.Common.Model.RequestModel;
 
 namespace IMS.Controllers
 {
@@ -24,6 +25,21 @@ namespace IMS.Controllers
             try
             {
                 APIResponse response = await _assignRightsCore.GetRoleRights(RoleID);
+                if (response?.Response != null)
+                    return Ok(response);
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+        [AllowAnonymous, HttpPost, Route("ManageRoleRights")]
+        public async Task<IActionResult> ManageRoleRights(RoleRightsRequest roleRights)
+        {
+            try
+            {
+                APIResponse response = await _assignRightsCore.ManageRoleRights(roleRights);
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();
