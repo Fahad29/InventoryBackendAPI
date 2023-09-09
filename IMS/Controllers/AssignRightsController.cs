@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using IMS.Api.Core.CoreService;
 using IMS.Api.Common.Model.RequestModel;
+using IMS.Api.Common.Model.DataModel;
 
 namespace IMS.Controllers
 {
@@ -40,6 +41,38 @@ namespace IMS.Controllers
             try
             {
                 APIResponse response = await _assignRightsCore.ManageRoleRights(roleRights);
+                if (response?.Response != null)
+                    return Ok(response);
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+        [AllowAnonymous, HttpGet, Route("GetUserRightsById")]
+        public async Task<IActionResult> GetUserRightsById(int UserId)
+        {
+            try
+            {
+                APIResponse response = await _assignRightsCore.GetUserRightsById(UserId);
+                if (response?.Response != null)
+                    return Ok(response);
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+        [AllowAnonymous, HttpPost, Route("ManageUserRights")]
+        public async Task<IActionResult> ManageUserRights(UserRightsRequest userRights)
+        {
+            try
+            {
+                userRights.CreatedUser = UserID;
+                userRights.CreatedOn = DateTime.UtcNow;
+                APIResponse response = await _assignRightsCore.ManageUserRights(userRights);
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();
