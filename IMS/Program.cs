@@ -55,6 +55,7 @@ var configuration = new ConfigurationBuilder()
        .Build();
 
 builder.Services.AddRepositories();
+// Register Exception Middleware
 
 builder.Services.AddApiVersioning(
            options =>
@@ -106,6 +107,7 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 
 app.MapControllers();
 
+
 var fileName = Environment.GetEnvironmentVariable("HOSTNAME") ?? "add-on" + "_";
 string f = Path.Combine(Environment.CurrentDirectory, $@"Content\Logs\log-{fileName}.txt");
 
@@ -121,8 +123,11 @@ Log.Logger = (Serilog.ILogger)new LoggerConfiguration()
 
 APIConfig.Log = Log.Logger;
 APIConfig.Configuration = configuration;
+//var logger = app.Services.GetRequiredService<ILoggerManager>();
 
 app.APIKeyBuilder();
+//app.ConfigureExceptionHandler(logger);
+//app.ConfigureCustomExceptionMiddleware();
 app.Run();
 
 

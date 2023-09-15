@@ -64,6 +64,8 @@ namespace IMS
             services.AddScoped<IRepository<Customer>, GenericRepository<Customer>>();
             services.AddScoped<ICustomerCore, CustomerCore>();
 
+           // services.AddSingleton<ILoggerManager, LoggerManager>();
+
             return services;
         }
     }

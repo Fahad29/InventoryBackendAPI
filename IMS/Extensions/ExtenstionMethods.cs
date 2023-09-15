@@ -2,7 +2,7 @@
 using System.Security.Claims;
 using static IMS.Api.Common.Enumerations.Eumeration;
 
-namespace Oculus.Extensions
+namespace IMS.Extensions
 {
     public static class ExtenstionMethods
     {
@@ -43,7 +43,7 @@ namespace Oculus.Extensions
             return (UserRoleEnum)int.Parse(principal.FindFirstValue(ClaimTypes.Role));
         }
 
-  
+
         public static string GetUserName(this ClaimsPrincipal principal)
         {
             return principal.FindFirstValue(ClaimTypes.Name);
@@ -52,17 +52,17 @@ namespace Oculus.Extensions
         {
             return principal.FindFirstValue(ClaimTypes.Email);
         }
-  
-        public static bool GetHeader(this HttpContext httpContext,string Key,out string Value)
+
+        public static bool GetHeader(this HttpContext httpContext, string Key, out string Value)
         {
             StringValues sv;
             bool b = httpContext.Request.Headers.TryGetValue(Key, out sv);
             Value = sv;
-            return b; 
+            return b;
         }
 
     }
 
 
-    
+
 }
