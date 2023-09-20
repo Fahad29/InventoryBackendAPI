@@ -1,12 +1,8 @@
-﻿using IMS.Api.Common.Model.RequestModel.SearchModel;
-using IMS.Api.Common.Model;
+﻿using IMS.Api.Common.Model.RequestModel;
+using IMS.Api.Common.Model.ResponseModel;
 using IMS.Api.Core.ICoreService;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using IMS.Api.Core.CoreService;
-using IMS.Api.Common.Model.RequestModel;
-using IMS.Api.Common.Model.DataModel;
 
 namespace IMS.Controllers
 {

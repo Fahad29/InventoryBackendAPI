@@ -1,4 +1,5 @@
 ﻿using IMS.Api.Common.Model;
+using IMS.Api.Common.Model.ResponseModel;
 using IMS.Api.Core.ICoreService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

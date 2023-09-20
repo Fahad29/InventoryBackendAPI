@@ -154,6 +154,7 @@ namespace IMS.Api.Core.ICoreService
                 privateLabel.SupportURL = model?.SupportURL;
                 privateLabel.FromEmail = model?.FromEmail;
                 privateLabel.CreatedBy = @params.UserId;
+                privateLabel.CompanyId = Convert.ToInt32(model?.CompanyId);
                 privateLabel = _iRepository.CreateSP<PrivateLabel>(privateLabel, Constant.SpCreatePrivateLabel);
 
                 return _apiResponse.ReturnResponse(HttpStatusCode.Created, Constant.SuccessResponse);
@@ -249,6 +250,7 @@ namespace IMS.Api.Core.ICoreService
                 privateLabel.SupportURL = model?.SupportURL;
                 privateLabel.FromEmail = model?.FromEmail;
                 privateLabel.UpdatedBy = @params.UserId;
+                privateLabel.CompanyId = Convert.ToInt32(model?.CompanyId);
                 privateLabel = _iRepository.CreateSP<PrivateLabel>(privateLabel, Constant.SpUpdatePrivateLabel);
                 return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.UpdateRecord);
 
