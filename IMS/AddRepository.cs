@@ -1,11 +1,11 @@
 ﻿using IMS.Api.Common.Model.DataModel;
+using IMS.Api.Common.Model;
 using IMS.Api.Service.IRepository;
 using IMS.Api.Service.Repository;
 using System.Security.Claims;
 using IMS.Api.Core.CoreService;
 using IMS.Api.Core.ICoreService;
 using IMS.Api.Common.Model.ResponseModel;
-using IMS.Api.Common.Model.RequestModel;
 
 namespace IMS
 {
@@ -64,8 +64,11 @@ namespace IMS
             services.AddScoped<IRepository<Customer>, GenericRepository<Customer>>();
             services.AddScoped<ICustomerCore, CustomerCore>();
 
-           // services.AddSingleton<ILoggerManager, LoggerManager>();
+            services.AddScoped<IRepository<DropdownResponse>, GenericRepository<DropdownResponse>>();
+            services.AddScoped<IDropdownCore, DropdownCore>();
 
+            services.AddScoped<IRepository<RoleRightsResponse>, GenericRepository<RoleRightsResponse>>();
+            services.AddScoped<IAssignRightsCore, AssignRightsCore>();
             return services;
         }
     }
