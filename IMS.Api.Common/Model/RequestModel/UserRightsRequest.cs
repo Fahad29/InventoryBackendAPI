@@ -9,6 +9,7 @@ namespace IMS.Api.Common.Model.RequestModel
         [Required]
         public int ModuleId { get; set; }
         [Required]
+        public string ModuleName { get; set; }
         public int RoleId { get; set; }
         public bool AllowView { get; set; }
         public bool AllowCreate { get; set; }

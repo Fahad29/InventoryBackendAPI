@@ -114,7 +114,7 @@ namespace IMS.Api.Service.Repository
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
-               conn.Query(storedProcName, model, commandType: CommandType.StoredProcedure).FirstOrDefault();
+                conn.Query(storedProcName, model, commandType: CommandType.StoredProcedure).FirstOrDefault();
             }
         }
 
@@ -213,5 +213,22 @@ namespace IMS.Api.Service.Repository
         #endregion
 
 
+        public bool Delete(object model, string procName)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(_connectionString))
+                {
+                    conn.Open();
+                    conn.Query(procName, model, commandType: CommandType.StoredProcedure);
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+        }
     }
 }

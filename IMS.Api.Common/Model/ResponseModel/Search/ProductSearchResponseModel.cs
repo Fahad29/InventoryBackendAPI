@@ -1,4 +1,4 @@
-﻿namespace IMS.Api.Common.Model.ResponseModel.Search
+﻿namespace IMS.Api.Common.Model.ResponseModel
 {
     public class ProductSearchResponseModel 
     {

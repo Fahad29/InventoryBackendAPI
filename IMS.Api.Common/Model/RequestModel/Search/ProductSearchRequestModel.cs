@@ -1,6 +1,6 @@
 ﻿using IMS.Api.Common.Model.CommonModel;
 
-namespace IMS.Api.Common.Model.RequestModel.Search
+namespace IMS.Api.Common.Model.RequestModel
 {
     public class ProductSearchRequestModel : BaseFilter
     {

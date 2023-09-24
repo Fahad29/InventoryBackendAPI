@@ -4,6 +4,7 @@ using IMS.Api.Common.Model.CommonModel;
 using IMS.MiddleWare;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json.Serialization;
 using Serilog;
 using Serilog.Events;
 
@@ -12,7 +13,17 @@ using Serilog.Events;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddNewtonsoftJson(
+    x =>
+    {
+        x.SerializerSettings.ContractResolver = new DefaultContractResolver
+        {
+            NamingStrategy = new SnakeCaseNamingStrategy()
+            {
+                ProcessDictionaryKeys = true
+            }
+        };
+    });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {

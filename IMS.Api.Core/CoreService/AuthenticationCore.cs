@@ -3,19 +3,16 @@ using IMS.Api.Common.Extensions;
 using IMS.Api.Common.Helper;
 using IMS.Api.Common.Model.CommonModel;
 using IMS.Api.Common.Model.DataModel;
-using IMS.Api.Common.Model.Params;
 using IMS.Api.Common.Model.RequestModel;
 using IMS.Api.Common.Model.ResponseModel;
 using IMS.Api.Core.CoreService;
 using IMS.Api.Service.IRepository;
 using Microsoft.IdentityModel.Tokens;
-using SendGrid.Helpers.Mail.Model;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Net.Mail;
 using System.Text;
 using static IMS.Api.Common.Enumerations.Eumeration;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace IMS.Api.Core.ICoreService
 {
@@ -84,6 +81,8 @@ namespace IMS.Api.Core.ICoreService
                 {
                     Company company = new Company();
                     company.CompanyName = model.CompanyName;
+                    company.IsActive = true;
+                    company.IsDeleted = false;
                     company = _iRepository.CreateSP<Company>(company, Constant.SpCreateCompany);
                     if (company?.CompanyId != null && company?.CompanyId > 0)
                     {
@@ -91,7 +90,7 @@ namespace IMS.Api.Core.ICoreService
                         user.FirstName = model?.FirstName;
                         user.LastName = model?.Lastname;
                         user.Email = model?.Email;
-                        user.UserRoleId = model?.UserRoleId != null ? model.UserRoleId : (int)UserRoleEnum.Company;
+                        user.UserRoleId = (int)UserRoleEnum.Company;
                         user.CompanyId = Convert.ToInt32(company?.CompanyId);
                         user.MobileNo = model?.PhoneNumber;
                         user.PasswordHash = model.Password != null ? model.Password.MD5Encrypt() : ExtensionMethod.GenPassword();
@@ -102,7 +101,7 @@ namespace IMS.Api.Core.ICoreService
                 }
                 else
                 {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, "Company Already Exist!");
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, "Company Already Exist!");
                 }
 
             }

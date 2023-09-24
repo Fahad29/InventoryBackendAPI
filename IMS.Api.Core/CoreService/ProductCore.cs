@@ -1,12 +1,10 @@
 ﻿using IMS.Api.Common.Constant;
+using IMS.Api.Common.Enumerations;
 using IMS.Api.Common.Extensions;
 using IMS.Api.Common.Model.CommonModel;
 using IMS.Api.Common.Model.DataModel;
-using IMS.Api.Common.Model.Params;
 using IMS.Api.Common.Model.RequestModel;
-using IMS.Api.Common.Model.RequestModel.Search;
 using IMS.Api.Common.Model.ResponseModel;
-using IMS.Api.Common.Model.ResponseModel.Search;
 using IMS.Api.Core.ICoreService;
 using IMS.Api.Service.IRepository;
 using System.Net;
@@ -16,11 +14,13 @@ namespace IMS.Api.Core.CoreService
     public class ProductCore : IProductCore
     {
         IRepository<ProductDetail> _iRepository;
+        IAttachmentCore _attachmentCore;
         APIResponse _apiResponse;
-        public ProductCore(IRepository<ProductDetail> iRepository, APIResponse apiResponse)
+        public ProductCore(IRepository<ProductDetail> iRepository, APIResponse apiResponse, IAttachmentCore attachmentCore)
         {
             _iRepository = iRepository;
             _apiResponse = apiResponse;
+            _attachmentCore = attachmentCore;
         }
 
         public async Task<APIResponse> Search(ProductSearchRequestModel model)
@@ -32,7 +32,7 @@ namespace IMS.Api.Core.CoreService
                 if (productList.Count > 0)
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, productList);
                 else
-                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.RecordNotFound);
 
             }
             catch (Exception ex)
@@ -42,15 +42,18 @@ namespace IMS.Api.Core.CoreService
             }
         }
 
-        public async Task<APIResponse> GetById(int productId)
+        public async Task<APIResponse> GetById(long productId)
         {
             APIConfig.Log.Debug("CALLING API\" Product GetById \"  STARTED");
             try
             {
-                ProductDetail? product = _iRepository.Search<ProductDetail>(new { Id = productId }, Constant.SpGetProductDetailById).FirstOrDefault();
+                ProductResponseModel? product = _iRepository.Search<ProductResponseModel>(new { Id = productId }, Constant.SpGetProductDetail).FirstOrDefault();
+
                 if (product != null)
                 {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, product);
+                    List<AttachmentResponse> result = await _attachmentCore.GetAttachments((int)AttachmentTypeEnum.ProductImages, product.Id);
+                    product.attachments = result;
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, product);
                 }
                 else
                 {
@@ -64,19 +67,18 @@ namespace IMS.Api.Core.CoreService
             }
         }
 
-        public async Task<APIResponse> Create(ProductCreateRequestModel productRequest)
+        public async Task<APIResponse> Create(ProductRequestModel productRequest,long UserId,long CompanyId)
         {
             APIConfig.Log.Debug("CALLING API\" ProductDetail create \"  STARTED");
             try
             {
                 ProductDetail product = productRequest.MapTo<ProductDetail>();
+                product.CreatedBy = (int)UserId;
+                product.CreatedOn = DateTime.Now;
                 product = _iRepository.CreateSP<ProductDetail>(product, Constant.SpCreateProductDetail);
-                if(productRequest?.CompanyId != null && productRequest.CompanyId > 0)
+                if (product != null && productRequest.Attachments != null && productRequest.Attachments.Count > 0)
                 {
-                    CompanyProduct companyProduct = new CompanyProduct();
-                    companyProduct.CompanyId = productRequest.CompanyId;
-                    companyProduct.ProductId = product.Id;
-                    _iRepository.CreateSP<ProductDetail>(companyProduct, Constant.SpCreateCompanyProduct);
+                    _attachmentCore.UploadImages(productRequest.Attachments, UserId, product.Id, (int)AttachmentTypeEnum.ProductImages);
                 }
 
                 return _apiResponse.ReturnResponse(HttpStatusCode.Created, product);
@@ -96,6 +98,7 @@ namespace IMS.Api.Core.CoreService
             {
                 APIConfig.Log.Debug("CALLING API\" ProductDetail update \"  STARTED");
                 ProductDetail product = productRequest.MapTo<ProductDetail>();
+                //product.UpdatedBy = (int)UserId;
                 product = _iRepository.CreateSP<ProductDetail>(product, Constant.SpUpdateProductDetail);
                 return _apiResponse.ReturnResponse(HttpStatusCode.OK, product);
 
@@ -107,7 +110,7 @@ namespace IMS.Api.Core.CoreService
             }
         }
 
-        public async Task<APIResponse> Delete(int productId)
+        public async Task<APIResponse> Delete(long productId, long UserId)
         {
             APIConfig.Log.Debug("CALLING API\" ProductDetail delete \"  STARTED");
             try
@@ -115,21 +118,25 @@ namespace IMS.Api.Core.CoreService
                 if (productId > 0)
                 {
 
-                    _iRepository.CreateSP<ProductDetail>(new { Id = productId}, Constant.SpDeleteProductDetail);
-                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.DeleteRecord);
+                    bool isDeleted = _iRepository.Delete(new { Id = productId }, Constant.SpDeleteProductBrand);
+                    if (isDeleted)
+                    {
+                        await _attachmentCore.DeleteAttachments((int)AttachmentTypeEnum.ProductImages, productId, UserId);
+                        return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.DeleteRecord);
+                    }
+                    else
+                        return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.RecordNotFound);
                 }
                 else
                 {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, null);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, Constant.InvalidRequest);
                 }
-
             }
             catch (Exception ex)
             {
                 APIConfig.Log.Debug("Exception: " + ex.Message);
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
-
         }
 
         public async Task<APIResponse> TotalCount(ProductSearchRequestModel model)

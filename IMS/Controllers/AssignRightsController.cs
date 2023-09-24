@@ -46,6 +46,8 @@ namespace IMS.Controllers
                 throw;
             }
         }
+
+
         [AllowAnonymous, HttpGet, Route("GetUserRightsById")]
         public async Task<IActionResult> GetUserRightsById(int UserId)
         {
@@ -61,6 +63,8 @@ namespace IMS.Controllers
                 throw;
             }
         }
+
+
         [AllowAnonymous, HttpPost, Route("ManageUserRights")]
         public async Task<IActionResult> ManageUserRights(UserRightsRequest userRights)
         {

@@ -6,7 +6,9 @@
         #region Contant Variable
         public const bool True = true;
         public const bool False = false;
+        public const string RootPath = "Content/";
         public const string FileTypeOfLogo = "Logo";
+
         public const string PLSidebarLogoDirPath = "~/Content/Logos/SidebarLogo/";
         public const string PLFavLogoDirPath = "~/Content/Logos/FavLogo/";
         public const string PLLoginLogoDirPath = "~/Content/Logos/LoginLogo/";
@@ -24,12 +26,13 @@
         public const string OTPVerified = "OTP Verified";
 
         public const string RecordNotFound = "Record Not Found";
+        public const string InvalidRequest = "Invalid Request";
 
         public const string TokenExpireMsgs = "the token is expired.";
         public const string TokenInvalidMsg = "the token is invalid.";
         public const string TokenRequired = "Token Required";
         public const string TokenExpireMsg = "Token Expired";
-        
+
         public const string InvalidUser = "Invalid Email and Password";
         public const string NotActive = "User Not Active";
         #endregion
@@ -47,7 +50,7 @@
         public const string SpCreateCompany = "Usp_create_company";
         public const string SpUpdateCompany = "Usp_update_company";
         public const string SpGetCompany = "Usp_get_company";
-        public const string SpDeleteCompany= "Usp_Delete_Company";
+        public const string SpDeleteCompany = "Usp_Delete_Company";
         #endregion
 
         #region Customer
@@ -173,8 +176,8 @@
         #endregion
 
         #region Dropdown
-        public const string SpGetModules= "p_GetAll_Modules";
-        public const string SpGetDropdownbyModule= "p_GetAll_DropdownByModuleId";
+        public const string SpGetModules = "p_GetAll_Modules";
+        public const string SpGetDropdownbyModule = "p_GetAll_DropdownByModuleId";
 
 
         #endregion
@@ -187,8 +190,17 @@
         public const string SpInsertUpdateUserRights = "usp_create_update_Userrights";
         #endregion
 
+        #region Attachments
+        public const string SpGetAttachmentTypes = "GetAll_AttachmentType";
+        public const string SpGetAttachmentById = "GetAll_AttachmentById";
+        public const string SpGetAttachments = "GetAll_Attachments";
+        public const string SpGetAddAttachments = "usp_create_update_attachments";
+        public const string SpDeleteAttachmentById = "Delete_AttachmentById";
+        public const string SpDeleteAttachments = "Delete_Attachments";
+
         #endregion
 
+        #endregion
 
         #region Email Constant
 
@@ -199,7 +211,7 @@
         public const string CompanyEmail = "zakhaer2022@gmail.com";
         public const string CompanyName = "IMS";
         public const string Port = "587";
-        public const bool   EnableSSL = true;
+        public const bool EnableSSL = true;
         public const string SMTPuser = "zakhaer2022@gmail.com";
         public const string SMTPpassword = "zxdmxfzvarsvaycd";
         public const string Host = "smtp.gmail.com";

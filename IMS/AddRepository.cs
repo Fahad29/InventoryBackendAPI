@@ -73,6 +73,9 @@ namespace IMS
 
             services.AddScoped<IRepository<CompanyProduct>, GenericRepository<CompanyProduct>>();
             services.AddScoped<ICompanyProductCore, CompanyProductCore>();
+
+            services.AddScoped<IRepository<Attachment>, GenericRepository<Attachment>>();
+            services.AddScoped<IAttachmentCore, AttachmentCore>();
             return services;
         }
     }

@@ -11,6 +11,7 @@
         Model CreateSP<Model>(object model, string storedProcName);
         void CreateSP(object model, string storedProcName);
         void InsertInBulk<Model>(List<Model> listModel, string tableName, int? commandTimeout);
-        
+        bool Delete(object model, string storedProcName);
+
     }
 }
