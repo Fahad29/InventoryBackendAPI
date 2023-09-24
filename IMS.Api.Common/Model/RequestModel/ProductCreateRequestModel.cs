@@ -9,6 +9,7 @@ namespace IMS.Api.Common.Model.RequestModel
         public int BrandId { get; set; }
         [Required]
         public int CategoryId { get; set; }
+        public int CompanyId { get; set; }
         [Required]
         public int ItemQuantityId { get; set; }
         public string Name { get; set; }

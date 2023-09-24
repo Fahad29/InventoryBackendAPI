@@ -70,6 +70,9 @@ namespace IMS
 
             services.AddScoped<IRepository<RoleRightsResponse>, GenericRepository<RoleRightsResponse>>();
             services.AddScoped<IAssignRightsCore, AssignRightsCore>();
+
+            services.AddScoped<IRepository<CompanyProduct>, GenericRepository<CompanyProduct>>();
+            services.AddScoped<ICompanyProductCore, CompanyProductCore>();
             return services;
         }
     }

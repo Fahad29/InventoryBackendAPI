@@ -9,7 +9,7 @@ namespace IMS.Api.Core.CoreService
         Task<APIResponse> Login(LoginRequest  loginRequest);
         Task<APIResponse> Register(RegisterRequest  registerRequest);
         Task<APIResponse> ForgotPassword(string emailAddress);
-        APIResponse GetOTP(string emailAddress, Params @params);
+        APIResponse GetOTP(string emailAddress);
         APIResponse VerifyOTP(OTPVerificationRequestModel model);
     }
 }

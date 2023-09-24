@@ -24,13 +24,12 @@ namespace IMS.Api.Core.CoreService
             _apiResponse = apiResponse;
         }
 
-        public async Task<APIResponse> Create(BranchCreateRequestModel model, Params @params)
+        public async Task<APIResponse> Create(BranchCreateRequestModel model)
         {
             APIConfig.Log.Debug("CALLING API\" branches create \"  STARTED");
             try
             {
                 Branch branch = model.MapTo<Branch>();
-                branch.CreatedBy = @params.UserId;
                 branch = _iRepository.CreateSP<Branch>(branch, Constant.SpCreateBranch);
                 return _apiResponse.ReturnResponse(HttpStatusCode.Created, branch);
             }
@@ -41,13 +40,12 @@ namespace IMS.Api.Core.CoreService
             }
         }
 
-        public async Task<APIResponse> Update(BranchUpdateRequestModel model, Params @params)
+        public async Task<APIResponse> Update(BranchUpdateRequestModel model)
         {
             try
             {
                 APIConfig.Log.Debug("CALLING API\" branches update \"  STARTED");
                 Branch branch = model.MapTo<Branch>();
-                branch.UpdatedBy = @params.UserId;
                 branch = _iRepository.CreateSP<Branch>(branch, Constant.SpUpdateBranch);
                 return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.UpdateRecord);
 
@@ -59,7 +57,7 @@ namespace IMS.Api.Core.CoreService
             }
         }
 
-        public async Task<APIResponse> Delete(int BranchId, Params @params)
+        public async Task<APIResponse> Delete(int BranchId)
         {
             APIConfig.Log.Debug("CALLING API\" branches delete \"  STARTED");
             try
@@ -67,7 +65,7 @@ namespace IMS.Api.Core.CoreService
                 if (BranchId > 0)
                 {
 
-                    _iRepository.CreateSP<Company>(new { Id = BranchId, UpdatedBy = @params.UserId }, Constant.SpDeleteCompanyBranch);
+                    _iRepository.CreateSP<Company>(new { Id = BranchId }, Constant.SpDeleteCompanyBranch);
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.DeleteRecord);
                 }
                 else
@@ -132,12 +130,12 @@ namespace IMS.Api.Core.CoreService
             }
         }
 
-        public async Task<APIResponse> TotalCount(int? CompanyId)
+        public async Task<APIResponse> TotalCount(BranchSearchRequestModel model)
         {
             APIConfig.Log.Debug("CALLING API\" Branch TotalCount \"  STARTED");
             try
             {
-                int? TotalCount = _iRepository.Search<int>(new { CompanyId = CompanyId }, Constant.SpGetBranchTotalCount).FirstOrDefault();
+                int? TotalCount = _iRepository.Search<int>(model, Constant.SpGetBranchTotalCount).FirstOrDefault();
                 if (TotalCount > 0)
                 {
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, new { TotalCount = TotalCount });
@@ -155,32 +153,6 @@ namespace IMS.Api.Core.CoreService
             }
         }
 
-        public async Task<APIResponse> DropDown(int? CompanyId)
-        {
-            APIConfig.Log.Debug("CALLING API\" Branch DropDown \"  STARTED");
-            try
-            {
-
-                List<DropdownResponse> dropDownList = _iRepository.Search<DropdownResponse>(new { CompanyId = CompanyId }, Constant.SpGetBranch).ToList();
-                if (dropDownList.Count > 0)
-                {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, dropDownList);
-
-                }
-                else
-                {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
-                }
-
-
-            }
-            catch (Exception ex)
-            {
-                APIConfig.Log.Debug("Exception: " + ex.Message);
-                _apiResponse.StatusCode = HttpStatusCode.BadRequest;
-                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
-            }
-        }
 
 
     }

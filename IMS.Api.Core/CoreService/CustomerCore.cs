@@ -71,13 +71,12 @@ namespace IMS.Api.Core.ICoreService
             }
         }
 
-        public async Task<APIResponse> Create(CustomerCreateRequestModel model, Params @params)
+        public async Task<APIResponse> Create(CustomerCreateRequestModel model)
         {
             APIConfig.Log.Debug("CALLING API\" customer create \"  STARTED");
             try
             {
                 Customer customer = model.MapTo<Customer>();
-                customer.CreatedBy = @params.UserId;
                 customer = _iRepository.CreateSP<Customer>(customer, Constant.SpCreateCustomer);
 
                 return _apiResponse.ReturnResponse(HttpStatusCode.Created, customer);
@@ -91,14 +90,12 @@ namespace IMS.Api.Core.ICoreService
      
         }
 
-        public async Task<APIResponse> Update(CustomerUpdateRequestModel model, Params @params)
+        public async Task<APIResponse> Update(CustomerUpdateRequestModel model)
         {
             try
             {
                 APIConfig.Log.Debug("CALLING API\" customer update \"  STARTED");
                 Customer customer = model.MapTo<Customer>();
-                customer.UpdatedBy = @params.UserId;
-                customer.UpdatedOn =DateTime.UtcNow;
                 customer = _iRepository.CreateSP<Customer>(customer, Constant.SpUpdateCustomer);
                 return _apiResponse.ReturnResponse(HttpStatusCode.OK, customer);
 
@@ -115,7 +112,7 @@ namespace IMS.Api.Core.ICoreService
 
         }
 
-        public async Task<APIResponse> Delete(int CustomerId, Params @params)
+        public async Task<APIResponse> Delete(int CustomerId)
         {
             APIConfig.Log.Debug("CALLING API\" customer delete \"  STARTED");
             try
@@ -123,7 +120,7 @@ namespace IMS.Api.Core.ICoreService
                 if (CustomerId > 0)
                 {
 
-                    _iRepository.CreateSP<Customer>(new { Id = CustomerId, UpdatedBy = @params.UserId }, Constant.SpDeleteCustomer);
+                    _iRepository.CreateSP<Customer>(new { Id = CustomerId, UpdatedBy = APIConfig.UserId }, Constant.SpDeleteCustomer);
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.DeleteRecord);
                 }
                 else

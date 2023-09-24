@@ -52,21 +52,6 @@ namespace IMS.Controllers
 
 
 
-        [AllowAnonymous, HttpGet, Route("DropDown")]
-        public async Task<IActionResult> DropDown()
-        {
-            try
-            {
-                APIResponse response = await _countryCore.DropDown();
-                if (response?.Response != null)
-                    return Ok(response);
-                return BadRequest();
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
     }
 
 }

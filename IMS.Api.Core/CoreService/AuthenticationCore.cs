@@ -236,7 +236,7 @@ namespace IMS.Api.Core.ICoreService
             return expiration < now;
         }
 
-        public APIResponse GetOTP(string emailAddress, Params @params)
+        public APIResponse GetOTP(string emailAddress)
         {
             string Htmlcontent = string.Empty;
             User user = _iRepository.Search<User>(new { UserName = emailAddress }, Constant.SpGetUser)?.FirstOrDefault();
@@ -247,8 +247,8 @@ namespace IMS.Api.Core.ICoreService
 
                 user = _iRepository.Search<User>(user, Constant.SpUpdateUser)?.FirstOrDefault();
 
-                Htmlcontent = ExtensionMethod.CreateEmailBody(@params.ContentRootPath.MapPath(Constant.SendOTP));
-                @params.ContentRootPath = @params.ContentRootPath.MapPath(Constant.SendOTP);
+                Htmlcontent = ExtensionMethod.CreateEmailBody(APIConfig.ContentRootPath.MapPath(Constant.SendOTP));
+                APIConfig.ContentRootPath = APIConfig.ContentRootPath.MapPath(Constant.SendOTP);
 
                 using (MailMessage mm = new MailMessage(Constant.CompanyEmail, emailAddress))
                 {
@@ -259,7 +259,7 @@ namespace IMS.Api.Core.ICoreService
                         mm.Subject = "OTP Verification Code";
 
                         string body = string.Empty;
-                        body = ExtensionMethod.CreateEmailBody(@params.ContentRootPath);
+                        body = ExtensionMethod.CreateEmailBody(APIConfig.ContentRootPath);
 
                         Htmlcontent = Htmlcontent.Replace("{{phonenumber}}", Constant.ContactNumber);
                         Htmlcontent = Htmlcontent.Replace("{{supportemail}}", Constant.supportemail);

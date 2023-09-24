@@ -9,6 +9,5 @@ namespace IMS.Api.Core.ICoreService
         Task<APIResponse> Search(BaseFilter model);
         Task<APIResponse> Create(CountryRequestModel model);
         Task<APIResponse> Delete(int Id);
-        Task<APIResponse> DropDown();
     }
 }

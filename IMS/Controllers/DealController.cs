@@ -58,7 +58,7 @@ namespace IMS.Controllers
         {
             try
             {
-                APIResponse response = await _dealCore.Create(dealRequestList, new Params() { ContentRootPath = AppConfig.ContentRootPath, UserId = User.GetUserId() });
+                APIResponse response = await _dealCore.Create(dealRequestList);
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();
@@ -74,7 +74,7 @@ namespace IMS.Controllers
         {
             try
             {
-                APIResponse response = await _dealCore.Update(dealRequest, new Params() { ContentRootPath = AppConfig.ContentRootPath, UserId = User.GetUserId() });
+                APIResponse response = await _dealCore.Update(dealRequest);
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();
@@ -90,7 +90,7 @@ namespace IMS.Controllers
         {
             try
             {
-                APIResponse response = await _dealCore.Delete(dealId, new Params() { ContentRootPath = AppConfig.ContentRootPath, UserId = User.GetUserId() });
+                APIResponse response = await _dealCore.Delete(dealId);
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();
@@ -102,12 +102,12 @@ namespace IMS.Controllers
         }
 
 
-        [AllowAnonymous, HttpGet, Route("TotalCount")]
-        public async Task<IActionResult> TotalCount(int? CompanyId)
+        [AllowAnonymous, HttpPost, Route("TotalCount")]
+        public async Task<IActionResult> TotalCount(DealSearchRequestModel model)
         {
             try
             {
-                APIResponse response = await _dealCore.TotalCount(CompanyId);
+                APIResponse response = await _dealCore.TotalCount(model);
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();

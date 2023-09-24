@@ -8,7 +8,7 @@ namespace IMS.Api.Common.Helper
         [ExcludeFromCodeCoverage]
         protected override string ResolvePropertyName(string propertyName)
         {
-            return propertyName;//.ToLower();
+            return propertyName.ToLower();
         }
     }
 }

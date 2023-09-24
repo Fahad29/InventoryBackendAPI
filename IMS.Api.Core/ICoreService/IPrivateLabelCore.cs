@@ -9,10 +9,10 @@ namespace IMS.Api.Core.CoreService
     {
         Task<APIResponse> Search(PrivateLabelSearchRequestModel model);
         Task<APIResponse> GetById(int Id);
-        Task<APIResponse> Create(PrivateLabelCreateRequestModel companyRequest ,Params @params);
-        Task<APIResponse> Update(PrivateLabelUpdateRequestModel companyRequest, Params @params);
-        Task<APIResponse> Delete(int Id, Params @params);
-        Task<APIResponse> TotalCount(int? CompanyId);
+        Task<APIResponse> Create(PrivateLabelCreateRequestModel companyRequest );
+        Task<APIResponse> Update(PrivateLabelUpdateRequestModel companyRequest);
+        Task<APIResponse> Delete(int Id);
+        Task<APIResponse> TotalCount(PrivateLabelSearchRequestModel model);
 
     }
 }

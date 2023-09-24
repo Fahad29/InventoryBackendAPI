@@ -9,9 +9,9 @@ namespace IMS.Api.Core.CoreService
     {
         Task<APIResponse> Search(BaseFilter model);
         Task<APIResponse> GetById(int Id);
-        Task<APIResponse> Create(CompanyRequestModel companyRequest ,Params @params);
-        Task<APIResponse> Update(CompanyUpdateRequestModel companyRequest, Params @params);
-        Task<APIResponse> Delete(int CompanyId, Params @params);
+        Task<APIResponse> Create(CompanyRequestModel companyRequest );
+        Task<APIResponse> Update(CompanyUpdateRequestModel companyRequest);
+        Task<APIResponse> Delete(int CompanyId);
 
     }
 }

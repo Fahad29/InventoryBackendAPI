@@ -56,7 +56,7 @@ namespace IMS.Controllers
         {
             try
             {
-                APIResponse response = await _companyCore.Create(companyRequest, new Params() { ContentRootPath = AppConfig.ContentRootPath, UserId = User.GetUserId() });
+                APIResponse response = await _companyCore.Create(companyRequest);
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();
@@ -72,7 +72,7 @@ namespace IMS.Controllers
         {
             try
             {
-                APIResponse response = await _companyCore.Update(companyRequest, new Params() { ContentRootPath = AppConfig.ContentRootPath, UserId = User.GetUserId() });
+                APIResponse response = await _companyCore.Update(companyRequest);
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();
@@ -88,7 +88,7 @@ namespace IMS.Controllers
         {
             try
             {
-                APIResponse response = await _companyCore.Delete(companyId, new Params() { ContentRootPath = AppConfig.ContentRootPath, UserId = User.GetUserId() });
+                APIResponse response = await _companyCore.Delete(companyId);
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();

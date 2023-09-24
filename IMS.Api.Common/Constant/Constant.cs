@@ -119,6 +119,15 @@
         public const string SpProductDetailTotalCount = "Usp_Get_productDetailTotalCount";
         #endregion
 
+        #region CompanyProdcut
+        public const string SpCreateCompanyProduct = "Usp_create_CompanyProduct";
+        public const string SpUpdateCompanyProduct = "Usp_update_CompanyProduct";
+        public const string SpGetCompanyProduct = "Usp_Get_CompanyProduct";
+        public const string SpGetCompanyProductById = "Usp_Get_CompanyProductById";
+        public const string SpDeleteCompanyProduct = "Usp_Delete_CompanyProduct";
+        public const string SpCompanyProductTotalCount = "Usp_Get_CompanyProductTotalCount";
+        #endregion
+
         #region Category
 
 

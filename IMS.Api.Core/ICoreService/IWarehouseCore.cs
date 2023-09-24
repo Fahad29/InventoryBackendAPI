@@ -9,10 +9,9 @@ namespace IMS.Api.Core.ICoreService
     {
         Task<APIResponse> Search(WareHouseSearchRequestModel model);
         Task<APIResponse> GetById(int Id);
-        Task<APIResponse> TotalCount(int? CompanyId);
-        Task<APIResponse> Create(WareHouseCreateRequestModel model, Params @params);
-        Task<APIResponse> Update(WareHouseUpdateRequestModel model, Params @params);
-        Task<APIResponse> Delete(int Id, Params @params);
-        Task<APIResponse> DropDown(int? CompanyId);
+        Task<APIResponse> TotalCount(WareHouseSearchRequestModel model);
+        Task<APIResponse> Create(WareHouseCreateRequestModel model);
+        Task<APIResponse> Update(WareHouseUpdateRequestModel model);
+        Task<APIResponse> Delete(int Id);
     }
 }

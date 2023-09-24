@@ -71,7 +71,7 @@ namespace IMS.Controllers
         {
             try
             {
-                APIResponse response = _authenticationCore.GetOTP(emailAddress, new Params { ContentRootPath = APIConfig.ContentRootPath });
+                APIResponse response = _authenticationCore.GetOTP(emailAddress);
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();

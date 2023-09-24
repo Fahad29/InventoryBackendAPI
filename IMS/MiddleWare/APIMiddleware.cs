@@ -226,12 +226,20 @@ namespace IMS.MiddleWare
                     identity.AddClaim(new Claim(ClaimTypes.Email, TokenData.Claims.FirstOrDefault(x => x.Type == "email").Value.ToString()));
                     identity.AddClaim(new Claim(ClaimTypes.GivenName, TokenData.Claims.FirstOrDefault(x => x.Type == "given_name").Value.ToString()));
                     identity.AddClaim(new Claim(ClaimTypes.Sid, TokenData.Claims.FirstOrDefault(x => x.Type.Contains("sid")).Value.ToString()));
+                    identity.AddClaim(new Claim(ClaimTypes.Role, TokenData.Claims.FirstOrDefault(x => x.Type.Contains("role")).Value.ToString()));
+                    identity.AddClaim(new Claim(ClaimTypes.PrimaryGroupSid, TokenData.Claims.FirstOrDefault(x => x.Type.Contains("primarygroupsid")).Value.ToString()));
                     identity.AddClaim(new Claim(ClaimTypes.Authentication, authKey));
                     httpcontext.User = new ClaimsPrincipal(identity);
 
                     int userId = 0;
+                    int companyId = 0;
+                    int roleId = 0;
                     int.TryParse(TokenData.Claims.FirstOrDefault(x => x.Type.Contains("sid")).Value.ToString(), out userId);
+                    int.TryParse(TokenData.Claims.FirstOrDefault(x => x.Type.Contains("primarygroupsid")).Value.ToString(), out companyId);
+                    int.TryParse(TokenData.Claims.FirstOrDefault(x => x.Type.Contains("role")).Value.ToString(), out roleId);
                     APIConfig.UserId = userId;
+                    APIConfig.CompanyId = companyId;
+                    APIConfig.RoleId = roleId;
 
                     return Constant.SuccessResponse;
                 }

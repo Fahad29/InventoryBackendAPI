@@ -79,31 +79,5 @@ namespace IMS.Api.Core.CoreService
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
         }
-
-        public async Task<APIResponse> DropDown()
-        {
-            APIConfig.Log.Debug("CALLING API\" Brand DropDown \"  STARTED");
-            try
-            {
-                List<DropdownResponse> dropDownList = _iRepository.Search<DropdownResponse>(null, Constant.SpGetProductBrand).ToList();
-                if (dropDownList.Count > 0)
-                {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, dropDownList);
-
-                }
-                else
-                {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
-                }
-
-
-            }
-            catch (Exception ex)
-            {
-                APIConfig.Log.Debug("Exception: " + ex.Message);
-                _apiResponse.StatusCode = HttpStatusCode.BadRequest;
-                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
-            }
-        }
     }
 }

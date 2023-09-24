@@ -30,6 +30,20 @@ namespace IMS.Extensions
             return userId;
         }
 
+        public static int GetUserRoleId(this ClaimsPrincipal principal)
+        {
+            int roleId = 0;
+            int.TryParse(principal.FindFirstValue(ClaimTypes.Role), out roleId);
+            return roleId;
+        }
+
+        public static int GetUserCompanyId(this ClaimsPrincipal principal)
+        {
+            int companyId = 0;
+            int.TryParse(principal.FindFirstValue(ClaimTypes.PrimaryGroupSid), out companyId);
+            return companyId;
+        }
+
         public static string GetUserAuth(this ClaimsPrincipal principal)
         {
             string auth = "";

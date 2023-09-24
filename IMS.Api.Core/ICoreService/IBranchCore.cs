@@ -10,11 +10,10 @@ namespace IMS.Api.Core.ICoreService
     {
         Task<APIResponse> Search(BranchSearchRequestModel model);
         Task<APIResponse> GetById(int CompanyId);
-        Task<APIResponse> Create(BranchCreateRequestModel model, Params @params);
-        Task<APIResponse> Update(BranchUpdateRequestModel model, Params @params);
-        Task<APIResponse> Delete(int BranchId, Params @params);
-        Task<APIResponse> DropDown(int? CompanyId);
-        Task<APIResponse> TotalCount(int? CompanyId);
+        Task<APIResponse> Create(BranchCreateRequestModel model);
+        Task<APIResponse> Update(BranchUpdateRequestModel model);
+        Task<APIResponse> Delete(int BranchId);
+        Task<APIResponse> TotalCount(BranchSearchRequestModel model);
 
 
     }

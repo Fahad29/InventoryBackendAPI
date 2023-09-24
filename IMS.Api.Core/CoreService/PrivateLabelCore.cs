@@ -73,7 +73,7 @@ namespace IMS.Api.Core.ICoreService
             }
         }
 
-        public async Task<APIResponse> Create(PrivateLabelCreateRequestModel model, Params @params)
+        public async Task<APIResponse> Create(PrivateLabelCreateRequestModel model)
         {
             APIConfig.Log.Debug("CALLING API\" privateLabel create \"  STARTED");
             try
@@ -101,7 +101,7 @@ namespace IMS.Api.Core.ICoreService
 
                         privateLabel.SidebarLogo = path = System.IO.Path.Combine(PLSidebarLogoDirPath, logoFile);
 
-                        ExactPath = @params.ContentRootPath.MapPath(path);
+                        ExactPath = APIConfig.ContentRootPath.MapPath(path);
                         System.IO.File.WriteAllBytes(ExactPath, logoBytes);
                     }
                     else
@@ -118,7 +118,7 @@ namespace IMS.Api.Core.ICoreService
 
                         privateLabel.FavLogo = path = System.IO.Path.Combine(PLFavLogoDirPath, logoFile);
 
-                        ExactPath = @params.ContentRootPath.MapPath(path);
+                        ExactPath = APIConfig.ContentRootPath.MapPath(path);
                         System.IO.File.WriteAllBytes(ExactPath, logoBytes);
                     }
                     else
@@ -135,7 +135,7 @@ namespace IMS.Api.Core.ICoreService
 
                         privateLabel.LoginLogo = path = System.IO.Path.Combine(PLLoginLogoDirPath, logoFile);
 
-                        ExactPath = @params.ContentRootPath.MapPath(path);
+                        ExactPath = APIConfig.ContentRootPath.MapPath(path);
                         System.IO.File.WriteAllBytes(ExactPath, logoBytes);
                     }
                     else
@@ -153,7 +153,6 @@ namespace IMS.Api.Core.ICoreService
                 privateLabel.MenuTextColor = model?.MenuTextColor;
                 privateLabel.SupportURL = model?.SupportURL;
                 privateLabel.FromEmail = model?.FromEmail;
-                privateLabel.CreatedBy = @params.UserId;
                 privateLabel.CompanyId = Convert.ToInt32(model?.CompanyId);
                 privateLabel = _iRepository.CreateSP<PrivateLabel>(privateLabel, Constant.SpCreatePrivateLabel);
 
@@ -168,7 +167,7 @@ namespace IMS.Api.Core.ICoreService
 
         }
 
-        public async Task<APIResponse> Update(PrivateLabelUpdateRequestModel model, Params @params)
+        public async Task<APIResponse> Update(PrivateLabelUpdateRequestModel model)
         {
             try
             {
@@ -196,7 +195,7 @@ namespace IMS.Api.Core.ICoreService
 
                         privateLabel.SidebarLogo = path = System.IO.Path.Combine(PLSidebarLogoDirPath, logoFile);
 
-                        ExactPath = @params.ContentRootPath.MapPath(path);
+                        ExactPath = APIConfig.ContentRootPath.MapPath(path);
                         System.IO.File.WriteAllBytes(ExactPath, logoBytes);
                     }
                     else
@@ -213,7 +212,7 @@ namespace IMS.Api.Core.ICoreService
 
                         privateLabel.FavLogo = path = System.IO.Path.Combine(PLFavLogoDirPath, logoFile);
 
-                        ExactPath = @params.ContentRootPath.MapPath(path);
+                        ExactPath = APIConfig.ContentRootPath.MapPath(path);
                         System.IO.File.WriteAllBytes(ExactPath, logoBytes);
                     }
                     else
@@ -230,7 +229,7 @@ namespace IMS.Api.Core.ICoreService
 
                         privateLabel.LoginLogo = path = System.IO.Path.Combine(PLLoginLogoDirPath, logoFile);
 
-                        ExactPath = @params.ContentRootPath.MapPath(path);
+                        ExactPath = APIConfig.ContentRootPath.MapPath(path);
                         System.IO.File.WriteAllBytes(ExactPath, logoBytes);
                     }
                     else
@@ -249,7 +248,6 @@ namespace IMS.Api.Core.ICoreService
                 privateLabel.MenuTextColor = model?.MenuTextColor;
                 privateLabel.SupportURL = model?.SupportURL;
                 privateLabel.FromEmail = model?.FromEmail;
-                privateLabel.UpdatedBy = @params.UserId;
                 privateLabel.CompanyId = Convert.ToInt32(model?.CompanyId);
                 privateLabel = _iRepository.CreateSP<PrivateLabel>(privateLabel, Constant.SpUpdatePrivateLabel);
                 return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.UpdateRecord);
@@ -267,7 +265,7 @@ namespace IMS.Api.Core.ICoreService
 
         }
 
-        public async Task<APIResponse> Delete(int PrivateLabelId, Params @params)
+        public async Task<APIResponse> Delete(int PrivateLabelId)
         {
             APIConfig.Log.Debug("CALLING API\" privateLabel delete \"  STARTED");
             try
@@ -275,7 +273,7 @@ namespace IMS.Api.Core.ICoreService
                 if (PrivateLabelId > 0)
                 {
 
-                    _iRepository.CreateSP<PrivateLabel>(new { Id = PrivateLabelId, UpdatedBy = @params.UserId }, Constant.SpDeletePrivateLabel);
+                    _iRepository.CreateSP<PrivateLabel>(new { Id = PrivateLabelId, UpdatedBy = APIConfig.UserId }, Constant.SpDeletePrivateLabel);
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.DeleteRecord);
                 }
                 else
@@ -293,12 +291,12 @@ namespace IMS.Api.Core.ICoreService
 
         }
 
-        public async Task<APIResponse> TotalCount(int? CompanyId)
+        public async Task<APIResponse> TotalCount(PrivateLabelSearchRequestModel model)
         {
             APIConfig.Log.Debug("CALLING API\" PrivateLabel TotalCount \"  STARTED");
             try
             {
-                int? TotalCount = _iRepository.Search<int>(new { CompanyId = CompanyId }, Constant.SpGetPrivateLabelTotalCount).FirstOrDefault();
+                int? TotalCount = _iRepository.Search<int>(model, Constant.SpGetPrivateLabelTotalCount).FirstOrDefault();
                 if (TotalCount > 0)
                 {
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, new { TotalCount = TotalCount });

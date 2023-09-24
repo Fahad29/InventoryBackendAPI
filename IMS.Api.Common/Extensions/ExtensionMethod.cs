@@ -303,10 +303,13 @@ namespace IMS.Api.Common.Extensions
             {
                 Subject = new ClaimsIdentity(new[]
                 {
+
                     new Claim(ClaimTypes.NameIdentifier, userView.UserId.ToString()),
                     new Claim(ClaimTypes.Email, userView.Email),
                     new Claim(ClaimTypes.GivenName, userView.FirstName+" "+userView.LastName),
                     new Claim(ClaimTypes.Sid, userView.UserId.ToString()),
+                    new Claim(ClaimTypes.Role, userView.UserRoleId.ToString()),
+                    new Claim(ClaimTypes.PrimaryGroupSid, userView.CompanyId.ToString()),
                 }),
                 Expires = DateTime.UtcNow.AddMinutes(Convert.ToDouble(ExpiryMinutes)),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)

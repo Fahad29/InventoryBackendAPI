@@ -10,6 +10,5 @@ namespace IMS.Api.Core.ICoreService
         Task<APIResponse> Create(WarehouseProductRequestModel warehouseProductRequest, int CurrentUserId);
         Task<APIResponse> Update(WarehouseProductRequestModel warehouseProductRequest, int CurrentUserId);
         Task<APIResponse> Delete(int warehouseProductId);
-        Task<APIResponse> DropDown();
     }
 }

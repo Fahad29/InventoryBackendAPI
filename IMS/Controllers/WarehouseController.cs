@@ -51,12 +51,12 @@ namespace IMS.Controllers
             }
         }
        
-        [AllowAnonymous, HttpGet, Route("TotalCount")]
-        public async Task<IActionResult> TotalCount(int? CompanyId)
+        [AllowAnonymous, HttpPost, Route("TotalCount")]
+        public async Task<IActionResult> TotalCount(WareHouseSearchRequestModel model)
         {
             try
             {
-                APIResponse response = await _warehouseCore.TotalCount(CompanyId);
+                APIResponse response = await _warehouseCore.TotalCount(model);
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();
@@ -73,7 +73,7 @@ namespace IMS.Controllers
         {
             try
             {
-                APIResponse response = await _warehouseCore.Create(model, new Params() { ContentRootPath = AppConfig.ContentRootPath, UserId = User.GetUserId() });
+                APIResponse response = await _warehouseCore.Create(model);
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();
@@ -89,7 +89,7 @@ namespace IMS.Controllers
         {
             try
             {
-                APIResponse response = await _warehouseCore.Update(model, new Params() { ContentRootPath = AppConfig.ContentRootPath, UserId = User.GetUserId() });
+                APIResponse response = await _warehouseCore.Update(model);
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();
@@ -105,7 +105,7 @@ namespace IMS.Controllers
         {
             try
             {
-                APIResponse response = await _warehouseCore.Delete(warehouseId, new Params() { ContentRootPath = AppConfig.ContentRootPath, UserId = User.GetUserId() });
+                APIResponse response = await _warehouseCore.Delete(warehouseId);
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();
@@ -116,20 +116,5 @@ namespace IMS.Controllers
             }
         }
 
-        [AllowAnonymous, HttpGet, Route("DropDown")]
-        public async Task<IActionResult> DropDown(int? CompanyId)
-        {
-            try
-            {
-                APIResponse response = await _warehouseCore.DropDown(CompanyId);
-                if (response?.Response != null)
-                    return Ok(response);
-                return BadRequest();
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
     }
 }

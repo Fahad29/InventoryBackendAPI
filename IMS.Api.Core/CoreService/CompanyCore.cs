@@ -71,13 +71,12 @@ namespace IMS.Api.Core.ICoreService
             }
         }
 
-        public async Task<APIResponse> Create(CompanyRequestModel model, Params @params)
+        public async Task<APIResponse> Create(CompanyRequestModel model)
         {
             APIConfig.Log.Debug("CALLING API\" Company create \"  STARTED");
             try
             {
                 Company Company = model.MapTo<Company>();
-                Company.CreatedBy = @params.UserId;
                 Company = _iRepository.CreateSP<Company>(Company, Constant.SpCreateCompany);
 
                 return _apiResponse.ReturnResponse(HttpStatusCode.Created, Company);
@@ -91,14 +90,12 @@ namespace IMS.Api.Core.ICoreService
      
         }
 
-        public async Task<APIResponse> Update(CompanyUpdateRequestModel model, Params @params)
+        public async Task<APIResponse> Update(CompanyUpdateRequestModel model)
         {
             try
             {
                 APIConfig.Log.Debug("CALLING API\" Company update \"  STARTED");
                 Company Company = model.MapTo<Company>();
-                Company.UpdatedBy = @params.UserId;
-                Company.UpdatedOn =DateTime.UtcNow;
                 Company = _iRepository.CreateSP<Company>(Company, Constant.SpUpdateCompany);
                 return _apiResponse.ReturnResponse(HttpStatusCode.OK, Company);
 
@@ -115,7 +112,7 @@ namespace IMS.Api.Core.ICoreService
 
         }
 
-        public async Task<APIResponse> Delete(int CompanyId, Params @params)
+        public async Task<APIResponse> Delete(int CompanyId)
         {
             APIConfig.Log.Debug("CALLING API\" Company delete \"  STARTED");
             try
@@ -123,7 +120,7 @@ namespace IMS.Api.Core.ICoreService
                 if (CompanyId > 0)
                 {
 
-                    _iRepository.CreateSP<Company>(new { Id = CompanyId, UpdatedBy = @params.UserId }, Constant.SpDeleteCompany);
+                    _iRepository.CreateSP<Company>(new { Id = CompanyId, UpdatedBy =APIConfig.UserId }, Constant.SpDeleteCompany);
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.DeleteRecord);
                 }
                 else

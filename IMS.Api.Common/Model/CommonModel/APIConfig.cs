@@ -9,6 +9,8 @@ namespace IMS.Api.Common.Model.CommonModel
         public static Serilog.ILogger Log { get; set; }
         public static Serilog.ILogger TransLog { get; set; }
         public static int UserId { get; set; }
+        public static int CompanyId { get; set; }
+        public static int RoleId { get; set; }
         public static string ContentRootPath { get; set; }
 
     }

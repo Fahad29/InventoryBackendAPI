@@ -87,31 +87,5 @@ namespace IMS.Api.Core.CoreService
             }
         }
 
-        public async Task<APIResponse> DropDown()
-        {
-            APIConfig.Log.Debug("CALLING API\" City DropDown \"  STARTED");
-            try
-            {
-
-                List<DropdownResponse> dropDownList = _iRepository.Search<DropdownResponse>(null, Constant.SpGetCity).ToList();
-
-                if (dropDownList.Count > 0)
-                {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, dropDownList);
-
-                }
-                else
-                {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
-                }
-
-
-            }
-            catch (Exception ex)
-            {
-                APIConfig.Log.Debug("Exception: " + ex.Message);
-                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
-            }
-        }
     }
 }

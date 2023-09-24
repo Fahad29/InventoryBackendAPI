@@ -72,12 +72,12 @@ namespace IMS.Api.Core.CoreService
             }
         }
 
-        public async Task<APIResponse> TotalCount(int? CompanyId)
+        public async Task<APIResponse> TotalCount(WareHouseSearchRequestModel model)
         {
             APIConfig.Log.Debug("CALLING API\" Warehouse TotalCount \"  STARTED");
             try
             {
-                int? TotalCount  = _iRepository.Search<int>(new { CompanyId = CompanyId }, Constant.SpGetWarehouseTotalCount).FirstOrDefault();
+                int? TotalCount  = _iRepository.Search<int>(model, Constant.SpGetWarehouseTotalCount).FirstOrDefault();
                 if (TotalCount > 0)
                 {
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, new {TotalCount = TotalCount});
@@ -95,13 +95,12 @@ namespace IMS.Api.Core.CoreService
             }
         }
 
-        public async Task<APIResponse> Create(WareHouseCreateRequestModel model, Params @params)
+        public async Task<APIResponse> Create(WareHouseCreateRequestModel model)
         {
             APIConfig.Log.Debug("CALLING API\" Warehouse create \"  STARTED");
             try
             {
                 WareHouse wareHouse = model.MapTo<WareHouse>();
-                wareHouse.CreatedBy = @params.UserId;
                 wareHouse = _iRepository.CreateSP<WareHouse>(wareHouse, Constant.SpCreateWarehouse);
                 return _apiResponse.ReturnResponse(HttpStatusCode.Created, wareHouse);
             }
@@ -113,13 +112,12 @@ namespace IMS.Api.Core.CoreService
             }
         }
 
-        public async Task<APIResponse> Update(WareHouseUpdateRequestModel model, Params @params)
+        public async Task<APIResponse> Update(WareHouseUpdateRequestModel model)
         {
             try
             {
                 APIConfig.Log.Debug("CALLING API\" Warehouse update \"  STARTED");
                 WareHouse wareHouse = model.MapTo<WareHouse>();
-                wareHouse.UpdatedBy = @params.UserId;
                 wareHouse = _iRepository.CreateSP<WareHouse>(wareHouse, Constant.SpUpdateWarehouse);
                 return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.UpdateRecord);
 
@@ -132,7 +130,7 @@ namespace IMS.Api.Core.CoreService
             }
         }
 
-        public async Task<APIResponse> Delete(int WareHouseId, Params @params)
+        public async Task<APIResponse> Delete(int WareHouseId)
         {
             APIConfig.Log.Debug("CALLING API\" Warehouse delete \"  STARTED");
             try
@@ -140,7 +138,7 @@ namespace IMS.Api.Core.CoreService
                 if (WareHouseId > 0)
                 {
 
-                    _iRepository.CreateSP<Company>(new { Id = WareHouseId, UpdatedBy = @params.UserId }, Constant.SpDeleteCompanyWarehouse);
+                    _iRepository.CreateSP<Company>(new { Id = WareHouseId, UpdatedBy = APIConfig.UserId }, Constant.SpDeleteCompanyWarehouse);
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.DeleteRecord);
                 }
                 else
@@ -157,32 +155,6 @@ namespace IMS.Api.Core.CoreService
             }
         }
         
-        public async Task<APIResponse> DropDown(int? CompanyId)
-        {
-            APIConfig.Log.Debug("CALLING API\" Warehouse DropDown \"  STARTED");
-            try
-            {
-
-                List<DropdownResponse> dropDownList = _iRepository.Search<DropdownResponse>(new {CompanyId = CompanyId}, Constant.SpGetWarehouse).ToList();
-                if (dropDownList.Count > 0)
-                {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, dropDownList);
-
-                }
-                else
-                {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
-                }
-
-
-            }
-            catch (Exception ex)
-            {
-                APIConfig.Log.Debug("Exception: " + ex.Message);
-                _apiResponse.StatusCode = HttpStatusCode.BadRequest;
-                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
-            }
-        }
     }
 }
 

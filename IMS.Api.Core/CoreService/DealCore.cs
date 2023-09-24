@@ -74,7 +74,7 @@ namespace IMS.Api.Core.ICoreService
             }
         }
 
-        public async Task<APIResponse> Create(List<DealCreateRequestModel>  model, Params @params)
+        public async Task<APIResponse> Create(List<DealCreateRequestModel>  model)
         {
             APIConfig.Log.Debug("CALLING API\" deal create \"  STARTED");
             try
@@ -83,7 +83,6 @@ namespace IMS.Api.Core.ICoreService
                 foreach(var item in model)
                 {
                     Deal deal =  item.MapTo<Deal>();
-                    deal.CreatedBy = @params.UserId;
                     _iRepository.CreateSP(deal, Constant.SpCreateDeal);
                     dealList.Add(deal);
                 }
@@ -100,14 +99,12 @@ namespace IMS.Api.Core.ICoreService
      
         }
 
-        public async Task<APIResponse> Update(DealUpdateRequestModel model, Params @params)
+        public async Task<APIResponse> Update(DealUpdateRequestModel model)
         {
             try
             {
                 APIConfig.Log.Debug("CALLING API\" deal update \"  STARTED");
                 Deal deal = model.MapTo<Deal>();
-                deal.UpdatedBy = @params.UserId;
-                deal.UpdatedOn =DateTime.UtcNow;
                 _iRepository.CreateSP(deal, Constant.SpUpdateDeal);
                 return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.UpdateRecord);
 
@@ -124,7 +121,7 @@ namespace IMS.Api.Core.ICoreService
 
         }
 
-        public async Task<APIResponse> Delete(int DealId, Params @params)
+        public async Task<APIResponse> Delete(int DealId)
         {
             APIConfig.Log.Debug("CALLING API\" deal delete \"  STARTED");
             try
@@ -132,7 +129,7 @@ namespace IMS.Api.Core.ICoreService
                 if (DealId > 0)
                 {
 
-                    _iRepository.CreateSP<Deal>(new { Id = DealId, UpdatedBy = @params.UserId }, Constant.SpDeleteDeal);
+                    _iRepository.CreateSP<Deal>(new { Id = DealId, UpdatedBy = APIConfig.UserId }, Constant.SpDeleteDeal);
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.DeleteRecord);
                 }
                 else
@@ -150,12 +147,12 @@ namespace IMS.Api.Core.ICoreService
            
         }
 
-        public async Task<APIResponse> TotalCount(int? CompanyId)
+        public async Task<APIResponse> TotalCount(DealSearchRequestModel model)
         {
             APIConfig.Log.Debug("CALLING API\" Deal TotalCount \"  STARTED");
             try
             {
-                int? TotalCount = _iRepository.Search<int>(new { CompanyId = CompanyId }, Constant.SpGetDealTotalCount).FirstOrDefault();
+                int? TotalCount = _iRepository.Search<int>(new { CompanyId = model }, Constant.SpGetDealTotalCount).FirstOrDefault();
                 if (TotalCount > 0)
                 {
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, new { TotalCount = TotalCount });

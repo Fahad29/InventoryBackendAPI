@@ -1,9 +1,11 @@
 ﻿using IMS.Api.Common.Model.CommonModel;
+using IMS.Api.Common.Model.Params;
 using IMS.Api.Common.Model.RequestModel;
 using IMS.Api.Common.Model.RequestModel.Search;
 using IMS.Api.Common.Model.ResponseModel;
 using IMS.Api.Core.CoreService;
 using IMS.Api.Core.ICoreService;
+using IMS.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -100,28 +102,12 @@ namespace IMS.Controllers
             }
         }
 
-        [AllowAnonymous, HttpGet, Route("DropDown")]
-        public async Task<IActionResult> DropDown()
-        {
-            try
-            {
-                APIResponse response = await _productCore.DropDown();
-                if (response?.Response != null)
-                    return Ok(response);
-                return BadRequest();
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
-
         [AllowAnonymous, HttpGet, Route("TotalCount")]
-        public async Task<IActionResult> TotalCount(int? CompanyId)
+        public async Task<IActionResult> TotalCount(ProductSearchRequestModel model)
         {
             try
             {
-                APIResponse response = await _productCore.TotalCount(CompanyId);
+                APIResponse response = await _productCore.TotalCount(model);
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();
