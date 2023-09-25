@@ -53,7 +53,7 @@ namespace IMS.Api.Core.CoreService
                 {
                     List<AttachmentResponse> result = await _attachmentCore.GetAttachments((int)AttachmentTypeEnum.ProductImages, product.Id);
                     product.attachments = result;
-                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, product);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, product);
                 }
                 else
                 {
@@ -67,7 +67,7 @@ namespace IMS.Api.Core.CoreService
             }
         }
 
-        public async Task<APIResponse> Create(ProductRequestModel productRequest,long UserId,long CompanyId)
+        public async Task<APIResponse> Create(ProductRequestModel productRequest, long UserId, long CompanyId)
         {
             APIConfig.Log.Debug("CALLING API\" ProductDetail create \"  STARTED");
             try
@@ -78,7 +78,7 @@ namespace IMS.Api.Core.CoreService
                 product = _iRepository.CreateSP<ProductDetail>(product, Constant.SpCreateProductDetail);
                 if (product != null && productRequest.Attachments != null && productRequest.Attachments.Count > 0)
                 {
-                    _attachmentCore.UploadImages(productRequest.Attachments, UserId, product.Id, (int)AttachmentTypeEnum.ProductImages);
+                    //_attachmentCore.UploadImages(productRequest.Attachments, UserId, product.Id, (int)AttachmentTypeEnum.ProductImages);
                 }
 
                 return _apiResponse.ReturnResponse(HttpStatusCode.Created, product);

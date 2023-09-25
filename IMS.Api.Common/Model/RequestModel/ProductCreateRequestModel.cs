@@ -18,7 +18,7 @@ namespace IMS.Api.Common.Model.RequestModel
         [Required]
         public string BarcodeValue { get; set; }
         public string Description { get; set; }
-        public IFormFileCollection ProductImages { get; set; }
+        public List<IFormFile> ProductImages { get; set; }
     }
 
     public class ProductUpdateRequestModel : ProductCreateRequestModel

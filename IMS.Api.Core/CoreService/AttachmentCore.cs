@@ -35,11 +35,12 @@ namespace IMS.Api.Core.CoreService
                                                                             Constant.SpGetAttachments).ToList();
             return attachments;
         }
-        public async Task<APIResponse> UploadImages(IFormFileCollection formFiles, long UserId, long RequestId, int TypeId)
+        public async Task<List<AttachmentResponse>> UploadImages(List<IFormFile> formFiles, long UserId, long RequestId, int TypeId)
         {
             try
             {
                 List<AttachmentType> attachmentTypes = GetAttachmentTypes();
+                List<AttachmentResponse> attachments = new List<AttachmentResponse>();
                 string attachmentFolder = attachmentTypes.Where(x => x.Id == TypeId).FirstOrDefault()?.Name;
 
                 foreach (var file in formFiles)
@@ -74,14 +75,15 @@ namespace IMS.Api.Core.CoreService
                         await file.CopyToAsync(stream);
                     }
                     AttachmentResponse attachmentRes = _iRepository.CreateSP<AttachmentResponse>(attachment, Constant.SpGetAddAttachments);
+                    attachments.Add(attachmentRes);
                 }
-                return _apiResponse.ReturnResponse(HttpStatusCode.Created, Constant.SuccessResponse);
+                return attachments;
 
             }
             catch (Exception ex)
             {
                 APIConfig.Log.Debug("Exception: " + ex.Message);
-                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex.Message);
+                throw;
             }
         }
 

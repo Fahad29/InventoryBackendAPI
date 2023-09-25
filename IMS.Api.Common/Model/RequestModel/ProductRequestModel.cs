@@ -16,7 +16,7 @@ namespace IMS.Api.Common.Model.RequestModel
         [Required]
         public string Name { get; set; }
         public string Description { get; set; } = string.Empty;
-        public IFormFileCollection Attachments { get; set; }
+        public List<IFormFile> Attachments { get; set; }
     }
 
 }

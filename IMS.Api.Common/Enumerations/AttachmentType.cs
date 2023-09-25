@@ -7,6 +7,7 @@
         Documents,
         ProductImages,
         BrandLogo,
+        PrivateLabel,
 
     }
 }

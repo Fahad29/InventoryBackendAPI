@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using Microsoft.AspNetCore.Http;
+using System.Diagnostics.CodeAnalysis;
 
 namespace IMS.Api.Common.Model.RequestModel
 {
@@ -6,9 +7,9 @@ namespace IMS.Api.Common.Model.RequestModel
     {
         public int? CompanyId { get; set; }
         public string? CustomURL { get; set; }
-        public LogoImg? LoginLogo { get; set; }
-        public LogoImg? SidebarLogo { get; set; }
-        public LogoImg? FavLogo { get; set; }
+        public IFormFile LoginLogo { get; set; }
+        public IFormFile? SidebarLogo { get; set; }
+        public IFormFile? FavLogo { get; set; }
         public string? ThemesColor { get; set; }
         public string? SidebarBackgroundColor { get; set; }
         public string? MenuHighlightColor { get; set; }
@@ -22,12 +23,5 @@ namespace IMS.Api.Common.Model.RequestModel
     public class PrivateLabelUpdateRequestModel : PrivateLabelCreateRequestModel
     {
         public int Id { get; set; }
-    }
-
-    public class LogoImg
-    {
-        public string filename { get; set; }
-        public string filetype { get; set; }
-        public string value { get; set; }
     }
 }

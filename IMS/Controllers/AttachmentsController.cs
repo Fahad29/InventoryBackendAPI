@@ -57,17 +57,18 @@ namespace IMS.Controllers
             }
         }
 
-        [AllowAnonymous, HttpPost, Route("UploadImages")]
-        public async Task<IActionResult> UploadImages(IFormFileCollection formFiles, int RequestId, int TypeId = 3)
+        [AllowAnonymous, HttpPost, Route("UploadDocuments")]
+        public async Task<IActionResult> UploadDocuments(List<IFormFile> attachments, int RequestId, int TypeId = 3)
         {
             try
             {
-                if (formFiles != null && formFiles.Count > 0)
+                if (attachments != null && attachments.Count > 0)
                 {
-
-                    APIResponse response = await _attachmentCore.UploadImages(formFiles, UserID, RequestId, TypeId);
-                    if (response?.Response != null)
-                        return Ok(response);
+                    List<AttachmentResponse> response = await _attachmentCore.UploadImages(attachments, UserID, RequestId, TypeId);
+                    if (response != null && response.Count > 0)
+                        return Ok(_apiResponse.ReturnResponse(HttpStatusCode.OK, response));
+                    else
+                        return Ok(_apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.RecordNotFound));
 
                 }
                 return BadRequest("Invalid file.");

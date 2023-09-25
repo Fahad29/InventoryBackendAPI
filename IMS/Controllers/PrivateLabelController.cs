@@ -1,11 +1,7 @@
-﻿using IMS.Api.Common.Model.CommonModel;
-using IMS.Api.Common.Model.Params;
-using IMS.Api.Common.Model.RequestModel;
+﻿using IMS.Api.Common.Model.RequestModel;
 using IMS.Api.Common.Model.RequestModel.Search;
 using IMS.Api.Common.Model.ResponseModel;
 using IMS.Api.Core.CoreService;
-using IMS.Api.Core.ICoreService;
-using IMS.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -54,11 +50,11 @@ namespace IMS.Controllers
         }
 
         [AllowAnonymous, HttpPost, Route("Create")]
-        public async Task<IActionResult> Create(PrivateLabelCreateRequestModel PrivateLabelRequest)
+        public async Task<IActionResult> Create([FromForm]PrivateLabelCreateRequestModel PrivateLabelRequest)
         {
             try
             {
-                APIResponse response = await _PrivateLabelCore.Create(PrivateLabelRequest);
+                APIResponse response = await _PrivateLabelCore.Create(PrivateLabelRequest,UserID);
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();
@@ -74,7 +70,7 @@ namespace IMS.Controllers
         {
             try
             {
-                APIResponse response = await _PrivateLabelCore.Update(PrivateLabelRequest);
+                APIResponse response = await _PrivateLabelCore.Update(PrivateLabelRequest,UserID);
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();

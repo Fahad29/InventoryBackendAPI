@@ -1,14 +1,15 @@
 ﻿using IMS.Api.Common.Constant;
+using IMS.Api.Common.Enumerations;
 using IMS.Api.Common.Extensions;
 using IMS.Api.Common.Model.CommonModel;
 using IMS.Api.Common.Model.DataModel;
-using IMS.Api.Common.Model.Params;
 using IMS.Api.Common.Model.RequestModel;
 using IMS.Api.Common.Model.RequestModel.Search;
 using IMS.Api.Common.Model.ResponseModel;
 using IMS.Api.Common.Model.ResponseModel.Search;
 using IMS.Api.Core.CoreService;
 using IMS.Api.Service.IRepository;
+using Microsoft.AspNetCore.Http;
 using System.Net;
 
 namespace IMS.Api.Core.ICoreService
@@ -17,10 +18,12 @@ namespace IMS.Api.Core.ICoreService
     {
         IRepository<PrivateLabel> _iRepository;
         APIResponse _apiResponse;
-        public PrivateLabelCore(IRepository<PrivateLabel> iRepository, APIResponse apiResponse)
+        IAttachmentCore _attachmentCore;
+        public PrivateLabelCore(IRepository<PrivateLabel> iRepository, APIResponse apiResponse, IAttachmentCore attachmentCore)
         {
             _iRepository = iRepository;
             _apiResponse = apiResponse;
+            _attachmentCore = attachmentCore;
         }
 
         public async Task<APIResponse> Search(PrivateLabelSearchRequestModel model)
@@ -73,88 +76,24 @@ namespace IMS.Api.Core.ICoreService
             }
         }
 
-        public async Task<APIResponse> Create(PrivateLabelCreateRequestModel model)
+        public async Task<APIResponse> Create(PrivateLabelCreateRequestModel model, long UserId)
         {
             APIConfig.Log.Debug("CALLING API\" privateLabel create \"  STARTED");
             try
             {
-                string PLSidebarLogoDirPath = Constant.PLSidebarLogoDirPath;
-                string PLLoginLogoDirPath = Constant.PLLoginLogoDirPath;
-                string PLFavLogoDirPath = Constant.PLFavLogoDirPath;
-                string logoFile = string.Empty;
-                string FeviconFile = string.Empty;
-                string splashScreenFile = string.Empty;
-                string path = string.Empty;
-                string ExactPath = string.Empty;
-                PrivateLabel PLGManager = new PrivateLabel();
+                long favLogId, LoginLogoId, sidebarLogoId = 0;
                 List<string> AllowedExtension = new List<string>() { "image/jpeg", "image/jpg", "image/png", "images/gif", "image/x-icon", "image/svg+xml" };
-
-                PrivateLabel privateLabel = new PrivateLabel();
-               
-
-                if (!string.IsNullOrEmpty(model?.SidebarLogo?.value))
-                {
-                    if (AllowedExtension.Contains(model?.SidebarLogo?.filetype?.ToLower()))
-                    {
-                        logoFile = "ComID_"+model.CompanyId.ToString() + Constant.FileTypeOfLogo + model.SidebarLogo.filename;
-                        byte[] logoBytes = Convert.FromBase64String(model.SidebarLogo.value);
-
-                        privateLabel.SidebarLogo = path = System.IO.Path.Combine(PLSidebarLogoDirPath, logoFile);
-
-                        ExactPath = APIConfig.ContentRootPath.MapPath(path);
-                        System.IO.File.WriteAllBytes(ExactPath, logoBytes);
-                    }
-                    else
-                    {
-                        _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, Constant.ImageExtension);
-                    }
-                }
-                if (!string.IsNullOrEmpty(model?.FavLogo?.value))
-                {
-                    if (AllowedExtension.Contains(model?.FavLogo?.filetype?.ToLower()))
-                    {
-                        logoFile = "ComID_" + model.CompanyId.ToString() + Constant.FileTypeOfLogo + model.FavLogo.filename;
-                        byte[] logoBytes = Convert.FromBase64String(model.FavLogo.value);
-
-                        privateLabel.FavLogo = path = System.IO.Path.Combine(PLFavLogoDirPath, logoFile);
-
-                        ExactPath = APIConfig.ContentRootPath.MapPath(path);
-                        System.IO.File.WriteAllBytes(ExactPath, logoBytes);
-                    }
-                    else
-                    {
-                        _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, Constant.ImageExtension);
-                    }
-                }
-                if (!string.IsNullOrEmpty(model?.LoginLogo?.value))
-                {
-                    if (AllowedExtension.Contains(model?.LoginLogo?.filetype?.ToLower()))
-                    {
-                        logoFile = "ComID_" + model.CompanyId.ToString() + Constant.FileTypeOfLogo + model.LoginLogo.filename;
-                        byte[] logoBytes = Convert.FromBase64String(model.LoginLogo.value);
-
-                        privateLabel.LoginLogo = path = System.IO.Path.Combine(PLLoginLogoDirPath, logoFile);
-
-                        ExactPath = APIConfig.ContentRootPath.MapPath(path);
-                        System.IO.File.WriteAllBytes(ExactPath, logoBytes);
-                    }
-                    else
-                    {
-                        _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, Constant.ImageExtension);
-                    }
-                }
-
-                privateLabel.CustomURL = model?.CustomURL;
-                privateLabel.ThemesColor = model?.ThemesColor;
-                privateLabel.SidebarBackgroundColor = model?.SidebarBackgroundColor;
-                privateLabel.HeaderBackgroundColor = model?.HeaderBackgroundColor;
-                privateLabel.HeaderTextColor = model?.HeaderTextColor;
-                privateLabel.MenuHighlightColor = model?.MenuHighlightColor;
-                privateLabel.MenuTextColor = model?.MenuTextColor;
-                privateLabel.SupportURL = model?.SupportURL;
-                privateLabel.FromEmail = model?.FromEmail;
-                privateLabel.CompanyId = Convert.ToInt32(model?.CompanyId);
+                PrivateLabel privateLabel = model.MapTo<PrivateLabel>();
                 privateLabel = _iRepository.CreateSP<PrivateLabel>(privateLabel, Constant.SpCreatePrivateLabel);
+                //fav Image
+                if (model.FavLogo != null)
+                    favLogId = await UploadPrivateabelImages(model.FavLogo, UserId, privateLabel.Id);
+                //LoginLogo Image
+                if (model.LoginLogo != null)
+                    LoginLogoId = await UploadPrivateabelImages(model.LoginLogo, UserId, privateLabel.Id);
+                //SidebarLogo Image
+                if (model.SidebarLogo != null)
+                    sidebarLogoId = await UploadPrivateabelImages(model.SidebarLogo, UserId, privateLabel.Id);
 
                 return _apiResponse.ReturnResponse(HttpStatusCode.Created, Constant.SuccessResponse);
 
@@ -167,89 +106,29 @@ namespace IMS.Api.Core.ICoreService
 
         }
 
-        public async Task<APIResponse> Update(PrivateLabelUpdateRequestModel model)
+        public async Task<APIResponse> Update(PrivateLabelUpdateRequestModel model, long UserId)
         {
             try
             {
                 APIConfig.Log.Debug("CALLING API\" privateLabel update \"  STARTED");
-                string PLSidebarLogoDirPath = Constant.PLSidebarLogoDirPath;
-                string PLLoginLogoDirPath = Constant.PLLoginLogoDirPath;
-                string PLFavLogoDirPath = Constant.PLFavLogoDirPath;
-                string logoFile = string.Empty;
-                string FeviconFile = string.Empty;
-                string splashScreenFile = string.Empty;
-                string path = string.Empty;
-                string ExactPath = string.Empty;
-                PrivateLabel PLGManager = new PrivateLabel();
                 List<string> AllowedExtension = new List<string>() { "image/jpeg", "image/jpg", "image/png", "images/gif", "image/x-icon", "image/svg+xml" };
-
-                PrivateLabel privateLabel = new PrivateLabel();
-
-
-                if (!string.IsNullOrEmpty(model?.SidebarLogo?.value))
-                {
-                    if (AllowedExtension.Contains(model?.SidebarLogo?.filetype?.ToLower()))
-                    {
-                        logoFile = "ComID_" + model.CompanyId.ToString() + Constant.FileTypeOfLogo + model.SidebarLogo.filename;
-                        byte[] logoBytes = Convert.FromBase64String(model.SidebarLogo.value);
-
-                        privateLabel.SidebarLogo = path = System.IO.Path.Combine(PLSidebarLogoDirPath, logoFile);
-
-                        ExactPath = APIConfig.ContentRootPath.MapPath(path);
-                        System.IO.File.WriteAllBytes(ExactPath, logoBytes);
-                    }
-                    else
-                    {
-                        _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, Constant.ImageExtension);
-                    }
-                }
-                if (!string.IsNullOrEmpty(model?.FavLogo?.value))
-                {
-                    if (AllowedExtension.Contains(model?.FavLogo?.filetype?.ToLower()))
-                    {
-                        logoFile = "ComID_" + model.CompanyId.ToString() + Constant.FileTypeOfLogo + model.FavLogo.filename;
-                        byte[] logoBytes = Convert.FromBase64String(model.FavLogo.value);
-
-                        privateLabel.FavLogo = path = System.IO.Path.Combine(PLFavLogoDirPath, logoFile);
-
-                        ExactPath = APIConfig.ContentRootPath.MapPath(path);
-                        System.IO.File.WriteAllBytes(ExactPath, logoBytes);
-                    }
-                    else
-                    {
-                        _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, Constant.ImageExtension);
-                    }
-                }
-                if (!string.IsNullOrEmpty(model?.LoginLogo?.value))
-                {
-                    if (AllowedExtension.Contains(model?.LoginLogo?.filetype?.ToLower()))
-                    {
-                        logoFile = "ComID_" + model.CompanyId.ToString() + Constant.FileTypeOfLogo + model.LoginLogo.filename;
-                        byte[] logoBytes = Convert.FromBase64String(model.LoginLogo.value);
-
-                        privateLabel.LoginLogo = path = System.IO.Path.Combine(PLLoginLogoDirPath, logoFile);
-
-                        ExactPath = APIConfig.ContentRootPath.MapPath(path);
-                        System.IO.File.WriteAllBytes(ExactPath, logoBytes);
-                    }
-                    else
-                    {
-                        _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, Constant.ImageExtension);
-                    }
-                }
-
-                privateLabel.Id = model.Id;
-                privateLabel.CustomURL = model?.CustomURL;
-                privateLabel.ThemesColor = model?.ThemesColor;
-                privateLabel.SidebarBackgroundColor = model?.SidebarBackgroundColor;
-                privateLabel.HeaderBackgroundColor = model?.HeaderBackgroundColor;
-                privateLabel.HeaderTextColor = model?.HeaderTextColor;
-                privateLabel.MenuHighlightColor = model?.MenuHighlightColor;
-                privateLabel.MenuTextColor = model?.MenuTextColor;
-                privateLabel.SupportURL = model?.SupportURL;
-                privateLabel.FromEmail = model?.FromEmail;
-                privateLabel.CompanyId = Convert.ToInt32(model?.CompanyId);
+                PrivateLabel privateLabel = model.MapTo<PrivateLabel>();
                 privateLabel = _iRepository.CreateSP<PrivateLabel>(privateLabel, Constant.SpUpdatePrivateLabel);
+                // Fv Image
+                UploadPrivateabelImages(model.FavLogo, UserId, privateLabel.Id);
+
+                //privateLabel.Id = model.Id;
+                //privateLabel.CustomURL = model?.CustomURL;
+                //privateLabel.ThemesColor = model?.ThemesColor;
+                //privateLabel.SidebarBackgroundColor = model?.SidebarBackgroundColor;
+                //privateLabel.HeaderBackgroundColor = model?.HeaderBackgroundColor;
+                //privateLabel.HeaderTextColor = model?.HeaderTextColor;
+                //privateLabel.MenuHighlightColor = model?.MenuHighlightColor;
+                //privateLabel.MenuTextColor = model?.MenuTextColor;
+                //privateLabel.SupportURL = model?.SupportURL;
+                //privateLabel.FromEmail = model?.FromEmail;
+                //privateLabel.CompanyId = Convert.ToInt32(model?.CompanyId);
+
                 return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.UpdateRecord);
 
             }
@@ -312,6 +191,15 @@ namespace IMS.Api.Core.ICoreService
                 _apiResponse.StatusCode = HttpStatusCode.BadRequest;
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
+        }
+
+
+        private async Task<long> UploadPrivateabelImages(IFormFile file, long UserId, long RequestId)
+        {
+            List<IFormFile> myFiles = new List<IFormFile>();
+            myFiles.Add(file);
+            List<AttachmentResponse> attachments = await _attachmentCore.UploadImages(myFiles, UserId, RequestId, (int)AttachmentTypeEnum.PrivateLabel);
+            return attachments.FirstOrDefault().AttachmentId;
         }
 
     }
