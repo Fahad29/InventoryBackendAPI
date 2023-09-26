@@ -47,7 +47,7 @@ namespace IMS.Api.Core.CoreService
                 if (modules.Count > 0)
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, modules);
                 else
-                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.RecordNotFound);
             }
             catch (Exception ex)
             {
@@ -61,11 +61,11 @@ namespace IMS.Api.Core.CoreService
 
             try
             {
-                List<UserRights> modules = _iRepository.Search<UserRights>(new { UserId = UserId }, Constant.SpGetUserRights).ToList();
+                List<UserRightsResponse> modules = _iRepository.Search<UserRightsResponse>(new { UserId = UserId }, Constant.SpGetUserRights).ToList();
                 if (modules.Count > 0)
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, modules);
                 else
-                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.RecordNotFound);
             }
             catch (Exception ex)
             {

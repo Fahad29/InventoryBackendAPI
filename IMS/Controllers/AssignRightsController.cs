@@ -22,13 +22,11 @@ namespace IMS.Controllers
             try
             {
                 APIResponse response = await _assignRightsCore.GetRoleRights(RoleID);
-                if (response?.Response != null)
-                    return Ok(response);
-                return BadRequest();
+                return Ok(response);
             }
             catch (Exception ex)
             {
-                throw;
+                return BadRequest(ex);
             }
         }
         [AllowAnonymous, HttpPost, Route("ManageRoleRights")]
@@ -37,13 +35,11 @@ namespace IMS.Controllers
             try
             {
                 APIResponse response = await _assignRightsCore.ManageRoleRights(roleRights);
-                if (response?.Response != null)
-                    return Ok(response);
-                return BadRequest();
+                return Ok(response);
             }
             catch (Exception ex)
             {
-                throw;
+                return BadRequest(ex);
             }
         }
 
@@ -54,13 +50,11 @@ namespace IMS.Controllers
             try
             {
                 APIResponse response = await _assignRightsCore.GetUserRightsById(UserId);
-                if (response?.Response != null)
-                    return Ok(response);
-                return BadRequest();
+                return Ok(response);
             }
             catch (Exception ex)
             {
-                throw;
+                return BadRequest(ex);
             }
         }
 
@@ -73,13 +67,11 @@ namespace IMS.Controllers
                 userRights.CreatedUser = UserID;
                 userRights.CreatedOn = DateTime.UtcNow;
                 APIResponse response = await _assignRightsCore.ManageUserRights(userRights);
-                if (response?.Response != null)
-                    return Ok(response);
-                return BadRequest();
+                return Ok(response);
             }
             catch (Exception ex)
             {
-                throw;
+                return BadRequest(ex);
             }
         }
     }
