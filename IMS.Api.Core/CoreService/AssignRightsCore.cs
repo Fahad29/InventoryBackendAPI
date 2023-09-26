@@ -37,7 +37,7 @@ namespace IMS.Api.Core.CoreService
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
         }
-        public async Task<APIResponse> ManageRoleRights(RoleRightsRequest roleRights)
+        public async Task<APIResponse> ManageRoleRights(RoleRightsRequest roleRights, long UserID)
         {
             APIConfig.Log.Debug("Insert ANd Update Data OF RoleRights Core");
 
@@ -73,14 +73,15 @@ namespace IMS.Api.Core.CoreService
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
         }
-        public async Task<APIResponse> ManageUserRights(UserRightsRequest userRights)
+        public async Task<APIResponse> ManageUserRights(UserRightsRequest userRights, long UserID)
         {
             APIConfig.Log.Debug("Insert And Update Data OF UserRights Core");
 
             try
             {
-                List<UserRightsRequest> modules = _iRepository.Search<UserRightsRequest>(userRights, Constant.SpInsertUpdateUserRights).ToList();
-                if (modules.Count > 0)
+                userRights.CreatedUser = UserID;
+                UserRightsResponse modules = _iRepository.CreateSP<UserRightsResponse>(userRights, Constant.SpInsertUpdateUserRights);
+                if (modules != null)
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, modules);
                 else
                     return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);

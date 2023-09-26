@@ -26,7 +26,7 @@ namespace IMS.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex);
+                return BadRequest(ex);  
             }
         }
         [AllowAnonymous, HttpPost, Route("ManageRoleRights")]
@@ -34,7 +34,7 @@ namespace IMS.Controllers
         {
             try
             {
-                APIResponse response = await _assignRightsCore.ManageRoleRights(roleRights);
+                APIResponse response = await _assignRightsCore.ManageRoleRights(roleRights,UserID);
                 return Ok(response);
             }
             catch (Exception ex)
@@ -64,9 +64,7 @@ namespace IMS.Controllers
         {
             try
             {
-                userRights.CreatedUser = UserID;
-                userRights.CreatedOn = DateTime.UtcNow;
-                APIResponse response = await _assignRightsCore.ManageUserRights(userRights);
+                APIResponse response = await _assignRightsCore.ManageUserRights(userRights, UserID);
                 return Ok(response);
             }
             catch (Exception ex)
