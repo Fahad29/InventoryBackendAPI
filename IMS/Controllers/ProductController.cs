@@ -69,11 +69,13 @@ namespace IMS.Controllers
         }
 
         [AllowAnonymous, HttpPut, Route("Update")]
-        public async Task<IActionResult> Update(ProductUpdateRequestModel productRequest)
+        public async Task<IActionResult> Update([FromForm] ProductUpdateRequestModel productRequest)
         {
             try
             {
-                APIResponse response = await _productCore.Update(productRequest);
+                long UserId = UserID;
+                long CompanyId = User.GetUserCompanyId();
+                APIResponse response = await _productCore.Update(productRequest, UserId, CompanyId);
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();

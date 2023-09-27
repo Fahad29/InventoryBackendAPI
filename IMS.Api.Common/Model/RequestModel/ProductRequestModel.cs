@@ -18,5 +18,8 @@ namespace IMS.Api.Common.Model.RequestModel
         public string Description { get; set; } = string.Empty;
         public List<IFormFile> Attachments { get; set; }
     }
-
+    public class ProductUpdateRequestModel : ProductRequestModel
+    {
+        public int Id { get; set; }
+    }
 }
