@@ -9,7 +9,7 @@ namespace IMS.Api.Core.ICoreService
         Task<APIResponse> Search(ProductSearchRequestModel model);
         Task<APIResponse> GetById(long productId);
         Task<APIResponse> Create(ProductRequestModel productRequest, long UserId, long CompanyId);
-        Task<APIResponse> Update(ProductUpdateRequestModel productRequest);
+        Task<APIResponse> Update(ProductUpdateRequestModel productRequest, long UserId, long CompanyId);
         Task<APIResponse> Delete(long productId, long UserId);
         Task<APIResponse> TotalCount(ProductSearchRequestModel model);
     }
