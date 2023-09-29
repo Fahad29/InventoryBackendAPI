@@ -8,21 +8,21 @@ using IMS.Api.Common.Model.RequestModel;
 using IMS.Api.Common.Model.RequestModel.Search;
 using IMS.Api.Common.Model.ResponseModel;
 using IMS.Api.Common.Model.ResponseModel.Search;
-using IMS.Api.Core.CoreService;
+using IMS.Api.Core.ICoreService;
 using IMS.Api.Service.IRepository;
 using Microsoft.AspNetCore.Http;
 using System.Net;
 using static IMS.Api.Common.Enumerations.Eumeration;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
-namespace IMS.Api.Core.ICoreService
+namespace IMS.Api.Core.CoreService
 {
     public class EmployeeCore : IEmployeeCore
     {
         IRepository<Employee> _iRepository;
         APIResponse _apiResponse;
         IAttachmentCore _attachmentCore;
-        public EmployeeCore(IRepository<Employee> iRepository, APIResponse apiResponse,IAttachmentCore attachmentCore)
+        public EmployeeCore(IRepository<Employee> iRepository, APIResponse apiResponse, IAttachmentCore attachmentCore)
         {
             _iRepository = iRepository;
             _apiResponse = apiResponse;
@@ -99,7 +99,7 @@ namespace IMS.Api.Core.ICoreService
                 employee.UserId = user.UserId;
                 employee = _iRepository.CreateSP<Employee>(employee, Constant.SpCreateEmployee);
                 if (model.ProfilePhoto != null)
-                      await _attachmentCore.UploadImages( new List<IFormFile>() { model.ProfilePhoto } , user.UserId, (long)employee?.Id, (int)AttachmentTypeEnum.ProfilePicture); 
+                    await _attachmentCore.UploadImages(new List<IFormFile>() { model.ProfilePhoto }, user.UserId, (long)employee?.Id, (int)AttachmentTypeEnum.ProfilePicture);
 
                 return _apiResponse.ReturnResponse(HttpStatusCode.Created, employee);
             }
@@ -117,7 +117,7 @@ namespace IMS.Api.Core.ICoreService
             {
                 APIConfig.Log.Debug("CALLING API\" Employee update \"  STARTED");
                 Employee employee = model.MapTo<Employee>();
-                employee =  _iRepository.CreateSP<Employee>(employee, Constant.SpCreateEmployee);
+                employee = _iRepository.CreateSP<Employee>(employee, Constant.SpCreateEmployee);
                 if (model.ProfilePhoto != null)
                     await _attachmentCore.UploadImages(new List<IFormFile>() { model.ProfilePhoto }, (long)employee.UserId, (long)employee?.Id, (int)AttachmentTypeEnum.ProfilePicture);
 
@@ -168,7 +168,7 @@ namespace IMS.Api.Core.ICoreService
                 int? TotalCount = _iRepository.Search<int>(model, Constant.SpEmployeeTotalCount).FirstOrDefault();
                 if (TotalCount > 0)
                 {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, new { TotalCount = TotalCount });
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, new { TotalCount });
                 }
                 else
                 {
