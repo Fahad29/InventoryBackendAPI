@@ -5,7 +5,7 @@ using IMS.Api.Common.Model.CommonModel;
 using IMS.Api.Common.Model.DataModel;
 using IMS.Api.Common.Model.RequestModel;
 using IMS.Api.Common.Model.ResponseModel;
-using IMS.Api.Core.CoreService;
+using IMS.Api.Core.ICoreService;
 using IMS.Api.Service.IRepository;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -14,7 +14,7 @@ using System.Net.Mail;
 using System.Text;
 using static IMS.Api.Common.Enumerations.Eumeration;
 
-namespace IMS.Api.Core.ICoreService
+namespace IMS.Api.Core.CoreService
 {
     public class AuthenticationCore : IAuthenticationCore
     {
@@ -22,8 +22,8 @@ namespace IMS.Api.Core.ICoreService
         readonly IRepository<Company> _iRepository;
         public AuthenticationCore(APIResponse apiResponse, IRepository<Company> iRepository)
         {
-            this._iRepository = iRepository;
-            this._apiResponse = apiResponse;
+            _iRepository = iRepository;
+            _apiResponse = apiResponse;
         }
 
         public async Task<APIResponse> Login(LoginRequest loginRequest)
@@ -76,7 +76,7 @@ namespace IMS.Api.Core.ICoreService
             APIConfig.Log.Debug("CALLING API\" user create \"  STARTED");
             try
             {
-                int? CompanyId = _iRepository.CreateSP<Company>(new { CompanyName = model.CompanyName }, Constant.SpGetCompany)?.CompanyId;
+                int? CompanyId = _iRepository.CreateSP<Company>(new { model.CompanyName }, Constant.SpGetCompany)?.CompanyId;
                 if (CompanyId == null || CompanyId == 0)
                 {
                     Company company = new Company();
@@ -284,7 +284,7 @@ namespace IMS.Api.Core.ICoreService
 
                 }
                 //return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.OTPSendResponse);
-                return _apiResponse.ReturnResponse(HttpStatusCode.OK, new { OTP = user.OTP, ExpiryTime = "1 Minute" });
+                return _apiResponse.ReturnResponse(HttpStatusCode.OK, new { user.OTP, ExpiryTime = "1 Minute" });
             }
             else
             {

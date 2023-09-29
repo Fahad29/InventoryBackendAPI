@@ -3,7 +3,6 @@ using IMS.Api.Common.Model.Params;
 using IMS.Api.Common.Model.RequestModel;
 using IMS.Api.Common.Model.RequestModel.Search;
 using IMS.Api.Common.Model.ResponseModel;
-using IMS.Api.Core.CoreService;
 using IMS.Api.Core.ICoreService;
 using IMS.Extensions;
 using Microsoft.AspNetCore.Authorization;

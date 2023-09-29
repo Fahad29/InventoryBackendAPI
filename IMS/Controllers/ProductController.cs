@@ -1,5 +1,6 @@
 ﻿using IMS.Api.Common.Model.DataModel;
 using IMS.Api.Common.Model.RequestModel;
+using IMS.Api.Common.Model.RequestModel.Search;
 using IMS.Api.Common.Model.ResponseModel;
 using IMS.Api.Core.ICoreService;
 using IMS.Extensions;
@@ -69,13 +70,11 @@ namespace IMS.Controllers
         }
 
         [AllowAnonymous, HttpPut, Route("Update")]
-        public async Task<IActionResult> Update([FromForm] ProductUpdateRequestModel productRequest)
+        public async Task<IActionResult> Update(ProductUpdateRequestModel productRequest)
         {
             try
             {
-                long UserId = UserID;
-                long CompanyId = User.GetUserCompanyId();
-                APIResponse response = await _productCore.Update(productRequest, UserId, CompanyId);
+                APIResponse response = await _productCore.Update(productRequest);
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();

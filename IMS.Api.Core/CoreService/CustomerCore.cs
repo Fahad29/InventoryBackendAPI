@@ -5,11 +5,11 @@ using IMS.Api.Common.Model.DataModel;
 using IMS.Api.Common.Model.Params;
 using IMS.Api.Common.Model.RequestModel;
 using IMS.Api.Common.Model.ResponseModel;
-using IMS.Api.Core.CoreService;
+using IMS.Api.Core.ICoreService;
 using IMS.Api.Service.IRepository;
 using System.Net;
 
-namespace IMS.Api.Core.ICoreService
+namespace IMS.Api.Core.CoreService
 {
     public class CustomerCore : ICustomerCore
     {
@@ -60,7 +60,7 @@ namespace IMS.Api.Core.ICoreService
                 }
                 else
                 {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent,Constant.RecordNotFound);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
                 }
             }
             catch (Exception ex)
@@ -80,14 +80,14 @@ namespace IMS.Api.Core.ICoreService
                 customer = _iRepository.CreateSP<Customer>(customer, Constant.SpCreateCustomer);
 
                 return _apiResponse.ReturnResponse(HttpStatusCode.Created, customer);
-                
+
             }
             catch (Exception ex)
             {
                 APIConfig.Log.Debug("Exception: " + ex.Message);
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
-     
+
         }
 
         public async Task<APIResponse> Update(CustomerUpdateRequestModel model)
@@ -107,7 +107,7 @@ namespace IMS.Api.Core.ICoreService
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
 
             }
-            
+
 
 
         }
@@ -127,7 +127,7 @@ namespace IMS.Api.Core.ICoreService
                 {
                     return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.InValidRecordId);
                 }
-           
+
             }
             catch (Exception ex)
             {
@@ -135,7 +135,7 @@ namespace IMS.Api.Core.ICoreService
                 _apiResponse.StatusCode = HttpStatusCode.BadRequest;
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
-           
+
         }
 
 

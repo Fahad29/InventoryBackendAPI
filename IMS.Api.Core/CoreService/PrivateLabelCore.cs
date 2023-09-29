@@ -7,12 +7,12 @@ using IMS.Api.Common.Model.RequestModel;
 using IMS.Api.Common.Model.RequestModel.Search;
 using IMS.Api.Common.Model.ResponseModel;
 using IMS.Api.Common.Model.ResponseModel.Search;
-using IMS.Api.Core.CoreService;
+using IMS.Api.Core.ICoreService;
 using IMS.Api.Service.IRepository;
 using Microsoft.AspNetCore.Http;
 using System.Net;
 
-namespace IMS.Api.Core.ICoreService
+namespace IMS.Api.Core.CoreService
 {
     public class PrivateLabelCore : IPrivateLabelCore
     {
@@ -178,7 +178,7 @@ namespace IMS.Api.Core.ICoreService
                 int? TotalCount = _iRepository.Search<int>(model, Constant.SpGetPrivateLabelTotalCount).FirstOrDefault();
                 if (TotalCount > 0)
                 {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, new { TotalCount = TotalCount });
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, new { TotalCount });
                 }
                 else
                 {

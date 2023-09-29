@@ -6,11 +6,11 @@ using IMS.Api.Common.Model.Params;
 using IMS.Api.Common.Model.RequestModel;
 using IMS.Api.Common.Model.RequestModel.Search;
 using IMS.Api.Common.Model.ResponseModel;
-using IMS.Api.Core.CoreService;
+using IMS.Api.Core.ICoreService;
 using IMS.Api.Service.IRepository;
 using System.Net;
 
-namespace IMS.Api.Core.ICoreService
+namespace IMS.Api.Core.CoreService
 {
     public class CompanyCore : ICompanyCore
     {
@@ -61,7 +61,7 @@ namespace IMS.Api.Core.ICoreService
                 }
                 else
                 {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent,Constant.RecordNotFound);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
                 }
             }
             catch (Exception ex)
@@ -81,14 +81,14 @@ namespace IMS.Api.Core.ICoreService
                 Company = _iRepository.CreateSP<Company>(Company, Constant.SpCreateCompany);
 
                 return _apiResponse.ReturnResponse(HttpStatusCode.Created, Company);
-                
+
             }
             catch (Exception ex)
             {
                 APIConfig.Log.Debug("Exception: " + ex.Message);
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
-     
+
         }
 
         public async Task<APIResponse> Update(CompanyUpdateRequestModel model)
@@ -108,7 +108,7 @@ namespace IMS.Api.Core.ICoreService
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
 
             }
-            
+
 
 
         }
@@ -121,14 +121,14 @@ namespace IMS.Api.Core.ICoreService
                 if (CompanyId > 0)
                 {
 
-                    _iRepository.CreateSP<Company>(new { Id = CompanyId, UpdatedBy =APIConfig.UserId }, Constant.SpDeleteCompany);
+                    _iRepository.CreateSP<Company>(new { Id = CompanyId, UpdatedBy = APIConfig.UserId }, Constant.SpDeleteCompany);
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.DeleteRecord);
                 }
                 else
                 {
                     return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.InValidRecordId);
                 }
-           
+
             }
             catch (Exception ex)
             {
@@ -136,7 +136,7 @@ namespace IMS.Api.Core.ICoreService
                 _apiResponse.StatusCode = HttpStatusCode.BadRequest;
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
-           
+
         }
 
         public async Task<APIResponse> TotalCount(BaseFilter model)
@@ -147,7 +147,7 @@ namespace IMS.Api.Core.ICoreService
                 int? TotalCount = _iRepository.Search<int>(model, Constant.SpCompanyTotalCount).FirstOrDefault();
                 if (TotalCount > 0)
                 {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, new { TotalCount = TotalCount });
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, new { TotalCount });
                 }
                 else
                 {

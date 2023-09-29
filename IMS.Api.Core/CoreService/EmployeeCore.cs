@@ -119,7 +119,7 @@ namespace IMS.Api.Core.ICoreService
                 Employee employee = model.MapTo<Employee>();
                 employee =  _iRepository.CreateSP<Employee>(employee, Constant.SpCreateEmployee);
                 if (model.ProfilePhoto != null)
-                    await _attachmentCore.UploadImages(new List<IFormFile>() { model.ProfilePhoto }, 0, (long)employee?.Id, (int)AttachmentTypeEnum.ProfilePicture);
+                    await _attachmentCore.UploadImages(new List<IFormFile>() { model.ProfilePhoto }, (long)employee.UserId, (long)employee?.Id, (int)AttachmentTypeEnum.ProfilePicture);
 
                 return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.UpdateRecord);
             }

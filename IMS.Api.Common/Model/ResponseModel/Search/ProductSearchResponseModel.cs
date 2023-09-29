@@ -1,6 +1,6 @@
-﻿namespace IMS.Api.Common.Model.ResponseModel
+﻿namespace IMS.Api.Common.Model.ResponseModel.Search
 {
-    public class ProductSearchResponseModel 
+    public class ProductSearchResponseModel
     {
         public int Id { get; set; }
         public string Brand { get; set; }

@@ -7,12 +7,12 @@ using IMS.Api.Common.Model.RequestModel;
 using IMS.Api.Common.Model.RequestModel.Search;
 using IMS.Api.Common.Model.ResponseModel;
 using IMS.Api.Common.Model.ResponseModel.Search;
-using IMS.Api.Core.CoreService;
+using IMS.Api.Core.ICoreService;
 using IMS.Api.Service.IRepository;
 using System.Net;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
-namespace IMS.Api.Core.ICoreService
+namespace IMS.Api.Core.CoreService
 {
     public class DealCore : IDealCore
     {
@@ -63,7 +63,7 @@ namespace IMS.Api.Core.ICoreService
                 }
                 else
                 {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent,Constant.RecordNotFound);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
                 }
             }
             catch (Exception ex)
@@ -74,29 +74,29 @@ namespace IMS.Api.Core.ICoreService
             }
         }
 
-        public async Task<APIResponse> Create(List<DealCreateRequestModel>  model)
+        public async Task<APIResponse> Create(List<DealCreateRequestModel> model)
         {
             APIConfig.Log.Debug("CALLING API\" deal create \"  STARTED");
             try
             {
                 List<Deal> dealList = new List<Deal>();
-                foreach(var item in model)
+                foreach (var item in model)
                 {
-                    Deal deal =  item.MapTo<Deal>();
+                    Deal deal = item.MapTo<Deal>();
                     _iRepository.CreateSP(deal, Constant.SpCreateDeal);
                     dealList.Add(deal);
                 }
                 //_iRepository.InsertInBulk<Deal>(dealList,"Deal",null);
 
                 return _apiResponse.ReturnResponse(HttpStatusCode.Created, Constant.SuccessResponse);
-                
+
             }
             catch (Exception ex)
             {
                 APIConfig.Log.Debug("Exception: " + ex.Message);
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
-     
+
         }
 
         public async Task<APIResponse> Update(DealUpdateRequestModel model)
@@ -116,7 +116,7 @@ namespace IMS.Api.Core.ICoreService
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
 
             }
-            
+
 
 
         }
@@ -136,7 +136,7 @@ namespace IMS.Api.Core.ICoreService
                 {
                     return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.InValidRecordId);
                 }
-           
+
             }
             catch (Exception ex)
             {
@@ -144,7 +144,7 @@ namespace IMS.Api.Core.ICoreService
                 _apiResponse.StatusCode = HttpStatusCode.BadRequest;
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
-           
+
         }
 
         public async Task<APIResponse> TotalCount(DealSearchRequestModel model)
@@ -155,7 +155,7 @@ namespace IMS.Api.Core.ICoreService
                 int? TotalCount = _iRepository.Search<int>(model, Constant.SpGetDealTotalCount).FirstOrDefault();
                 if (TotalCount > 0)
                 {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, new { TotalCount = TotalCount });
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, new { TotalCount });
                 }
                 else
                 {
