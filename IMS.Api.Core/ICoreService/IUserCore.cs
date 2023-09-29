@@ -11,5 +11,6 @@ namespace IMS.Api.Core.ICoreService
         Task<APIResponse> Create(UserRequest userRequest);
         Task<APIResponse> Update(UserRequest userRequest);
         Task<APIResponse> Delete(int CompanyId);
+        Task<APIResponse> TotalCount(BaseFilter model);
     }
 }

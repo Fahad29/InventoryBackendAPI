@@ -4,6 +4,7 @@ using IMS.Api.Common.Model.CommonModel;
 using IMS.Api.Common.Model.DataModel;
 using IMS.Api.Common.Model.Params;
 using IMS.Api.Common.Model.RequestModel;
+using IMS.Api.Common.Model.RequestModel.Search;
 using IMS.Api.Common.Model.ResponseModel;
 using IMS.Api.Core.CoreService;
 using IMS.Api.Service.IRepository;
@@ -138,6 +139,27 @@ namespace IMS.Api.Core.ICoreService
            
         }
 
-
+        public async Task<APIResponse> TotalCount(BaseFilter model)
+        {
+            APIConfig.Log.Debug("CALLING API\" Company TotalCount \"  STARTED");
+            try
+            {
+                int? TotalCount = _iRepository.Search<int>(model, Constant.SpCompanyTotalCount).FirstOrDefault();
+                if (TotalCount > 0)
+                {
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, new { TotalCount = TotalCount });
+                }
+                else
+                {
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
+                }
+            }
+            catch (Exception ex)
+            {
+                APIConfig.Log.Debug("Exception: " + ex.Message);
+                _apiResponse.StatusCode = HttpStatusCode.BadRequest;
+                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
+            }
+        }
     }
 }

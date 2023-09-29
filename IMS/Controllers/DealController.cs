@@ -102,7 +102,7 @@ namespace IMS.Controllers
         }
 
 
-        [AllowAnonymous, HttpPost, Route("TotalCount")]
+        [HttpPost, Route("TotalCount")]
         public async Task<IActionResult> TotalCount(DealSearchRequestModel model)
         {
             try

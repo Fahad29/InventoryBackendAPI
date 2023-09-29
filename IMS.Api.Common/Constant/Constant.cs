@@ -51,6 +51,15 @@
         public const string SpUpdateCompany = "Usp_update_company";
         public const string SpGetCompany = "Usp_get_company";
         public const string SpDeleteCompany = "Usp_Delete_Company";
+        public const string SpCompanyTotalCount = "Usp_Get_CompanyTotalCount";
+        #endregion
+
+        #region Employee
+        public const string SpCreateEmployee = "Usp_create_company";
+        public const string SpUpdateEmployee = "Usp_update_company";
+        public const string SpGetEmployee = "Usp_get_company";
+        public const string SpDeleteEmployee = "Usp_Delete_Employee";
+        public const string SpEmployeeTotalCount = "Usp_Get_EmployeeTotalCount";
         #endregion
 
         #region Customer
@@ -92,6 +101,7 @@
         public const string SpUpdateUser = "Usp_update_user";
         public const string SpGetUser = "Usp_get_user";
         public const string SpDeleteUser = "Usp_Delete_user";
+        public const string SpGetUserTotalCount = "Usp_Get_UserTotalCount";
         #endregion
 
         #region Product SPs

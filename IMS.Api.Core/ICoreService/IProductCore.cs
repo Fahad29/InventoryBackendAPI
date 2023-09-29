@@ -1,4 +1,5 @@
 ﻿using IMS.Api.Common.Model.RequestModel;
+using IMS.Api.Common.Model.RequestModel.Search;
 using IMS.Api.Common.Model.ResponseModel;
 
 namespace IMS.Api.Core.ICoreService

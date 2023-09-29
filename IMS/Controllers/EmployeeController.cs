@@ -1,8 +1,11 @@
 ﻿using IMS.Api.Common.Model.CommonModel;
+using IMS.Api.Common.Model.Params;
 using IMS.Api.Common.Model.RequestModel;
+using IMS.Api.Common.Model.RequestModel.Search;
 using IMS.Api.Common.Model.ResponseModel;
 using IMS.Api.Core.CoreService;
 using IMS.Api.Core.ICoreService;
+using IMS.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,20 +13,20 @@ namespace IMS.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : BaseController
+    public class EmployeeController : BaseController
     {
-        readonly IUserCore _userCore;
-        public UserController(IUserCore userCore, APIResponse apiResponse)
+        readonly IEmployeeCore _employeeCore;
+        public EmployeeController(IEmployeeCore employeeCore)
         {
-            _userCore = userCore;
+            _employeeCore = employeeCore;
         }
 
-        [AllowAnonymous, HttpPost, Route("Search")]
+        [HttpPost, Route("Search")]
         public async Task<IActionResult> Search(BaseFilter model)
         {
             try
             {
-                APIResponse response = await _userCore.Search(model);
+                APIResponse response = await _employeeCore.Search(model);
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();
@@ -34,12 +37,12 @@ namespace IMS.Controllers
             }
         }
 
-        [AllowAnonymous, HttpGet, Route("GetById")]
-        public async Task<IActionResult> GetById(int userId)
+        [HttpGet, Route("GetById")]
+        public async Task<IActionResult> GetById(int employeeId)
         {
             try
             {
-                APIResponse response = await _userCore.GetById(userId);
+                APIResponse response = await _employeeCore.GetById(employeeId);
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();
@@ -50,12 +53,12 @@ namespace IMS.Controllers
             }
         }
 
-        [AllowAnonymous, HttpPost, Route("Create")]
-        public async Task<IActionResult> Create(UserRequest userRequest)
+        [HttpPost, Route("Create")]
+        public async Task<IActionResult> Create(EmployeeCreateRequestModel employeeRequest)
         {
             try
             {
-                APIResponse response = await _userCore.Create(userRequest);
+                APIResponse response = await _employeeCore.Create(employeeRequest);
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();
@@ -66,12 +69,12 @@ namespace IMS.Controllers
             }
         }
 
-        [AllowAnonymous, HttpPut, Route("Update")]
-        public async Task<IActionResult> Update(UserRequest userRequest)
+        [HttpPut, Route("Update")]
+        public async Task<IActionResult> Update(EmployeeUpdateRequestModel employeeRequest)
         {
             try
             {
-                APIResponse response = await _userCore.Update(userRequest);
+                APIResponse response = await _employeeCore.Update(employeeRequest);
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();
@@ -82,12 +85,12 @@ namespace IMS.Controllers
             }
         }
 
-        [AllowAnonymous, HttpDelete, Route("Delete")]
-        public async Task<IActionResult> Delete(int userId)
+        [HttpDelete, Route("Delete")]
+        public async Task<IActionResult> Delete(int employeeId)
         {
             try
             {
-                APIResponse response = await _userCore.Delete(userId);
+                APIResponse response = await _employeeCore.Delete(employeeId);
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();
@@ -103,7 +106,7 @@ namespace IMS.Controllers
         {
             try
             {
-                APIResponse response = await _userCore.TotalCount(model);
+                APIResponse response = await _employeeCore.TotalCount(model);
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();

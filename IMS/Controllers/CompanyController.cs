@@ -1,8 +1,10 @@
 ﻿using IMS.Api.Common.Model.CommonModel;
 using IMS.Api.Common.Model.Params;
 using IMS.Api.Common.Model.RequestModel;
+using IMS.Api.Common.Model.RequestModel.Search;
 using IMS.Api.Common.Model.ResponseModel;
 using IMS.Api.Core.CoreService;
+using IMS.Api.Core.ICoreService;
 using IMS.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -89,6 +91,22 @@ namespace IMS.Controllers
             try
             {
                 APIResponse response = await _companyCore.Delete(companyId);
+                if (response?.Response != null)
+                    return Ok(response);
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        [HttpPost, Route("TotalCount")]
+        public async Task<IActionResult> TotalCount(BaseFilter model)
+        {
+            try
+            {
+                APIResponse response = await _companyCore.TotalCount(model);
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();

@@ -35,7 +35,7 @@ namespace IMS.Api.Core.ICoreService
                 }
                 else
                 {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, null);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
                 }
 
 

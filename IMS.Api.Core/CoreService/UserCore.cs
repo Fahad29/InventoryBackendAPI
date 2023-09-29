@@ -132,6 +132,29 @@ namespace IMS.Api.Core.CoreService
 
         }
 
-       
+        public async Task<APIResponse> TotalCount(BaseFilter model)
+        {
+            APIConfig.Log.Debug("CALLING API\" user TotalCount \"  STARTED");
+            try
+            {
+                int? TotalCount = _iRepository.Search<int>(model, Constant.SpGetUserTotalCount).FirstOrDefault();
+                if (TotalCount > 0)
+                {
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, new { TotalCount = TotalCount });
+                }
+                else
+                {
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
+                }
+            }
+            catch (Exception ex)
+            {
+                APIConfig.Log.Debug("Exception: " + ex.Message);
+                _apiResponse.StatusCode = HttpStatusCode.BadRequest;
+                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
+            }
+        }
+
+
     }
 }

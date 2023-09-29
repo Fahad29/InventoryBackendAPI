@@ -152,7 +152,7 @@ namespace IMS.Api.Core.ICoreService
             APIConfig.Log.Debug("CALLING API\" Deal TotalCount \"  STARTED");
             try
             {
-                int? TotalCount = _iRepository.Search<int>(new { CompanyId = model }, Constant.SpGetDealTotalCount).FirstOrDefault();
+                int? TotalCount = _iRepository.Search<int>(model, Constant.SpGetDealTotalCount).FirstOrDefault();
                 if (TotalCount > 0)
                 {
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, new { TotalCount = TotalCount });
