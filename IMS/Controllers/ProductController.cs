@@ -58,7 +58,7 @@ namespace IMS.Controllers
             {
                 long UserId = UserID;
                 long CompanyId = User.GetUserCompanyId();
-                APIResponse response = await _productCore.Create(productRequest, UserId, CompanyId);
+                APIResponse response = await _productCore.Create(productRequest);
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();
