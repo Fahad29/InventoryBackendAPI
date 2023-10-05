@@ -94,7 +94,7 @@ namespace IMS.Api.Core.CoreService
             {
                 if (productId > 0)
                 {
-                    _iRepository.CreateSP<CompanyProduct>(new { Id = productId}, Constant.SpDeleteCompanyProduct);
+                    _iRepository.CreateSP<CompanyProduct>(new { Id = productId , UpdatedBy = APIConfig.UserId}, Constant.SpDeleteCompanyProduct);
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.DeleteRecord);
                 }
                 else

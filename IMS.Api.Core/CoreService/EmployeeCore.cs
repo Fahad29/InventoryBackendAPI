@@ -29,7 +29,7 @@ namespace IMS.Api.Core.CoreService
             _attachmentCore = attachmentCore;
         }
 
-        public async Task<APIResponse> Search(BaseFilter model)
+        public async Task<APIResponse> Search(EmployeeSearchRequestModel model)
         {
             APIConfig.Log.Debug("CALLING API\" Employee Get all \"  STARTED");
             try
@@ -43,7 +43,7 @@ namespace IMS.Api.Core.CoreService
                 }
                 else
                 {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, null);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
                 }
 
 
@@ -94,12 +94,18 @@ namespace IMS.Api.Core.CoreService
                     MobileNo = model?.Mobile1,
                     PasswordHash = model.Password != null ? model.Password.MD5Encrypt() : ExtensionMethod.GenPassword(),
                 };
+
+                user = _iRepository.Search<User>(user, Constant.SpCreateUser)?.FirstOrDefault();
                 long ProfilePhotoId;
                 Employee employee = model.MapTo<Employee>();
                 employee.UserId = user.UserId;
                 employee = _iRepository.CreateSP<Employee>(employee, Constant.SpCreateEmployee);
-                if (model.ProfilePhoto != null)
+                if (employee != null && user != null && model.ProfilePhoto != null)
                     await _attachmentCore.UploadImages(new List<IFormFile>() { model.ProfilePhoto }, user.UserId, (long)employee?.Id, (int)AttachmentTypeEnum.ProfilePicture);
+
+                #region Email Work
+
+                #endregion
 
                 return _apiResponse.ReturnResponse(HttpStatusCode.Created, employee);
             }
@@ -117,7 +123,7 @@ namespace IMS.Api.Core.CoreService
             {
                 APIConfig.Log.Debug("CALLING API\" Employee update \"  STARTED");
                 Employee employee = model.MapTo<Employee>();
-                employee = _iRepository.CreateSP<Employee>(employee, Constant.SpCreateEmployee);
+                employee = _iRepository.CreateSP<Employee>(employee, Constant.SpUpdateEmployee);
                 if (model.ProfilePhoto != null)
                     await _attachmentCore.UploadImages(new List<IFormFile>() { model.ProfilePhoto }, (long)employee.UserId, (long)employee?.Id, (int)AttachmentTypeEnum.ProfilePicture);
 
@@ -129,9 +135,6 @@ namespace IMS.Api.Core.CoreService
                 _apiResponse.StatusCode = HttpStatusCode.BadRequest;
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
-
-
-
         }
 
         public async Task<APIResponse> Delete(int EmployeeId)
@@ -160,7 +163,7 @@ namespace IMS.Api.Core.CoreService
 
         }
 
-        public async Task<APIResponse> TotalCount(BaseFilter model)
+        public async Task<APIResponse> TotalCount(EmployeeSearchRequestModel model)
         {
             APIConfig.Log.Debug("CALLING API\" Employee TotalCount \"  STARTED");
             try

@@ -1,8 +1,11 @@
-﻿using IMS.Api.Common.Model.DataModel;
+﻿using IMS.Api.Common.Model.CommonModel;
+using IMS.Api.Common.Model.Params;
 using IMS.Api.Common.Model.RequestModel;
 using IMS.Api.Common.Model.RequestModel.Search;
 using IMS.Api.Common.Model.ResponseModel;
 using IMS.Api.Core.ICoreService;
+using IMS.Api.Service.IRepository;
+using IMS.Api.Service.Repository;
 using IMS.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,20 +14,21 @@ namespace IMS.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductController : BaseController
+    public class OrderController : BaseController
     {
-        readonly IProductCore _productCore;
-        public ProductController(IProductCore productCore)
+        readonly IOrderCore _orderCore;
+        readonly IOrderRepository _iOrderRepository;
+        public OrderController(IOrderCore orderCore)
         {
-            _productCore = productCore;
+            _orderCore = orderCore;
         }
 
-        [AllowAnonymous, HttpPost, Route("Search")]
-        public async Task<IActionResult> Search(ProductSearchRequestModel model)
+        [HttpPost, Route("Search")]
+        public async Task<IActionResult> Search(OrderSearchRequestModel model)
         {
             try
             {
-                APIResponse response = await _productCore.Search(model);
+                APIResponse response = await _orderCore.Search(model);
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();
@@ -35,12 +39,12 @@ namespace IMS.Controllers
             }
         }
 
-        [AllowAnonymous, HttpGet, Route("GetById")]
-        public async Task<IActionResult> GetById(int productId)
+        [HttpGet, Route("GetById")]
+        public async Task<IActionResult> GetById(int orderId)
         {
             try
             {
-                APIResponse response = await _productCore.GetById(productId);
+                APIResponse response = await _orderCore.GetById(orderId);
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();
@@ -51,46 +55,28 @@ namespace IMS.Controllers
             }
         }
 
-        [AllowAnonymous, HttpPost, Route("Create")]
-        public async Task<IActionResult> Create([FromForm] ProductRequestModel productRequest)
+        [HttpPost, Route("Create")]
+        public async Task<IActionResult> Create(OrderCreateRequestModel orderRequest)
         {
             try
             {
-                long UserId = UserID;
-                long CompanyId = User.GetUserCompanyId();
-                APIResponse response = await _productCore.Create(productRequest);
+                APIResponse response = await _orderCore.Create(orderRequest);
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();
             }
             catch (Exception ex)
             {
-                return BadRequest(ex);
+                return null;
             }
         }
 
-        [AllowAnonymous, HttpPut, Route("Update")]
-        public async Task<IActionResult> Update([FromForm] ProductUpdateRequestModel productRequest)
+        [HttpPut, Route("Update")]
+        public async Task<IActionResult> Update([FromForm] OrderUpdateRequestModel orderRequest)
         {
             try
             {
-                APIResponse response = await _productCore.Update(productRequest);
-                if (response?.Response != null)
-                    return Ok(response);
-                return BadRequest();
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
-
-        [AllowAnonymous, HttpDelete, Route("Delete")]
-        public async Task<IActionResult> Delete(int productId)
-        {
-            try
-            {
-                APIResponse response = await _productCore.Delete(productId, UserID);
+                APIResponse response = await _orderCore.Update(orderRequest);
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();
@@ -101,12 +87,28 @@ namespace IMS.Controllers
             }
         }
 
-        [AllowAnonymous, HttpGet, Route("TotalCount")]
-        public async Task<IActionResult> TotalCount(ProductSearchRequestModel model)
+        [HttpDelete, Route("Delete")]
+        public async Task<IActionResult> Delete(int orderId)
         {
             try
             {
-                APIResponse response = await _productCore.TotalCount(model);
+                APIResponse response = await _orderCore.Delete(orderId);
+                if (response?.Response != null)
+                    return Ok(response);
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        [HttpPost, Route("TotalCount")]
+        public async Task<IActionResult> TotalCount(OrderSearchRequestModel model)
+        {
+            try
+            {
+                APIResponse response = await _orderCore.TotalCount(model);
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();

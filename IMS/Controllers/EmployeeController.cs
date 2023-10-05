@@ -21,7 +21,7 @@ namespace IMS.Controllers
         }
 
         [HttpPost, Route("Search")]
-        public async Task<IActionResult> Search(BaseFilter model)
+        public async Task<IActionResult> Search(EmployeeSearchRequestModel model)
         {
             try
             {
@@ -53,7 +53,7 @@ namespace IMS.Controllers
         }
 
         [HttpPost, Route("Create")]
-        public async Task<IActionResult> Create(EmployeeCreateRequestModel employeeRequest)
+        public async Task<IActionResult> Create([FromForm]EmployeeCreateRequestModel employeeRequest)
         {
             try
             {
@@ -69,7 +69,7 @@ namespace IMS.Controllers
         }
 
         [HttpPut, Route("Update")]
-        public async Task<IActionResult> Update(EmployeeUpdateRequestModel employeeRequest)
+        public async Task<IActionResult> Update([FromForm] EmployeeUpdateRequestModel employeeRequest)
         {
             try
             {
@@ -101,7 +101,7 @@ namespace IMS.Controllers
         }
 
         [HttpPost, Route("TotalCount")]
-        public async Task<IActionResult> TotalCount(BaseFilter model)
+        public async Task<IActionResult> TotalCount(EmployeeSearchRequestModel model)
         {
             try
             {

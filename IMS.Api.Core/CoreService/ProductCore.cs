@@ -69,18 +69,16 @@ namespace IMS.Api.Core.CoreService
             }
         }
 
-        public async Task<APIResponse> Create(ProductRequestModel productRequest, long UserId, long CompanyId)
+        public async Task<APIResponse> Create(ProductRequestModel productRequest)
         {
             APIConfig.Log.Debug("CALLING API\" ProductDetail create \"  STARTED");
             try
             {
                 ProductDetail product = productRequest.MapTo<ProductDetail>();
-                product.CreatedBy = (int)UserId;
-                product.CreatedOn = DateTime.Now;
                 product = _iRepository.CreateSP<ProductDetail>(product, Constant.SpCreateProductDetail);
                 if (product != null && productRequest.Attachments != null && productRequest.Attachments.Count > 0)
                 {
-                    _attachmentCore.UploadImages(productRequest.Attachments, UserId, product.Id, (int)AttachmentTypeEnum.ProductImages);
+                    _attachmentCore.UploadImages(productRequest.Attachments, APIConfig.UserId, product.Id, (int)AttachmentTypeEnum.ProductImages);
                 }
 
                 return _apiResponse.ReturnResponse(HttpStatusCode.Created, product);
@@ -94,18 +92,16 @@ namespace IMS.Api.Core.CoreService
 
         }
 
-        public async Task<APIResponse> Update(ProductUpdateRequestModel productRequest, long UserId, long CompanyId)
+        public async Task<APIResponse> Update(ProductUpdateRequestModel productRequest)
         {
             try
             {
                 APIConfig.Log.Debug("CALLING API\" ProductDetail update \"  STARTED");
                 ProductDetail product = productRequest.MapTo<ProductDetail>();
-                product.UpdatedBy = (int)UserId;
-                product.UpdatedOn = DateTime.Now;
                 product = _iRepository.CreateSP<ProductDetail>(product, Constant.SpCreateProductDetail);
                 if (product != null && productRequest.Attachments != null && productRequest.Attachments.Count > 0)
                 {
-                    _attachmentCore.UploadImages(productRequest.Attachments, UserId, product.Id, (int)AttachmentTypeEnum.ProductImages);
+                    _attachmentCore.UploadImages(productRequest.Attachments, APIConfig.UserId, product.Id, (int)AttachmentTypeEnum.ProductImages);
                 }
                 return _apiResponse.ReturnResponse(HttpStatusCode.OK, product);
 

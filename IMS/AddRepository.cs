@@ -76,7 +76,14 @@ namespace IMS
 
             services.AddScoped<IRepository<Attachment>, GenericRepository<Attachment>>();
             services.AddScoped<IAttachmentCore, AttachmentCore>();
-            return services;
+
+            services.AddScoped<IRepository<Employee>, GenericRepository<Employee>>();
+            services.AddScoped<IEmployeeCore, EmployeeCore>();
+
+            services.AddScoped<IOrderRepository, OrderRepository>();
+            services.AddScoped<IRepository<Order>, GenericRepository<Order>>();
+            services.AddScoped<IOrderCore, OrderCore>(); 
+                return services;
         }
     }
 }

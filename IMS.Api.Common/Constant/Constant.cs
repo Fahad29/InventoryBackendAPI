@@ -55,9 +55,9 @@
         #endregion
 
         #region Employee
-        public const string SpCreateEmployee = "Usp_create_company";
-        public const string SpUpdateEmployee = "Usp_update_company";
-        public const string SpGetEmployee = "Usp_get_company";
+        public const string SpCreateEmployee = "Usp_create_Employee";
+        public const string SpUpdateEmployee = "Usp_update_Employee";
+        public const string SpGetEmployee = "Usp_get_Employee";
         public const string SpDeleteEmployee = "Usp_Delete_Employee";
         public const string SpEmployeeTotalCount = "Usp_Get_EmployeeTotalCount";
         #endregion
@@ -66,7 +66,36 @@
         public const string SpCreateCustomer = "Usp_create_Customer";
         public const string SpUpdateCustomer = "Usp_update_Customer";
         public const string SpGetCustomer = "Usp_get_Customer";
+        public const string SpGetCustomerById = "Usp_getCustomerById";
         public const string SpDeleteCustomer = "Usp_Delete_Customer";
+        public const string SpGetCustomerTotalCount = "Usp_Get_CustomerTotalCount";
+        #endregion
+
+        #region Order
+        public const string SpCreateOrder = "Usp_create_Order";
+        public const string SpUpdateOrder = "Usp_update_Order";
+        public const string SpGetOrder = "Usp_get_Order";
+        public const string SpGetOrderById = "Usp_getOrderById";
+        public const string SpDeleteOrder = "Usp_Delete_Order";
+        public const string SpGetOrderTotalCount = "Usp_Get_OrderTotalCount";
+        #endregion
+
+        #region OrderItem
+        public const string SpCreateOrderItem = "Usp_create_OrderItem";
+        public const string SpUpdateOrderItem = "Usp_update_OrderItem";
+        public const string SpGetOrderItem = "Usp_get_OrderItem";
+        public const string SpGetOrderItemById = "Usp_getOrderItemById";
+        public const string SpDeleteOrderItem = "Usp_Delete_OrderItem";
+        public const string SpGetOrderItemTotalCount = "Usp_Get_OrderItemTotalCount";
+        #endregion
+
+        #region Transaction
+        public const string SpCreateTransaction = "Usp_create_Transaction";
+        public const string SpUpdateTransaction = "Usp_update_Transaction";
+        public const string SpGetTransaction = "Usp_get_Transaction";
+        public const string SpGetTransactionById = "Usp_getTransactionById";
+        public const string SpDeleteTransaction = "Usp_Delete_Transaction";
+        public const string SpGetTransactionTotalCount = "Usp_Get_TransactionTotalCount";
         #endregion
 
         #region PrivateLabel
@@ -110,8 +139,6 @@
         public const string SpCreateProductBrand = "Usp_Create_ProductBrand";
         public const string SpUpdateProductBrand = "Usp_Update_ProductBrand";
         public const string SpDeleteProductBrand = "Usp_Delete_ProductBrand";
-
-
         #endregion
 
         #region Deals

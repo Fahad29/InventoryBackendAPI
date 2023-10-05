@@ -1,4 +1,5 @@
 ﻿using IMS.Api.Common.Constant;
+using IMS.Api.Common.Enumerations;
 using IMS.Api.Common.Extensions;
 using IMS.Api.Common.Model.CommonModel;
 using IMS.Api.Common.Model.DataModel;
@@ -9,30 +10,37 @@ using IMS.Api.Common.Model.ResponseModel;
 using IMS.Api.Common.Model.ResponseModel.Search;
 using IMS.Api.Core.ICoreService;
 using IMS.Api.Service.IRepository;
+using Microsoft.AspNetCore.Http;
 using System.Net;
+using static IMS.Api.Common.Enumerations.Eumeration;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace IMS.Api.Core.CoreService
 {
-    public class CustomerCore : ICustomerCore
+    public class OrderCore : IOrderCore
     {
-        IRepository<Customer> _iRepository;
+        IRepository<Order> _iRepository;
+        IOrderRepository _iOrderRepository;
         APIResponse _apiResponse;
-        public CustomerCore(IRepository<Customer> iRepository, APIResponse apiResponse)
+        IAttachmentCore _attachmentCore;
+        public OrderCore(IRepository<Order> iRepository, APIResponse apiResponse, IAttachmentCore attachmentCore,IOrderRepository iOrderRepository)
         {
+            _iOrderRepository = iOrderRepository;
             _iRepository = iRepository;
             _apiResponse = apiResponse;
+            _attachmentCore = attachmentCore;
         }
 
-        public async Task<APIResponse> Search(CustomerSearchRequestModel model)
+        public async Task<APIResponse> Search(OrderSearchRequestModel model)
         {
-            APIConfig.Log.Debug("CALLING API\" customer Get all \"  STARTED");
+            APIConfig.Log.Debug("CALLING API\" Order Get all \"  STARTED");
             try
             {
 
-                List<CustomerSearchResponseModel> customerSearchResponseModel = _iRepository.Search<CustomerSearchResponseModel>(model, Constant.SpGetCustomer).ToList();
-                if (customerSearchResponseModel.Count > 0)
+                List<OrderSearchResponseModel> orderSearchResponseModel = _iRepository.Search<OrderSearchResponseModel>(model, Constant.SpGetOrder).ToList();
+                if (orderSearchResponseModel.Count > 0)
                 {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, customerSearchResponseModel);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, orderSearchResponseModel);
 
                 }
                 else
@@ -50,15 +58,15 @@ namespace IMS.Api.Core.CoreService
             }
         }
 
-        public async Task<APIResponse> GetById(int CustomerId)
+        public async Task<APIResponse> GetById(int OrderId)
         {
-            APIConfig.Log.Debug("CALLING API\" customer GetById \"  STARTED");
+            APIConfig.Log.Debug("CALLING API\" Order GetById \"  STARTED");
             try
             {
-                Customer customer = _iRepository.Search(new { Id = CustomerId }, Constant.SpGetCustomerById).FirstOrDefault();
-                if (customer != null)
+                Order Order = _iRepository.Search(new { Id = OrderId }, Constant.SpGetOrder).FirstOrDefault();
+                if (Order != null)
                 {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, customer);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, Order);
                 }
                 else
                 {
@@ -73,16 +81,21 @@ namespace IMS.Api.Core.CoreService
             }
         }
 
-        public async Task<APIResponse> Create(CustomerCreateRequestModel model)
+        public async Task<APIResponse> Create(OrderCreateRequestModel model)
         {
-            APIConfig.Log.Debug("CALLING API\" customer create \"  STARTED");
+            APIConfig.Log.Debug("CALLING API\" Order create \"  STARTED");
             try
             {
-                Customer customer = model.MapTo<Customer>();
-                customer = _iRepository.CreateSP<Customer>(customer, Constant.SpCreateCustomer);
+                OrderRequestModel orderRequestModel = model.MapTo<OrderRequestModel>();
+                #region
+                // will do Gatway Payment work here
+                #endregion
+              
+                _iOrderRepository.Create(orderRequestModel);
+               
+               
 
-                return _apiResponse.ReturnResponse(HttpStatusCode.Created, customer);
-
+                return _apiResponse.ReturnResponse(HttpStatusCode.Created, Constant.SuccessResponse);
             }
             catch (Exception ex)
             {
@@ -92,37 +105,36 @@ namespace IMS.Api.Core.CoreService
 
         }
 
-        public async Task<APIResponse> Update(CustomerUpdateRequestModel model)
+        public async Task<APIResponse> Update(OrderUpdateRequestModel model)
         {
             try
             {
-                APIConfig.Log.Debug("CALLING API\" customer update \"  STARTED");
-                Customer customer = model.MapTo<Customer>();
-                customer = _iRepository.CreateSP<Customer>(customer, Constant.SpUpdateCustomer);
-                return _apiResponse.ReturnResponse(HttpStatusCode.OK, customer);
-
+                APIConfig.Log.Debug("CALLING API\" Order update \"  STARTED");
+                Order order = model.MapTo<Order>();
+                order = _iRepository.CreateSP<Order>(order, Constant.SpUpdateOrder);
+              
+                return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.UpdateRecord);
             }
             catch (Exception ex)
             {
                 APIConfig.Log.Debug("Exception: " + ex.Message);
                 _apiResponse.StatusCode = HttpStatusCode.BadRequest;
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
-
             }
 
 
 
         }
 
-        public async Task<APIResponse> Delete(int CustomerId)
+        public async Task<APIResponse> Delete(int OrderId)
         {
-            APIConfig.Log.Debug("CALLING API\" customer delete \"  STARTED");
+            APIConfig.Log.Debug("CALLING API\" Order delete \"  STARTED");
             try
             {
-                if (CustomerId > 0)
+                if (OrderId > 0)
                 {
 
-                    _iRepository.CreateSP<Customer>(new { Id = CustomerId, UpdatedBy = APIConfig.UserId }, Constant.SpDeleteCustomer);
+                    _iRepository.CreateSP<Order>(new { Id = OrderId, UpdatedBy = APIConfig.UserId }, Constant.SpDeleteOrder);
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.DeleteRecord);
                 }
                 else
@@ -139,12 +151,13 @@ namespace IMS.Api.Core.CoreService
             }
 
         }
-        public async Task<APIResponse> TotalCount(CustomerSearchRequestModel model)
+
+        public async Task<APIResponse> TotalCount(OrderSearchRequestModel model)
         {
-            APIConfig.Log.Debug("CALLING API\" Customer TotalCount \"  STARTED");
+            APIConfig.Log.Debug("CALLING API\" Order TotalCount \"  STARTED");
             try
             {
-                int? TotalCount = _iRepository.Search<int>(model, Constant.SpGetCustomerTotalCount).FirstOrDefault();
+                int? TotalCount = _iRepository.Search<int>(model, Constant.SpGetOrderTotalCount).FirstOrDefault();
                 if (TotalCount > 0)
                 {
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, new { TotalCount });
@@ -161,8 +174,5 @@ namespace IMS.Api.Core.CoreService
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
         }
-
-
-
     }
 }

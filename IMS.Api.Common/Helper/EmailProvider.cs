@@ -9,8 +9,7 @@ namespace IMS.Api.Common.Helper
     public class EmailProvider : IEmailProvider
     {
         private SendGridMessage _mailMessage = null;
-   
-        SendGridClient client = new SendGridClient("Enter here SendGrid key"); 
+        SendGridClient client = new SendGridClient("Enter Send Grid Key here"); //SendGrid Fast Auth Account key
 
         string _content = string.Empty;
         string _htmlContent = string.Empty;
@@ -33,7 +32,7 @@ namespace IMS.Api.Common.Helper
 
         public static IEmailProvider CreateEmail(string fromAddress, List<string> strings)
         {
-            fromAddress = !string.IsNullOrEmpty(fromAddress) ? fromAddress : IMS.Api.Common.Constant.Constant.FromEmail;
+            fromAddress = !String.IsNullOrEmpty(fromAddress) ? fromAddress : IMS.Api.Common.Constant.Constant.FromEmail;
             return new EmailProvider(fromAddress, strings);
         }
 
@@ -51,7 +50,7 @@ namespace IMS.Api.Common.Helper
             foreach (string toAddress in toAddresses)
             {
                 emailaddress.Email = toAddress;
-                emailaddresslist?.Add(emailaddress);
+                emailaddresslist.Add(emailaddress);
             }
             _mailMessage.AddTos(emailaddresslist);
             return this;
