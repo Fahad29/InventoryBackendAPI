@@ -71,37 +71,37 @@ namespace IMS.Controllers
             }
         }
 
-        [HttpPut, Route("Update")]
-        public async Task<IActionResult> Update([FromForm] OrderUpdateRequestModel orderRequest)
-        {
-            try
-            {
-                APIResponse response = await _orderCore.Update(orderRequest);
-                if (response?.Response != null)
-                    return Ok(response);
-                return BadRequest();
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
+        //[HttpPut, Route("Update")]
+        //public async Task<IActionResult> Update([FromForm] OrderUpdateRequestModel orderRequest)
+        //{
+        //    try
+        //    {
+        //        APIResponse response = await _orderCore.Update(orderRequest);
+        //        if (response?.Response != null)
+        //            return Ok(response);
+        //        return BadRequest();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw;
+        //    }
+        //}
 
-        [HttpDelete, Route("Delete")]
-        public async Task<IActionResult> Delete(int orderId)
-        {
-            try
-            {
-                APIResponse response = await _orderCore.Delete(orderId);
-                if (response?.Response != null)
-                    return Ok(response);
-                return BadRequest();
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
+        //[HttpDelete, Route("Delete")]
+        //public async Task<IActionResult> Delete(int orderId)
+        //{
+        //    try
+        //    {
+        //        APIResponse response = await _orderCore.Delete(orderId);
+        //        if (response?.Response != null)
+        //            return Ok(response);
+        //        return BadRequest();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw;
+        //    }
+        //}
 
         [HttpPost, Route("TotalCount")]
         public async Task<IActionResult> TotalCount(OrderSearchRequestModel model)
@@ -109,6 +109,22 @@ namespace IMS.Controllers
             try
             {
                 APIResponse response = await _orderCore.TotalCount(model);
+                if (response?.Response != null)
+                    return Ok(response);
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        [HttpGet, Route("GetItemsByOrderId")]
+        public async Task<IActionResult> GetItemsByOrderId(int orderId)
+        {
+            try
+            {
+                APIResponse response = await _orderCore.GetItemsByOrderId(orderId);
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();

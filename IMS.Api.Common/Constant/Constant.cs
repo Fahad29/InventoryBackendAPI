@@ -66,7 +66,7 @@
         public const string SpCreateCustomer = "Usp_create_Customer";
         public const string SpUpdateCustomer = "Usp_update_Customer";
         public const string SpGetCustomer = "Usp_get_Customer";
-        public const string SpGetCustomerById = "Usp_getCustomerById";
+        public const string SpGetCustomerById = "Usp_get_CustomerById";
         public const string SpDeleteCustomer = "Usp_Delete_Customer";
         public const string SpGetCustomerTotalCount = "Usp_Get_CustomerTotalCount";
         #endregion
@@ -78,6 +78,8 @@
         public const string SpGetOrderById = "Usp_getOrderById";
         public const string SpDeleteOrder = "Usp_Delete_Order";
         public const string SpGetOrderTotalCount = "Usp_Get_OrderTotalCount";
+
+        public const string SpGetOrderItems = "Usp_get_OrderItems";
         #endregion
 
         #region OrderItem
@@ -93,7 +95,7 @@
         public const string SpCreateTransaction = "Usp_create_Transaction";
         public const string SpUpdateTransaction = "Usp_update_Transaction";
         public const string SpGetTransaction = "Usp_get_Transaction";
-        public const string SpGetTransactionById = "Usp_getTransactionById";
+        public const string SpGetTransactionById = "Usp_get_TransactionById";
         public const string SpDeleteTransaction = "Usp_Delete_Transaction";
         public const string SpGetTransactionTotalCount = "Usp_Get_TransactionTotalCount";
         #endregion
@@ -168,6 +170,15 @@
         public const string SpCompanyProductTotalCount = "Usp_Get_CompanyProductTotalCount";
         #endregion
 
+        #region CompanyProdcut
+        public const string SpCreateProcessorConfiguration = "Usp_create_ProcessorConfiguration";
+        public const string SpUpdateProcessorConfiguration = "Usp_update_ProcessorConfiguration";
+        public const string SpGetProcessorConfiguration = "Usp_Get_ProcessorConfiguration";
+        public const string SpGetProcessorConfigurationById = "Usp_Get_ProcessorConfigurationById";
+        public const string SpDeleteProcessorConfiguration = "Usp_Delete_ProcessorConfiguration";
+        #endregion
+
+
         #region Category
 
 
@@ -236,6 +247,10 @@
         public const string SpDeleteAttachments = "Delete_Attachments";
 
         #endregion
+
+
+
+        
 
         #endregion
 

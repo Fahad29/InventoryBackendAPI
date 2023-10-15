@@ -81,6 +81,15 @@ namespace IMS.Api.Core.CoreService
                     _attachmentCore.UploadImages(productRequest.Attachments, APIConfig.UserId, product.Id, (int)AttachmentTypeEnum.ProductImages);
                 }
 
+                if (APIConfig.CompanyId > 0)
+                {
+                    CompanyProduct companyProduct = new CompanyProduct()
+                    {
+                        ProductId = Convert.ToInt32(product?.Id)
+                    };
+                    _iRepository.CreateSP<CompanyProduct>(companyProduct, Constant.SpCreateCompanyProduct);
+                }
+
                 return _apiResponse.ReturnResponse(HttpStatusCode.Created, product);
 
             }

@@ -44,6 +44,9 @@ namespace IMS.Api.Common.Model.RequestModel
         public TransactionType TransactionType { get; set; }
         public CardType CardType { get; set; }
         public ProcessorType ProcessorType { get; set; }
-
+        public string? CardHolderName { get; set; }
+        public string? CardNumber { get; set; }
+        public string? Expiry { get; set; }
+        public string? CVV { get; set; }
     }
 }

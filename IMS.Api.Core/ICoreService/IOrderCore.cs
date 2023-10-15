@@ -9,6 +9,7 @@ namespace IMS.Api.Core.ICoreService
     {
         Task<APIResponse> Search(OrderSearchRequestModel model);
         Task<APIResponse> GetById(int Id);
+        Task<APIResponse> GetItemsByOrderId(int OrderId);
         Task<APIResponse> Create(OrderCreateRequestModel companyRequest);
         Task<APIResponse> Update(OrderUpdateRequestModel companyRequest);
         Task<APIResponse> Delete(int OrderId);

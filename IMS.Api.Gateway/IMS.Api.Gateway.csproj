@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -8,8 +8,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\IMS.Api.Common\IMS.Api.Common.csproj" />
-    <ProjectReference Include="..\IMS.Api.Gateway\IMS.Api.Gateway.csproj" />
-    <ProjectReference Include="..\IMS.Api.Service\IMS.Api.Service.csproj" />
   </ItemGroup>
 
 </Project>

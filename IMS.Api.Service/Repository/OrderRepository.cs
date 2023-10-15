@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using System.Reflection.Metadata;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
+using EllipticCurve.Utils;
 
 namespace IMS.Api.Service.Repository
 {
@@ -26,6 +27,9 @@ namespace IMS.Api.Service.Repository
 
         public async Task<Order> Create(OrderRequestModel model)
         {
+            Customer customer = new Customer();
+            Order order = new Order();
+            Transaction transaction = new Transaction();
             using (var conn = new SqlConnection(_connectionString))
             {
                 await conn.OpenAsync();
@@ -33,9 +37,7 @@ namespace IMS.Api.Service.Repository
                 {
                     try
                     {
-                        var customer = new Customer();
-                        var order = new Order();
-                        var transaction = new Transaction();
+                        
 
                         if (!string.IsNullOrEmpty(model.CustomerName) && !string.IsNullOrEmpty(model.CustomerMobileNo))
                         {
@@ -86,6 +88,10 @@ namespace IMS.Api.Service.Repository
                         transaction.IsVoided = false;
                         transaction.IsRefunded = false;
                         transaction.OrderId = order.Id;
+                        transaction.CardHolderName = model.CardHolderName;
+                        transaction.CardNumber = model.CardNumber;
+                        transaction.CVV = model.CVV;
+                        transaction.Expiry = model.Expiry;
 
                         // Insert the transaction
                         await conn.ExecuteAsync(
@@ -117,17 +123,16 @@ namespace IMS.Api.Service.Repository
                     }
                     catch (Exception ex)
                     {
+                        APIConfig.Log.Debug($"Transaction rolled back: {ex.Message}");
                         // An exception occurred, so roll back the transaction
                         trans.Rollback();
-                        Console.WriteLine($"Transaction rolled back: {ex.Message}");
                         throw; // Re-throw the exception to handle it at a higher level
                     }
                 }
             }
 
-            return null; // You might want to return the created order here
+            return order; // You might want to return the created order here
         }
-
 
         public Task<Order> Update(Order model)
         {

@@ -73,24 +73,26 @@ namespace IMS.Api.Core.CoreService
             }
         }
 
-        public async Task<APIResponse> Create(CustomerCreateRequestModel model)
-        {
-            APIConfig.Log.Debug("CALLING API\" customer create \"  STARTED");
-            try
-            {
-                Customer customer = model.MapTo<Customer>();
-                customer = _iRepository.CreateSP<Customer>(customer, Constant.SpCreateCustomer);
+        // Customer Create at the time of order
 
-                return _apiResponse.ReturnResponse(HttpStatusCode.Created, customer);
+        //public async Task<APIResponse> Create(CustomerCreateRequestModel model)
+        //{
+        //    APIConfig.Log.Debug("CALLING API\" customer create \"  STARTED");
+        //    try
+        //    {
+        //        Customer customer = model.MapTo<Customer>();
+        //        customer = _iRepository.CreateSP<Customer>(customer, Constant.SpCreateCustomer);
 
-            }
-            catch (Exception ex)
-            {
-                APIConfig.Log.Debug("Exception: " + ex.Message);
-                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
-            }
+        //        return _apiResponse.ReturnResponse(HttpStatusCode.Created, customer);
 
-        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        APIConfig.Log.Debug("Exception: " + ex.Message);
+        //        return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
+        //    }
+
+        //}
 
         public async Task<APIResponse> Update(CustomerUpdateRequestModel model)
         {

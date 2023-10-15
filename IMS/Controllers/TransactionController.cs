@@ -13,20 +13,20 @@ namespace IMS.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CustomerController : BaseController
+    public class TransactionController : BaseController
     {
-        readonly ICustomerCore _customerCore;
-        public CustomerController(ICustomerCore customerCore, APIResponse apiResponse)
+        readonly ITransactionCore _transactionCore;
+        public TransactionController(ITransactionCore transactionCore)
         {
-            _customerCore = customerCore;
+            _transactionCore = transactionCore;
         }
 
-        [ HttpPost, Route("Search")]
-        public async Task<IActionResult> Search(CustomerSearchRequestModel model)
+        [AllowAnonymous, HttpPost, Route("Search")]
+        public async Task<IActionResult> Search(TransactionSearchRequestModel model)
         {
             try
             {
-                APIResponse response = await _customerCore.Search(model);
+                APIResponse response = await _transactionCore.Search(model);
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();
@@ -37,12 +37,12 @@ namespace IMS.Controllers
             }
         }
 
-        [ HttpGet, Route("GetById")]
-        public async Task<IActionResult> GetById(int CustomerId)
+        [AllowAnonymous, HttpGet, Route("GetById")]
+        public async Task<IActionResult> GetById(int TransactionId)
         {
             try
             {
-                APIResponse response = await _customerCore.GetById(CustomerId);
+                APIResponse response = await _transactionCore.GetById(TransactionId);
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();
@@ -53,12 +53,12 @@ namespace IMS.Controllers
             }
         }
 
-        [ HttpPut, Route("Update")]
-        public async Task<IActionResult> Update(CustomerUpdateRequestModel CustomerRequest)
+        [AllowAnonymous, HttpDelete, Route("Delete")]
+        public async Task<IActionResult> Delete(int TransactionId)
         {
             try
             {
-                APIResponse response = await _customerCore.Update(CustomerRequest);
+                APIResponse response = await _transactionCore.Delete(TransactionId);
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();
@@ -68,29 +68,12 @@ namespace IMS.Controllers
                 throw;
             }
         }
-
-        [ HttpDelete, Route("Delete")]
-        public async Task<IActionResult> Delete(int CustomerId)
-        {
-            try
-            {
-                APIResponse response = await _customerCore.Delete(CustomerId);
-                if (response?.Response != null)
-                    return Ok(response);
-                return BadRequest();
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
-        
         [HttpPost, Route("TotalCount")]
-        public async Task<IActionResult> TotalCount(CustomerSearchRequestModel model)
+        public async Task<IActionResult> TotalCount(TransactionSearchRequestModel model)
         {
             try
             {
-                APIResponse response = await _customerCore.TotalCount(model);
+                APIResponse response = await _transactionCore.TotalCount(model);
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();

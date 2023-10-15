@@ -346,7 +346,29 @@ namespace IMS.Api.Common.Extensions
             return Convert.ToBase64String(bytes);
         }
 
-     
+        public static string GenerateFirstSixandLastFourDigits(this string value)
+        {
+            string returvalue = string.Empty;
+            if (value != null && value.Length > value.Length - 8)
+            {
+
+                if (value.Length - 8 > 0)
+                {
+                    
+                    returvalue = value.Substring(0, 6);
+                    returvalue += "xxxxxxxx" + value.Substring(value.Length - 4, 4);
+                }
+
+                else
+                    returvalue = value.Substring(value.Length - 4, 4);
+            }
+
+
+            return returvalue;
+
+        }
+
+
 
     }
 }

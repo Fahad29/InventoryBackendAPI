@@ -37,6 +37,10 @@ namespace IMS.Api.Common.Model.RequestModel
         public string GatewayRequest { get; set; }
         public string GatewayResponse { get; set; }
         public decimal Surcharge { get; set; }
+        public string CardHolderName { get; set; }
+        public string CardNumber { get; set; }
+        public string Expiry { get; set; }
+        public string CVV { get; set; }
 
     }
 }

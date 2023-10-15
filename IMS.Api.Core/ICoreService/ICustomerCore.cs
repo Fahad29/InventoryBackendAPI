@@ -10,9 +10,9 @@ namespace IMS.Api.Core.ICoreService
     {
         Task<APIResponse> Search(CustomerSearchRequestModel model);
         Task<APIResponse> GetById(int Id);
-        Task<APIResponse> Create(CustomerCreateRequestModel companyRequest);
         Task<APIResponse> Update(CustomerUpdateRequestModel companyRequest);
         Task<APIResponse> Delete(int Id);
+        Task<APIResponse> TotalCount(CustomerSearchRequestModel model);
 
     }
 }

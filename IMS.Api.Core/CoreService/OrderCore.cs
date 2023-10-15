@@ -9,6 +9,9 @@ using IMS.Api.Common.Model.RequestModel.Search;
 using IMS.Api.Common.Model.ResponseModel;
 using IMS.Api.Common.Model.ResponseModel.Search;
 using IMS.Api.Core.ICoreService;
+using IMS.Api.Gateway;
+using IMS.Api.Gateway.Model.Request;
+using IMS.Api.Gateway.Model.Response;
 using IMS.Api.Service.IRepository;
 using Microsoft.AspNetCore.Http;
 using System.Net;
@@ -23,7 +26,7 @@ namespace IMS.Api.Core.CoreService
         IOrderRepository _iOrderRepository;
         APIResponse _apiResponse;
         IAttachmentCore _attachmentCore;
-        public OrderCore(IRepository<Order> iRepository, APIResponse apiResponse, IAttachmentCore attachmentCore,IOrderRepository iOrderRepository)
+        public OrderCore(IRepository<Order> iRepository, APIResponse apiResponse, IAttachmentCore attachmentCore, IOrderRepository iOrderRepository)
         {
             _iOrderRepository = iOrderRepository;
             _iRepository = iRepository;
@@ -81,21 +84,59 @@ namespace IMS.Api.Core.CoreService
             }
         }
 
+        public async Task<APIResponse> GetItemsByOrderId(int OrderId)
+        {
+            APIConfig.Log.Debug("CALLING API\" Order Items GetByOrderId \"  STARTED");
+            try
+            {
+                List<OrderItem> OrderItems = _iRepository.Search<OrderItem>(new { OrderId = OrderId }, Constant.SpGetOrderItems).ToList();
+                if (OrderItems.Count > 0)
+                {
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, OrderItems);
+                }
+                else
+                {
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
+                }
+            }
+            catch (Exception ex)
+            {
+                APIConfig.Log.Debug("Exception: " + ex.Message);
+                _apiResponse.StatusCode = HttpStatusCode.BadRequest;
+                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
+            }
+        }
+
         public async Task<APIResponse> Create(OrderCreateRequestModel model)
         {
             APIConfig.Log.Debug("CALLING API\" Order create \"  STARTED");
             try
             {
                 OrderRequestModel orderRequestModel = model.MapTo<OrderRequestModel>();
-                #region
-                // will do Gatway Payment work here
+                #region Transaction on Gateway 
+                if (model.ProcessorType > 0)
+                {
+                    TransactionRequestModel transactionRequestModel = new TransactionRequestModel();
+                    ProcessorConfiguration configuration = _iRepository.Search<ProcessorConfiguration>(new { CompanyId = APIConfig.CompanyId }, Constant.SpGetProcessorConfiguration).FirstOrDefault();
+                    IProcessor processor = Gateway.GatewayFactory.GetProcessor(configuration);
+                    TransactionResponseModel transactionResponseModel = processor.Sale(transactionRequestModel).Result;
+                    orderRequestModel.GatewayRequest = transactionResponseModel?.Request;
+                    orderRequestModel.GatewayResponse = transactionResponseModel?.Response;
+                    orderRequestModel.OriginalTransactionId = transactionResponseModel?.OriginalTransactionId;
+                    orderRequestModel.OriginalTransactionId = transactionResponseModel?.OriginalTransactionId;
+                    orderRequestModel.CardNumber = orderRequestModel?.CardNumber?.GenerateFirstSixandLastFourDigits();
+                }
                 #endregion
-              
-                _iOrderRepository.Create(orderRequestModel);
-               
-               
 
-                return _apiResponse.ReturnResponse(HttpStatusCode.Created, Constant.SuccessResponse);
+                Order order = await _iOrderRepository.Create(orderRequestModel);
+                if (order.Id > 0)
+                {
+                    return _apiResponse.ReturnResponse(HttpStatusCode.Created, Constant.SuccessResponse);
+                }
+                else
+                {
+                    return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, Constant.RecordNotFound );
+                }
             }
             catch (Exception ex)
             {
@@ -112,7 +153,7 @@ namespace IMS.Api.Core.CoreService
                 APIConfig.Log.Debug("CALLING API\" Order update \"  STARTED");
                 Order order = model.MapTo<Order>();
                 order = _iRepository.CreateSP<Order>(order, Constant.SpUpdateOrder);
-              
+
                 return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.UpdateRecord);
             }
             catch (Exception ex)
@@ -121,8 +162,6 @@ namespace IMS.Api.Core.CoreService
                 _apiResponse.StatusCode = HttpStatusCode.BadRequest;
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
-
-
 
         }
 

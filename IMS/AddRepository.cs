@@ -80,6 +80,9 @@ namespace IMS
             services.AddScoped<IRepository<Employee>, GenericRepository<Employee>>();
             services.AddScoped<IEmployeeCore, EmployeeCore>();
 
+            services.AddScoped<IRepository<Transaction>, GenericRepository<Transaction>>();
+            services.AddScoped<ITransactionCore, TransactionCore>();
+
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IRepository<Order>, GenericRepository<Order>>();
             services.AddScoped<IOrderCore, OrderCore>(); 
