@@ -1,4 +1,5 @@
-﻿using IMS.Api.Common.Model.RequestModel;
+﻿using IMS.Api.Common.Constant;
+using IMS.Api.Common.Model.RequestModel;
 using IMS.Api.Common.Model.RequestModel.Search;
 using IMS.Api.Common.Model.ResponseModel;
 using IMS.Api.Core.ICoreService;
@@ -19,7 +20,7 @@ namespace IMS.Controllers
         }
 
         [AllowAnonymous, HttpPost, Route("Search")]
-        public async Task<IActionResult> Search(BranchSearchRequestModel model)
+        public async Task<IActionResult> Search(VendorSearch model)
         {
             try
             {
@@ -51,7 +52,7 @@ namespace IMS.Controllers
         }
 
         [AllowAnonymous, HttpPost, Route("Create")]
-        public async Task<IActionResult> Create(BranchCreateRequestModel model)
+        public async Task<IActionResult> Create(VendorRequestModel model)
         {
             try
             {
@@ -67,14 +68,18 @@ namespace IMS.Controllers
         }
 
         [AllowAnonymous, HttpPut, Route("Update")]
-        public async Task<IActionResult> Update(BranchUpdateRequestModel model)
+        public async Task<IActionResult> Update(int vendorId, VendorRequestModel model)
         {
             try
             {
-                APIResponse response = await _vendorCore.Update(model);
-                if (response?.Response != null)
-                    return Ok(response);
-                return BadRequest();
+                if (vendorId > 0)
+                {
+                    APIResponse response = await _vendorCore.Update(vendorId, model);
+                    if (response?.Response != null)
+                        return Ok(response);
+                }
+
+                return BadRequest(Constant.InValidRecordId);
             }
             catch (Exception ex)
             {
@@ -94,7 +99,6 @@ namespace IMS.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex);
                 return BadRequest(ex);
             }
         }
