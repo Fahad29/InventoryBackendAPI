@@ -1,18 +1,14 @@
 ﻿using IMS.Api.Common.Constant;
 using IMS.Api.Common.Extensions;
-using IMS.Api.Common.Helper;
 using IMS.Api.Common.Model.CommonModel;
 using IMS.Api.Common.Model.ResponseModel;
-using IMS.Api.Core.ICoreService;
+using IMS.Api.Core.CoreService;
 using Microsoft.Extensions.Primitives;
 using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Serilog;
 using System.Diagnostics.CodeAnalysis;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
-using System.Reflection.PortableExecutable;
 using System.Security.Claims;
 using System.Text;
 
@@ -30,7 +26,7 @@ namespace IMS.MiddleWare
 
         public async Task Invoke(HttpContext httpContext)
         {
-          
+
             string Path, endpoint = string.Empty;
             try
             {
@@ -130,16 +126,16 @@ namespace IMS.MiddleWare
                     httpContext.Response.Body = responseBody;
                     await next.Invoke(httpContext).ConfigureAwait(true);
                     response = await LogResponse(httpContext.Response, endpoint);
-                    
+
                     await responseBody.CopyToAsync(originalResponseBody);
-                    
+
 
                 }
 
                 Log.Debug($"...endpoint is {endpoint.ToLower()}");
                 switch (endpoint.ToLower())
                 {
-                  
+
                 }
             }
             catch (Exception ex)
@@ -173,7 +169,7 @@ namespace IMS.MiddleWare
 
                 request.Body.Seek(0, System.IO.SeekOrigin.Begin);
                 Log.Information($"{request.Scheme} {request.Host}{request.Path} {request.QueryString} {bodyAsText}");
-                
+
                 return bodyAsText;
             }
             catch (Exception)
@@ -193,7 +189,7 @@ namespace IMS.MiddleWare
             //We need to reset the reader for the response so that the client can read it.
             response.Body.Seek(0, System.IO.SeekOrigin.Begin);
             Log.Information($"{response.StatusCode}: {text}");
-         
+
             return text;
         }
 
@@ -204,7 +200,7 @@ namespace IMS.MiddleWare
             var key = Encoding.ASCII.GetBytes(APIConfig.Configuration?.GetSection("JWT")["KEY"]);
             try
             {
-                bool verified = new AuthenticationCore(apiResponse,null)
+                bool verified = new AuthenticationCore(apiResponse, null)
                     .IsTokenExpired(token);
 
                 if (!verified)
@@ -280,7 +276,7 @@ namespace IMS.MiddleWare
             await httpContext.Response.WriteAsync(e1.ToJson()).ConfigureAwait(false);
             return true;
         }
-       
+
 
 
     }
