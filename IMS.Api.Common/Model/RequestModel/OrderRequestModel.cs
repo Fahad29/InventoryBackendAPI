@@ -7,12 +7,6 @@ namespace IMS.Api.Common.Model.RequestModel
 
         #region Customer Params
         public string? CustomerName { get; set; }
-        public string? CustomerGender { get; set; }
-        public string? CustomerIdentityCardNo { get; set; }
-        public int? CustomerCountry { get; set; }
-        public string? CustomerCity { get; set; }
-        public string? CustomerAddress1 { get; set; }
-        public string? CustomerAddress2 { get; set; }
         public string? CustomerMobileNo { get; set; }
         public string? WebURL { get; set; }
         #endregion
@@ -30,6 +24,7 @@ namespace IMS.Api.Common.Model.RequestModel
 
     public partial class TransactionRequest
     {   
+        public PaymentType PaymentType { get; set; }
         public TransactionType TransactionType { get; set; }
         public CardType CardType { get; set; }
         public ProcessorType ProcessorType { get; set; }

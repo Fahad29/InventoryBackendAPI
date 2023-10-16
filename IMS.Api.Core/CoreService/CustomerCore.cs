@@ -73,8 +73,6 @@ namespace IMS.Api.Core.CoreService
             }
         }
 
-        // Customer Create at the time of order
-
         //public async Task<APIResponse> Create(CustomerCreateRequestModel model)
         //{
         //    APIConfig.Log.Debug("CALLING API\" customer create \"  STARTED");
@@ -109,11 +107,7 @@ namespace IMS.Api.Core.CoreService
                 APIConfig.Log.Debug("Exception: " + ex.Message);
                 _apiResponse.StatusCode = HttpStatusCode.BadRequest;
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
-
             }
-
-
-
         }
 
         public async Task<APIResponse> Delete(int CustomerId)

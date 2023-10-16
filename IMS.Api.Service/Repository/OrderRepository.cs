@@ -42,13 +42,7 @@ namespace IMS.Api.Service.Repository
                         if (!string.IsNullOrEmpty(model.CustomerName) && !string.IsNullOrEmpty(model.CustomerMobileNo))
                         {
                             customer.Name = model.CustomerName;
-                            customer.Gender = model.CustomerGender;
-                            customer.Address1 = model.CustomerAddress1;
-                            customer.Address2 = model.CustomerAddress2;
-                            customer.MobileNo = model.CustomerMobileNo;
-                            customer.IdentityCardNo = model.CustomerIdentityCardNo;
-                            customer.City = model.CustomerCity;
-                            customer.Country = Convert.ToInt32(model.CustomerCountry);
+                            customer.MobileNo = model.CustomerMobileNo;                          
                             customer.WebURL = model.WebURL;
 
                             // Insert the customer and retrieve the ID
@@ -80,6 +74,7 @@ namespace IMS.Api.Service.Repository
                         transaction.TotalAmount = order.TotalAmount + Convert.ToDecimal(model.Surcharge);
                         transaction.RefundAmount = order.TotalAmount;
                         transaction.TransactionType = Convert.ToInt32(model.TransactionType);
+                        transaction.PaymentType = Convert.ToInt32(model.PaymentType);
                         transaction.CardType = Convert.ToInt32(model.CardType);
                         transaction.ProcessorType = Convert.ToInt32(model.ProcessorType);
                         transaction.OriginalTransactionId = model.OriginalTransactionId;
@@ -119,7 +114,7 @@ namespace IMS.Api.Service.Repository
                             }
                         }
 
-                        trans.Commit();
+                        trans.Commit(); 
                     }
                     catch (Exception ex)
                     {

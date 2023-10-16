@@ -15,7 +15,7 @@
 
         public enum TransactionType
         {
-            Cash = 1,
+            Cash = 0,
             CreditCard,
             CreditCardVoid,
             CreditCardRefund,
@@ -33,6 +33,12 @@
         {
             None = 0,
             Stripe = 1
+        }
+        public enum PaymentType
+        {
+            Cash = 0,
+            Card = 1,
+            Cheque = 2,
         }
 
 
