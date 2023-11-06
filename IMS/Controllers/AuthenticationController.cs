@@ -65,6 +65,21 @@ namespace IMS.Controllers
                 throw;
             }
         }
+        [AllowAnonymous, HttpPost, Route("ResetPassword")]
+        public async Task<IActionResult> ResetPassword(ResetPasswordRequest model)
+        {
+            try
+            {
+                APIResponse response = await _authenticationCore.ResetPassword(model);
+                if (response?.Response != null)
+                    return Ok(response);
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
 
         [AllowAnonymous, HttpGet, Route("GetOTP")]
         public IActionResult GetOTP(string emailAddress)
@@ -97,5 +112,23 @@ namespace IMS.Controllers
                 throw;
             }
         }
+
+        [AllowAnonymous, HttpPost, Route("ChangePassword")]
+        public async Task<IActionResult> ChangePassword(ChangePasswordRequest model)
+        {
+            try
+            {
+                APIResponse response = await _authenticationCore.ChangePassword(model);
+                if (response?.Response != null)
+                    return Ok(response);
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
     }
+
+
 }

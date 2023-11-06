@@ -14,8 +14,12 @@
         public const string PLLoginLogoDirPath = "~/Content/Logos/LoginLogo/";
         public const string OTPSubject = "OTP Verification Code";
         #endregion
+        #region Email Subjects
+        public const string ResetPasswordSubject = "Password Reset";
+        #endregion
         #region Response Message
         public const string SuccessResponse = "Success";
+        public const string FailResponse = "Failed";
         public const string DeleteRecord = "Record Deleted Successfully.";
         public const string UpdateRecord = "Record Updated Successfully.";
         public const string InValidRecordId = "In Valid Record Id.";
@@ -24,6 +28,12 @@
         public const string OTPExpired = "Your OTP has been expired";
         public const string OTPNotCorrect = "OTP Not Correct";
         public const string OTPVerified = "OTP Verified";
+        
+        public const string ResetPasswordEmail = "Reset password email has been sent.";
+        public const string WrongPassword = "Please Enter New Password, This password match your old Password";
+        public const string PasswordChanged = "Password Changed Successfully";
+        public const string PasswordReset = "Password Reset Successfully";
+        public const string LinkExpired = "This link has been expired";
 
         public const string RecordNotFound = "Record Not Found";
         public const string InvalidRequest = "Invalid Request";
@@ -52,6 +62,7 @@
         public const string SpGetCompany = "Usp_get_company";
         public const string SpDeleteCompany = "Usp_Delete_Company";
         public const string SpCompanyTotalCount = "Usp_Get_CompanyTotalCount";
+        public const string SpGetCompanyExportDetails = "Usp_get_CompanyExportDetails";
         #endregion
 
         #region Employee
@@ -69,6 +80,7 @@
         public const string SpGetCustomerById = "Usp_get_CustomerById";
         public const string SpDeleteCustomer = "Usp_Delete_Customer";
         public const string SpGetCustomerTotalCount = "Usp_Get_CustomerTotalCount";
+        public const string SpGetCustomerExportDetails = "Usp_get_CustomerExportDetails";
         #endregion
 
         #region Order
@@ -78,8 +90,8 @@
         public const string SpGetOrderById = "Usp_getOrderById";
         public const string SpDeleteOrder = "Usp_Delete_Order";
         public const string SpGetOrderTotalCount = "Usp_Get_OrderTotalCount";
-
         public const string SpGetOrderItems = "Usp_get_OrderItems";
+        public const string SpGetOrderExportDetails = "Usp_get_OrderExportDetails";
         #endregion
 
         #region OrderItem
@@ -98,6 +110,7 @@
         public const string SpGetTransactionById = "Usp_get_TransactionById";
         public const string SpDeleteTransaction = "Usp_Delete_Transaction";
         public const string SpGetTransactionTotalCount = "Usp_Get_TransactionTotalCount";
+        public const string SpGetTransactionExportDetails = "Usp_get_TransactionExportDetails";
         #endregion
 
         #region PrivateLabel
@@ -168,14 +181,7 @@
         public const string SpGetCompanyProductById = "Usp_Get_CompanyProductById";
         public const string SpDeleteCompanyProduct = "Usp_Delete_CompanyProduct";
         public const string SpCompanyProductTotalCount = "Usp_Get_CompanyProductTotalCount";
-        #endregion
-
-        #region CompanyProdcut
-        public const string SpCreateProcessorConfiguration = "Usp_create_ProcessorConfiguration";
-        public const string SpUpdateProcessorConfiguration = "Usp_update_ProcessorConfiguration";
-        public const string SpGetProcessorConfiguration = "Usp_Get_ProcessorConfiguration";
-        public const string SpGetProcessorConfigurationById = "Usp_Get_ProcessorConfigurationById";
-        public const string SpDeleteProcessorConfiguration = "Usp_Delete_ProcessorConfiguration";
+        public const string SpGetCompanyProductExportDetails = "Usp_get_CompanyProductExportDetails";
         #endregion
 
 
@@ -248,9 +254,17 @@
 
         #endregion
 
+        #region password
+        public const string SpGetForgetPasswordDetails = "Usp_get_ForgetPasswordDetails";
+        #endregion
 
-
-        
+        #region ProcessorConfiguration
+        public const string SpCreateProcessorConfiguration = "Usp_create_ProcessorConfiguration";
+        public const string SpUpdateProcessorConfiguration = "Usp_update_ProcessorConfiguration";
+        public const string SpGetProcessorConfiguration = "Usp_Get_ProcessorConfiguration";
+        public const string SpGetProcessorConfigurationById = "Usp_Get_ProcessorConfigurationById";
+        public const string SpDeleteProcessorConfiguration = "Usp_Delete_ProcessorConfiguration";
+        #endregion
 
         #endregion
 
@@ -275,6 +289,7 @@
 
         #region  Email Templates 
         public const string SendOTP = "\\Content\\EmailTemplates\\SendOTP.html";
+        public const string ForgetPasswordEmailTemplate = "\\Content\\EmailTemplates\\forgetpassword.template.html";
         #endregion
 
 
@@ -282,6 +297,8 @@
         public const string FromEmail = "info@IMS.com";
 
         #endregion
+
+        
     }
 }
 

@@ -4,7 +4,7 @@ namespace IMS.Api.Common.Model.RequestModel.Search
 {
     public class CustomerSearchRequestModel : BaseFilter
     {
-        public int? CompanyId { get; set; }
+        public int? CompanyId { get; set; } = APIConfig.CompanyId;
         public string? Name { get; set; }
         public string? CompanyName { get; set; }
         public string? Address1 { get; set; }

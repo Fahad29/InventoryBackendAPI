@@ -48,6 +48,7 @@ namespace IMS.MiddleWare
                     case "register":
                     case "getotp":
                     case "verifyotp":
+                    case "forgotpassword":
 
 
                         await LogRequestResponse(httpContext, Path);

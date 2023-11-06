@@ -7,6 +7,7 @@ using IMS.Api.Core.CoreService;
 using IMS.Api.Core.ICoreService;
 using IMS.Api.Common.Model.ResponseModel;
 using IMS.Api.Common.Model.RequestModel;
+using IMS.Api.Common.Model.ResponseModel.Export;
 
 namespace IMS
 {
@@ -87,9 +88,15 @@ namespace IMS
             services.AddScoped<IRepository<Vendor>, GenericRepository<Vendor>>();
             services.AddScoped<IVendorCore, VendorCore>();
 
+            services.AddScoped<IRepository<CustomerExportResponseModel>, GenericRepository<CustomerExportResponseModel>>();
+            services.AddScoped<IExportCore, ExportCore>();
+
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IRepository<Order>, GenericRepository<Order>>();
             services.AddScoped<IOrderCore, OrderCore>(); 
+
+
+
                 return services;
         }
     }

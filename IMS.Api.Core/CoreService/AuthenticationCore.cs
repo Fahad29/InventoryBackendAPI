@@ -1,4 +1,5 @@
-﻿using IMS.Api.Common.Constant;
+﻿using IMS.Api.Common;
+using IMS.Api.Common.Constant;
 using IMS.Api.Common.Extensions;
 using IMS.Api.Common.Helper;
 using IMS.Api.Common.Model.CommonModel;
@@ -7,12 +8,17 @@ using IMS.Api.Common.Model.RequestModel;
 using IMS.Api.Common.Model.ResponseModel;
 using IMS.Api.Core.ICoreService;
 using IMS.Api.Service.IRepository;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.IdentityModel.Tokens;
+using SendGrid.Helpers.Mail.Model;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
+using System.Net.Http;
 using System.Net.Mail;
+using System.Reflection;
 using System.Text;
 using static IMS.Api.Common.Enumerations.Eumeration;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace IMS.Api.Core.CoreService
 {
@@ -33,6 +39,7 @@ namespace IMS.Api.Core.CoreService
                 LoginResponseModel loginResponseModel = new LoginResponseModel();
                 if (!string.IsNullOrEmpty(loginRequest?.Username) && !string.IsNullOrEmpty(loginRequest?.Password))
                 {
+                    //loginRequest.Password = loginRequest?.Password?.EncryptPassword();
                     loginRequest.Password = loginRequest?.Password?.MD5Encrypt();
                     User user = _iRepository.CreateSP<User>(loginRequest, Constant.SpGetUser);
                     if (user != null)
@@ -76,7 +83,7 @@ namespace IMS.Api.Core.CoreService
             APIConfig.Log.Debug("CALLING API\" user create \"  STARTED");
             try
             {
-                int? CompanyId = _iRepository.CreateSP<Company>(new { model.CompanyName }, Constant.SpGetCompany)?.CompanyId;
+                int? CompanyId = _iRepository.CreateSP<Company>(new { Name = model.CompanyName, Mobile = model.PhoneNumber }, Constant.SpGetCompany)?.CompanyId;
                 if (CompanyId == null || CompanyId == 0)
                 {
                     Company company = new Company();
@@ -112,93 +119,82 @@ namespace IMS.Api.Core.CoreService
             }
             APIConfig.Log.Debug("CALLING API\" user create \"  ENDED");
         }
-        public async Task<APIResponse> ForgotPassword(string Email)
+        public async Task<APIResponse> ForgotPassword(string email)
         {
             try
             {
-                return _apiResponse.ReturnResponse(HttpStatusCode.OK, _apiResponse);
+                ForgetpasswordDetailsModel? model = _iRepository.Search<ForgetpasswordDetailsModel>(
+                    new { Email = email }, Constant.SpGetForgetPasswordDetails
+                )?.FirstOrDefault();
+
+                if (model != null)
+                {
+                    User user = _iRepository.CreateSP<User>(new { Id = model.UserId }, Constant.SpGetUser);
+                    string expiry = DateTime.Now.AddHours(24).ToString("yyyy-MM-dd HH:mm:ss");
+                    string jwtExpiry = APIConfig.Configuration?.GetSection("JWT")["ExpiryMinutes"].ToString();
+                    string emailContent = ExtensionMethod.CreateEmailBody(APIConfig.ContentRootPath.MapPath(Constant.ForgetPasswordEmailTemplate));
+                    string logoUrl = !string.IsNullOrEmpty(model?.logo) ? APIConfig.ContentRootPath + model.logo.Replace("~", string.Empty) : Constant.LogoUrl;
+                    string pageUrl = $"{ApiUrls.ResetPassword}?emailaddress={model?.Email.EncryptString()}&userid={model?.UserId.ToString().EncryptString()}&expiry={expiry.EncryptString()}&Token={ExtensionMethod.GenerateJSONWebToken(user, jwtExpiry)}";
+
+                    emailContent = emailContent
+                        .Replace("{{CompanyName}}", !string.IsNullOrEmpty(model.CompanyName) ? model.CompanyName : Constant.CompanyName)
+                        .Replace("{{Logo}}", logoUrl)
+                        .Replace("{{Name}}", !string.IsNullOrEmpty(model.Name) ? model.Name : string.Empty)
+                        .Replace("{{URL}}", !string.IsNullOrEmpty(model.Name) ? model.Name : string.Empty);
+
+                    _ = EmailProvider.CreateEmail(
+                        !string.IsNullOrEmpty(model?.FromEmail) ? model?.FromEmail : Constant.FromEmail,
+                        new List<string> { email }
+                    )
+                    .CC()
+                    .BCC()
+                    .WithSubject(Constant.ResetPasswordSubject)
+                    .WithHtmlContent(emailContent)
+                    .Send();
+
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, new { PageUrl = pageUrl });
+                }
+                else
+                {
+                    return _apiResponse.ReturnResponse(HttpStatusCode.Unauthorized, Constant.UnAuthorized);
+                }
             }
             catch (Exception ex)
             {
-                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
+                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex.Message);
             }
         }
 
-        //public APIResponse Refreshtoken(string refreshtoken)
-        //{
-        //    String token = String.Empty;
-        //    String expiry = String.Empty;
-        //    int UserRoleID;
-        //    User user = new User();
+        public async Task<APIResponse> ResetPassword(ResetPasswordRequest model)
+        {
+            try
+            {
+                User? user = _iRepository.Search<User>(new { UserName = model.Email, Id = model.UserId }, Constant.SpGetUser)?.FirstOrDefault();
+                if (user != null)
+                {
+                    model.Password = model.Password.DecryptString();
+                    user.PasswordHash = model.Password.MD5Encrypt();
+                    user = _iRepository.ExecuteQuery<User>(user, Constant.SpUpdateUser)?.FirstOrDefault();
+                    if (user != null)
+                    {
+                        return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.PasswordReset);
+                    }
+                    else
+                    {
+                        return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, Constant.FailResponse);
+                    }
+                }
+                else
+                {
+                    return _apiResponse.ReturnResponse(HttpStatusCode.Unauthorized, Constant.UnAuthorized);
+                }
+            }
+            catch (Exception ex)
+            {
+                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex.Message);
+            }
 
-        //    if (!String.IsNullOrEmpty(refreshtoken))
-        //    {
-        //        if (refreshtoken.Contains("bearer"))
-        //        {
-        //            token = refreshtoken.Split(" ").Last();
-        //        }
-        //        else
-        //        {
-        //            token = refreshtoken;
-        //        }
-        //        if (!ValidateJWTBlackListed(token))
-        //        {
-        //            // if (CheckTokenIsExpired(token))
-        //            {
-        //                var tokenHandler = new JwtSecurityTokenHandler();
-        //                var key = Encoding.ASCII.GetBytes(APIConfig.Configuration?.GetSection("JWT")["KEY"]);
-        //                try
-        //                {
-        //                    var TokenData = tokenHandler.ReadJwtToken(token);
-
-        //                    if (TokenData != null)
-        //                    {
-        //                        int.TryParse(TokenData.Claims.FirstOrDefault(x => x.Type.Contains("role")).Value.ToString(), out UserRoleID);
-        //                        string email = TokenData.Claims.FirstOrDefault(x => x.Type == "email").Value.ToString();
-
-        //                        user = _iRepository.Search<User>(new { Username = email, UserRoleId = UserRoleID }, Constant.SpGetAllUser).FirstOrDefault();
-
-        //                        if (user != null)
-        //                        {
-        //                            expiry = APIConfig.Configuration?.GetSection("JWT")["ExpiryMinutes"].ToString();
-        //                            _iRepository.Search<int>(new { Token = token }, Constant.SpCreateBlackListToken)?.FirstOrDefault();
-        //                            token = ExtensionMethod.GenerateJSONWebToken(user, expiry);
-        //                            _apiResponse.Response = new { token = token };
-        //                        }
-        //                        else
-        //                        {
-        //                            _apiResponse.StatusCode = 100;
-        //                            _apiResponse.StatusMessage = Constant.InvalidToken;
-        //                        }
-        //                    }
-        //                    else
-        //                    {
-        //                        _apiResponse.StatusCode = ((int)ResponseCode.InvalidToken);
-        //                        _apiResponse.StatusMessage = Constant.InvalidToken;
-        //                    }
-        //                }
-        //                catch (Exception e)
-        //                {
-        //                    _apiResponse.StatusCode = ((int)ResponseCode.InvalidToken);
-        //                    _apiResponse.StatusMessage = Constant.InvalidToken;
-        //                }
-        //            }
-
-        //        }
-        //        else
-        //        {
-        //            _apiResponse.StatusCode = ((int)ResponseCode.BlockedToken);
-        //            _apiResponse.StatusMessage = Constant.BlockedToken;
-        //        }
-        //    }
-        //    else
-        //    {
-        //        _apiResponse.StatusCode = ((int)ResponseCode.TokenRequired);
-        //        _apiResponse.StatusMessage = Constant.TokenRequired;
-        //    }
-
-        //    return _apiResponse;
-        //}
+        }
 
         public bool CheckTokenIsExpired(string token)
         {
@@ -238,7 +234,7 @@ namespace IMS.Api.Core.CoreService
         public APIResponse GetOTP(string emailAddress)
         {
             string Htmlcontent = string.Empty;
-            User user = _iRepository.Search<User>(new { UserName = emailAddress }, Constant.SpGetUser)?.FirstOrDefault();
+            User? user = _iRepository.Search<User>(new { UserName = emailAddress }, Constant.SpGetUser)?.FirstOrDefault();
             if (user != null && emailAddress != null)
             {
                 user.OTPExpire = DateTime.UtcNow;
@@ -323,5 +319,112 @@ namespace IMS.Api.Core.CoreService
                 return _apiResponse.ReturnResponse(HttpStatusCode.Unauthorized, Constant.UnAuthorized);
             }
         }
+
+        public async Task<APIResponse> ChangePassword(ChangePasswordRequest model)
+        {
+            User user = _iRepository.Search<User>(new { UserName = model.Email, Password = model.OldPassword.MD5Encrypt() }, Constant.SpGetUser)?.FirstOrDefault();
+            if (user != null)
+            {
+                model.NewPassword = model.NewPassword.DecryptString();
+                if (user.PasswordHash != model.NewPassword.MD5Encrypt())
+                {
+
+                    user.PasswordHash = model.NewPassword.MD5Encrypt();
+                    user = _iRepository.ExecuteQuery<User>(user, Constant.SpUpdateUser)?.FirstOrDefault();
+                    if (user != null)
+                    {
+                        return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.PasswordChanged);
+                    }
+                    else
+                    {
+                        return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, Constant.FailResponse);
+                    }
+                }
+                else
+                {
+                    return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, Constant.WrongPassword);
+                }
+            }
+            else
+            {
+                return _apiResponse.ReturnResponse(HttpStatusCode.Unauthorized, Constant.UnAuthorized);
+            }
+        }
+
+        //public APIResponse Refreshtoken(string refreshtoken)
+        //{
+        //    String token = String.Empty;
+        //    String expiry = String.Empty;
+        //    int UserRoleID;
+        //    User user = new User();
+
+        //    if (!String.IsNullOrEmpty(refreshtoken))
+        //    {
+        //        if (refreshtoken.Contains("bearer"))
+        //        {
+        //            token = refreshtoken.Split(" ").Last();
+        //        }
+        //        else
+        //        {
+        //            token = refreshtoken;
+        //        }
+        //        if (!ValidateJWTBlackListed(token))
+        //        {
+        //            // if (CheckTokenIsExpired(token))
+        //            {
+        //                var tokenHandler = new JwtSecurityTokenHandler();
+        //                var key = Encoding.ASCII.GetBytes(APIConfig.Configuration?.GetSection("JWT")["KEY"]);
+        //                try
+        //                {
+        //                    var TokenData = tokenHandler.ReadJwtToken(token);
+
+        //                    if (TokenData != null)
+        //                    {
+        //                        int.TryParse(TokenData.Claims.FirstOrDefault(x => x.Type.Contains("role")).Value.ToString(), out UserRoleID);
+        //                        string email = TokenData.Claims.FirstOrDefault(x => x.Type == "email").Value.ToString();
+
+        //                        user = _iRepository.Search<User>(new { Username = email, UserRoleId = UserRoleID }, Constant.SpGetAllUser).FirstOrDefault();
+
+        //                        if (user != null)
+        //                        {
+        //                            expiry = APIConfig.Configuration?.GetSection("JWT")["ExpiryMinutes"].ToString();
+        //                            _iRepository.Search<int>(new { Token = token }, Constant.SpCreateBlackListToken)?.FirstOrDefault();
+        //                            token = ExtensionMethod.GenerateJSONWebToken(user, expiry);
+        //                            _apiResponse.Response = new { token = token };
+        //                        }
+        //                        else
+        //                        {
+        //                            _apiResponse.StatusCode = 100;
+        //                            _apiResponse.StatusMessage = Constant.InvalidToken;
+        //                        }
+        //                    }
+        //                    else
+        //                    {
+        //                        _apiResponse.StatusCode = ((int)ResponseCode.InvalidToken);
+        //                        _apiResponse.StatusMessage = Constant.InvalidToken;
+        //                    }
+        //                }
+        //                catch (Exception e)
+        //                {
+        //                    _apiResponse.StatusCode = ((int)ResponseCode.InvalidToken);
+        //                    _apiResponse.StatusMessage = Constant.InvalidToken;
+        //                }
+        //            }
+
+        //        }
+        //        else
+        //        {
+        //            _apiResponse.StatusCode = ((int)ResponseCode.BlockedToken);
+        //            _apiResponse.StatusMessage = Constant.BlockedToken;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        _apiResponse.StatusCode = ((int)ResponseCode.TokenRequired);
+        //        _apiResponse.StatusMessage = Constant.TokenRequired;
+        //    }
+
+        //    return _apiResponse;
+        //}
     }
 }
