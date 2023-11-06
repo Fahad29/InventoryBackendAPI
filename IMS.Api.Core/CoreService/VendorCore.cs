@@ -1,4 +1,5 @@
-﻿using IMS.Api.Common.Constant;
+﻿using AutoMapper;
+using IMS.Api.Common.Constant;
 using IMS.Api.Common.Extensions;
 using IMS.Api.Common.Model.CommonModel;
 using IMS.Api.Common.Model.DataModel;
@@ -7,6 +8,7 @@ using IMS.Api.Common.Model.RequestModel.Search;
 using IMS.Api.Common.Model.ResponseModel;
 using IMS.Api.Core.ICoreService;
 using IMS.Api.Service.IRepository;
+using System;
 using System.Net;
 
 namespace IMS.Api.Core.CoreService
@@ -25,46 +27,41 @@ namespace IMS.Api.Core.CoreService
 
         public async Task<APIResponse> Search(VendorSearch model)
         {
-            APIConfig.Log.Debug("CALLING API\" Company Get all \"  STARTED");
+            APIConfig.Log.Debug("******* Calling Vendor Search API ******* ");
             try
             {
+                List<Vendor> vendors = _iRepository.Search<Vendor>(model, Constant.SpGetVendor).ToList();
 
-                List<VendorResponse> companies = _iRepository.Search<VendorResponse>(model, Constant.SpGetCompany).ToList();
-                if (companies.Count > 0)
-                {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, companies);
-
-                }
+                if (vendors.Count > 0)
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, vendors);
                 else
-                {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, null);
-                }
-
-
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
             }
             catch (Exception ex)
             {
-                APIConfig.Log.Debug("Exception: " + ex.Message);
-                _apiResponse.StatusCode = HttpStatusCode.BadRequest;
-                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
+                throw;
             }
         }
 
-        public async Task<APIResponse> GetById(int vendorId)
+        public async Task<APIResponse> GetById(int VendorId)
         {
-            APIConfig.Log.Debug("CALLING API\" Company GetById \"  STARTED");
+            APIConfig.Log.Debug("******* Calling Vendor Get By Id API ******* ");
+
             try
             {
-                Vendor vendor = _iRepository.Search(new { vendorId = vendorId }, Constant.SpGetCompany).FirstOrDefault();
-                VendorResponse response = vendor.MapTo<VendorResponse>();
+                VendorSearch vendorSearch = new VendorSearch
+                {
+                    VendorId = VendorId,
+                    CompanyId = APIConfig.CompanyId,
+                };
+                Vendor? vendor = _iRepository.Search<Vendor>(vendorSearch, Constant.SpGetVendor)?.FirstOrDefault();
                 if (vendor != null)
                 {
+                    VendorResponse response = vendor.MapTo<VendorResponse>();
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, vendor);
                 }
                 else
-                {
                     return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
-                }
             }
             catch (Exception ex)
             {
@@ -76,14 +73,13 @@ namespace IMS.Api.Core.CoreService
 
         public async Task<APIResponse> Create(VendorRequestModel model)
         {
-            APIConfig.Log.Debug("CALLING API\" Company create \"  STARTED");
+            APIConfig.Log.Debug("******* Calling Vendor Create API ******* ");
             try
             {
-                Vendor vendor = model.MapTo<Vendor>();
-                vendor.CompanyId = APIConfig.CompanyId;
-                vendor.CreatedBy = APIConfig.UserId;
-                vendor.CreatedOn = DateTime.Now;
-                vendor = _iRepository.CreateSP<Vendor>(vendor, Constant.SpCreateCompany);
+                model.CompanyId = APIConfig.CompanyId;
+                model.CurrentUserId = APIConfig.UserId;
+                model.CurrentDate = DateTime.Now;
+                Vendor vendor = _iRepository.CreateSP<Vendor>(model, Constant.SpCreateVendor);
                 VendorResponse vendorResp = vendor.MapTo<VendorResponse>();
                 return _apiResponse.ReturnResponse(HttpStatusCode.Created, vendorResp);
             }
@@ -94,15 +90,14 @@ namespace IMS.Api.Core.CoreService
         }
         public async Task<APIResponse> Update(int vendorId, VendorRequestModel model)
         {
-            APIConfig.Log.Debug("CALLING API\" Company create \"  STARTED");
+            APIConfig.Log.Debug("******* Calling Vendor Update API ******* ");
+
             try
             {
-                Vendor vendor = model.MapTo<Vendor>();
-                vendor.VendorID = vendorId;
-                vendor.CompanyId = APIConfig.CompanyId;
-                vendor.UpdatedBy = APIConfig.UserId;
-                vendor.UpdatedOn = DateTime.Now;
-                vendor = _iRepository.CreateSP<Vendor>(vendor, Constant.SpCreateCompany);
+                model.VendorID = vendorId;
+                model.CurrentUserId = APIConfig.UserId;
+                model.CurrentDate = DateTime.Now;
+                Vendor vendor = _iRepository.CreateSP<Vendor>(model, Constant.SpCreateVendor);
                 VendorResponse vendorResp = vendor.MapTo<VendorResponse>();
                 return _apiResponse.ReturnResponse(HttpStatusCode.Created, vendorResp);
             }
@@ -114,13 +109,14 @@ namespace IMS.Api.Core.CoreService
 
         public async Task<APIResponse> Delete(int vendorId)
         {
-            APIConfig.Log.Debug("CALLING API\" Company delete \"  STARTED");
+            APIConfig.Log.Debug("******* Calling Vendor Delete API ******* ");
+
             try
             {
                 if (vendorId > 0)
                 {
 
-                    _iRepository.CreateSP<Company>(new { vendorId = vendorId, UpdatedBy = APIConfig.UserId }, Constant.SpDeleteCompany);
+                    _iRepository.CreateSP<Vendor>(new { VendorId = vendorId, CurrentUserId = APIConfig.UserId, CurrentDate = DateTime.Now }, Constant.SpDeleteVendor);
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.DeleteRecord);
                 }
                 else

@@ -236,7 +236,6 @@
 
         #endregion
 
-
         #region AssignRights
         public const string SpGetRoleRights = "GetAll_RoleRightsByRoleId";
         public const string SpInsertUpdateRoleRights = "usp_create_update_rolerights";
@@ -254,6 +253,11 @@
 
         #endregion
 
+        #region Vendor
+        public const string SpCreateVendor = "Usp_Create_Update_Vendor";
+        public const string SpGetVendor = "Usp_Get_Vendor";
+        public const string SpDeleteVendor = "Usp_Delete_Vendor";
+        #endregion
         #region password
         public const string SpGetForgetPasswordDetails = "Usp_get_ForgetPasswordDetails";
         #endregion

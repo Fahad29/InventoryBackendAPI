@@ -1,4 +1,5 @@
 ﻿using IMS.Api.Common.Constant;
+using IMS.Api.Common.Model.CommonModel;
 using IMS.Api.Common.Model.RequestModel;
 using IMS.Api.Common.Model.RequestModel.Search;
 using IMS.Api.Common.Model.ResponseModel;
@@ -31,6 +32,7 @@ namespace IMS.Controllers
             }
             catch (Exception ex)
             {
+                APIConfig.Log.Debug("Exception: " + ex.Message);
                 return BadRequest(ex);
             }
         }
@@ -47,6 +49,7 @@ namespace IMS.Controllers
             }
             catch (Exception ex)
             {
+                APIConfig.Log.Debug("Exception: " + ex.Message);
                 return BadRequest(ex);
             }
         }
@@ -63,6 +66,7 @@ namespace IMS.Controllers
             }
             catch (Exception ex)
             {
+                APIConfig.Log.Debug("Exception: " + ex.Message);
                 return BadRequest(ex);
             }
         }
@@ -83,6 +87,7 @@ namespace IMS.Controllers
             }
             catch (Exception ex)
             {
+                APIConfig.Log.Debug("Exception: " + ex.Message);
                 return BadRequest(ex);
             }
         }
@@ -99,6 +104,7 @@ namespace IMS.Controllers
             }
             catch (Exception ex)
             {
+                APIConfig.Log.Debug("Exception: " + ex.Message);
                 return BadRequest(ex);
             }
         }
