@@ -1,4 +1,7 @@
-﻿namespace IMS.Api.Service.IRepository
+﻿using IMS.Api.Common.Model.RequestModel;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+
+namespace IMS.Api.Service.IRepository
 {
     public interface IRepository<TEntity> where TEntity : class
     {
@@ -12,6 +15,8 @@
         void CreateSP(object model, string storedProcName);
         void InsertInBulk<Model>(List<Model> listModel, string tableName, int? commandTimeout);
         bool Delete(object model, string storedProcName);
+        Task<Model> GetById<Model>  (object parameters, string storedProcedureName);
+        Task PurchaseTransactionsCreate(PurchaseRequestModel model);
 
     }
 }

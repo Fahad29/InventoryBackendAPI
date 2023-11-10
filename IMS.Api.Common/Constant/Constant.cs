@@ -258,6 +258,7 @@
         public const string SpGetVendor = "Usp_Get_Vendor";
         public const string SpDeleteVendor = "Usp_Delete_Vendor";
         #endregion
+
         #region password
         public const string SpGetForgetPasswordDetails = "Usp_get_ForgetPasswordDetails";
         #endregion
@@ -302,7 +303,15 @@
 
         #endregion
 
-        
+
+        #region Purchase Order
+        public const string SpGetPurchaseOrderById = "usp_Get_PurchaseOrderById";
+        public const string SpGetAllPurchaseOrder = "usp_GetALL_PurchaseOrder";
+        public const string SpCreatePurchaseOrder = "usp_Create_PurchaseOrder";
+        public const string SpCreatePurchaseItem = "usp_Create_PurchaseItem";
+        public const string SpDeletePurchaseOrderById = "usp_Delete_PurchaseOrder";
+        #endregion
+
     }
 }
 

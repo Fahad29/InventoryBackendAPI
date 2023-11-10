@@ -93,11 +93,14 @@ namespace IMS
 
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IRepository<Order>, GenericRepository<Order>>();
-            services.AddScoped<IOrderCore, OrderCore>(); 
+            services.AddScoped<IOrderCore, OrderCore>();
+
+            services.AddScoped<IRepository<PurchaseOrder>, GenericRepository<PurchaseOrder>>();
+            services.AddScoped<IPurchaseCore, PurchaseCore>();
 
 
 
-                return services;
+            return services;
         }
     }
 }

@@ -1,13 +1,19 @@
 ﻿using Dapper;
+using IMS.Api.Common.Constant;
 using IMS.Api.Common.Extensions;
 using IMS.Api.Common.Helper;
+using IMS.Api.Common.Model;
 using IMS.Api.Common.Model.CommonModel;
+using IMS.Api.Common.Model.DataModel;
+using IMS.Api.Common.Model.RequestModel;
 using IMS.Api.Service.IRepository;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Reflection;
+using static IMS.Api.Common.Enumerations.Eumeration;
 
 namespace IMS.Api.Service.Repository
 {
@@ -229,6 +235,70 @@ namespace IMS.Api.Service.Repository
                 throw;
             }
 
+        }
+        public async Task<Model> GetById<Model>(object parameters, string storedProcedureName)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(_connectionString))
+                {
+                    conn.Open();
+                    return await conn.QuerySingleAsync<Model>(storedProcedureName, parameters, commandType: CommandType.StoredProcedure);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+        }
+        public async Task PurchaseTransactionsCreate(PurchaseRequestModel purchaseRequest)
+        {
+            try
+            {
+                using (var conn = new SqlConnection(_connectionString))
+                {
+                    await conn.OpenAsync();
+
+                    using (var transaction = await conn.BeginTransactionAsync())
+                    {
+                        try
+                        {
+                            var purchaseOrder = new
+                            {
+                                VendorId = purchaseRequest.VendorId,
+                                DeliveryDate = purchaseRequest.DeliveryDate,
+                                TotalAmount = purchaseRequest.TotalAmount,
+                                PaymentType = purchaseRequest.PaymentType,
+                                PaymentStatus = purchaseRequest.PaymentStatus,
+                                PaidAmount = purchaseRequest.PaidAmount,
+                                Note = purchaseRequest.Note
+                            };
+
+                            int purchaseRequestId = await conn.QuerySingleAsync<int>(Constant.SpCreatePurchaseOrder, purchaseOrder, transaction,null,CommandType.StoredProcedure);
+
+                            foreach (var purchaseItem in purchaseRequest.PurchaseItemRequests)
+                            {
+                                purchaseItem.PurchaseOrderId = purchaseRequestId;
+                                await conn.ExecuteAsync(Constant.SpCreatePurchaseItem, purchaseItem, transaction, null, CommandType.StoredProcedure);
+                            }
+
+                            // Commit the transaction to save the changes
+                            transaction.Commit();
+                        }
+                        catch (Exception ex)
+                        {
+                            // Handle any exceptions and roll back the transaction
+                            transaction.Rollback();
+                            throw;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
     }
 }
