@@ -132,19 +132,15 @@ namespace IMS.Api.Core.CoreService
             APIConfig.Log.Debug("CALLING API\" Transaction Export \"  STARTED");
             try
             {
-
                 List<TransactionExportResponseModel> transactionExportResponseModel = _iRepository.Search<TransactionExportResponseModel>(model, Constant.SpGetTransactionExportDetails).ToList();
                 if (transactionExportResponseModel.Count > 0)
                 {
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, transactionExportResponseModel);
-
                 }
                 else
                 {
                     return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
                 }
-
-
             }
             catch (Exception ex)
             {

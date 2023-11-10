@@ -1,6 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System.ComponentModel;
-using System.Text.Json.Serialization;
 
 namespace IMS.Api.Common.Model.ResponseModel.Export
 {
@@ -20,10 +18,8 @@ namespace IMS.Api.Common.Model.ResponseModel.Export
         public string Address { get; set; }
         public string Country { get; set; }
         public string City { get; set; }
-
         [JsonProperty(PropertyName = "Boarding By")]
         public string BoardedBy{ get; set; }
-
         [JsonProperty(PropertyName = "Boarding Date")]
         public string BoardingDate{ get; set; }
 

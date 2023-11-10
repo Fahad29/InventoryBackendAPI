@@ -6,7 +6,10 @@
         public string CompanyName { get; set; }
         public string CustomerName { get; set; }
         public string MobileNo { get; set; }
-        public Decimal Amount { get; set; }
+        public string Amount { get; set; }
+        public string Surcharge { get; set; }
+        public string Discount { get; set; }
+        public string TotalAmount { get; set; }
         public string OrderDate { get; set; }
 
     }

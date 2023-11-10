@@ -61,7 +61,6 @@ namespace IMS.Api.Core.CoreService
                         {
                             return _apiResponse.ReturnResponse(HttpStatusCode.Unauthorized, Constant.NotActive);
                         }
-
                     }
                     else
                     {
@@ -164,7 +163,6 @@ namespace IMS.Api.Core.CoreService
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex.Message);
             }
         }
-
         public async Task<APIResponse> ResetPassword(ResetPasswordRequest model)
         {
             try
