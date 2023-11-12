@@ -1,4 +1,6 @@
-﻿using IMS.Api.Common.Model.ResponseModel;
+﻿using IMS.Api.Common.Model.RequestModel.Search;
+using IMS.Api.Common.Model.ResponseModel;
+using IMS.Api.Core.CoreService;
 using IMS.Api.Core.ICoreService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -63,5 +65,20 @@ namespace IMS.Controllers
             }
         }
 
+        [AllowAnonymous, HttpPost, Route("TotalCount")]
+        public async Task<IActionResult> TotalCount()
+        {
+            try
+            {
+                APIResponse response = await _BrandCore.TotalCount();
+                if (response?.Response != null)
+                    return Ok(response);
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
     }
 }

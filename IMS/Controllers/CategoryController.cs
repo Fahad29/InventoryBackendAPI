@@ -48,21 +48,22 @@ namespace IMS.Controllers
             }
         }
 
-        //[AllowAnonymous, HttpDelete, Route("Delete")]
-        //public async Task<IActionResult> Delete(int categoryId)
-        //{
-        //    try
-        //    {
-        //        APIResponse response = await _categoryCore.Delete(categoryId);
-        //        if (response?.Response != null)
-        //            return Ok(response);
-        //        return BadRequest();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw;
-        //    }
-        //}
+ 
+        [AllowAnonymous, HttpPost, Route("TotalCount")]
+        public async Task<IActionResult> TotalCount()
+        {
+            try
+            {
+                APIResponse response = await _categoryCore.TotalCount();
+                if (response?.Response != null)
+                    return Ok(response);
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
 
     }
 

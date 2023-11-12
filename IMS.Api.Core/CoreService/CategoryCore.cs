@@ -68,24 +68,27 @@ namespace IMS.Api.Core.CoreService
 
         }
 
-        public async Task<APIResponse> Delete(int categoryId)
+
+
+        public async Task<APIResponse> TotalCount()
         {
-            APIConfig.Log.Debug("CALLING API\" Category delete \"  STARTED");
+            APIConfig.Log.Debug("CALLING API\" Category TotalCount \"  STARTED");
             try
             {
-                if (categoryId > 0)
+                int? TotalCount = _iRepository.Search<int>(null, Constant.SpProductCategoriesTotalCount).FirstOrDefault();
+                if (TotalCount > 0)
                 {
-                    _iRepository.CreateSP<Category>(new { Id = categoryId }, Constant.SpDeleteProductCategory);
-                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.DeleteRecord);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, new { TotalCount });
                 }
                 else
-                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, "Invalid Category Selected");
-
-
+                {
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
+                }
             }
             catch (Exception ex)
             {
                 APIConfig.Log.Debug("Exception: " + ex.Message);
+                _apiResponse.StatusCode = HttpStatusCode.BadRequest;
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
         }

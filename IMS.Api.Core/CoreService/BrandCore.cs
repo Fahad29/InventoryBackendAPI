@@ -1,6 +1,7 @@
 ﻿using IMS.Api.Common.Constant;
 using IMS.Api.Common.Model.CommonModel;
 using IMS.Api.Common.Model.DataModel;
+using IMS.Api.Common.Model.RequestModel.Search;
 using IMS.Api.Common.Model.ResponseModel;
 using IMS.Api.Core.ICoreService;
 using IMS.Api.Service.IRepository;
@@ -79,5 +80,29 @@ namespace IMS.Api.Core.CoreService
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
         }
+        public async Task<APIResponse> TotalCount()
+        {
+            APIConfig.Log.Debug("CALLING API\" Brand TotalCount \"  STARTED");
+            try
+            {
+                int? TotalCount = _iRepository.Search<int>(null, Constant.SpBrandTotalCount).FirstOrDefault();
+                if (TotalCount > 0)
+                {
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, new { TotalCount });
+                }
+                else
+                {
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
+                }
+            }
+            catch (Exception ex)
+            {
+                APIConfig.Log.Debug("Exception: " + ex.Message);
+                _apiResponse.StatusCode = HttpStatusCode.BadRequest;
+                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
+            }
+        }
+
+
     }
 }

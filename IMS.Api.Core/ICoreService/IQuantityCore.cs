@@ -8,5 +8,6 @@ namespace IMS.Api.Core.ICoreService
         Task<APIResponse> GetAll();
         Task<APIResponse> Create(QuantityRequestModel quantityRequest);
         Task<APIResponse> Delete(int QuantityId);
+        Task<APIResponse> TotalCount();
     }
 }

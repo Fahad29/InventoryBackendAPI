@@ -154,6 +154,7 @@
         public const string SpCreateProductBrand = "Usp_Create_ProductBrand";
         public const string SpUpdateProductBrand = "Usp_Update_ProductBrand";
         public const string SpDeleteProductBrand = "Usp_Delete_ProductBrand";
+        public const string SpBrandTotalCount = "Usp_Get_ProductBrandTotalCount";
         #endregion
 
         #region Deals
@@ -189,17 +190,20 @@
 
 
         public const string SpGetAllProductCategories = "Usp_Get_ProductCategory";
+        public const string SpProductCategoriesTotalCount = "Usp_Get_ProductCategoryTotalCount";
         public const string SpCreateProductCategory = "Usp_Create_ProductCategory";
         public const string SpUpdateProductCategory = "Usp_Update_ProductCategory";
-        public const string SpDeleteProductCategory = "Usp_Delete_ProductCategory";
+        public const string SpDeleteProductandCategory = "Usp_Delete_ProductCategory";
 
         #endregion
 
         #region Quality
         public const string SpGetAllQuantities = "Usp_Get_ProductQuantity";
+        public const string SpQuantitiesTotalCount = "Usp_Get_ProductQuantityTotalCount";
         public const string SpCreateQuantity = "Usp_Create_ProductQuantity";
         public const string SpUpdateQuantity = "Usp_Update_ProductQuantity";
         public const string SpDeleteQuantity = "USp_Delete_ProductQuantity";
+
         #endregion
         #endregion
 

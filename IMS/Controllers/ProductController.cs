@@ -101,7 +101,7 @@ namespace IMS.Controllers
             }
         }
 
-        [AllowAnonymous, HttpGet, Route("TotalCount")]
+        [AllowAnonymous, HttpPost, Route("TotalCount")]
         public async Task<IActionResult> TotalCount(ProductSearchRequestModel model)
         {
             try

@@ -84,7 +84,30 @@ namespace IMS.Api.Core.CoreService
             }
 
         }
-        
+
+        public async Task<APIResponse> TotalCount()
+        {
+            APIConfig.Log.Debug("CALLING API\" Quantity TotalCount \"  STARTED");
+            try
+            {
+                int? TotalCount = _iRepository.Search<int>(null, Constant.SpQuantitiesTotalCount).FirstOrDefault();
+                if (TotalCount > 0)
+                {
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, new { TotalCount });
+                }
+                else
+                {
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
+                }
+            }
+            catch (Exception ex)
+            {
+                APIConfig.Log.Debug("Exception: " + ex.Message);
+                _apiResponse.StatusCode = HttpStatusCode.BadRequest;
+                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
+            }
+        }
+
 
 
     }
