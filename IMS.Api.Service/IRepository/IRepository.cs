@@ -1,5 +1,5 @@
 ﻿using IMS.Api.Common.Model.RequestModel;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using static Dapper.SqlMapper;
 
 namespace IMS.Api.Service.IRepository
 {
@@ -15,7 +15,8 @@ namespace IMS.Api.Service.IRepository
         void CreateSP(object model, string storedProcName);
         void InsertInBulk<Model>(List<Model> listModel, string tableName, int? commandTimeout);
         bool Delete(object model, string storedProcName);
-        Task<Model> GetById<Model>  (object parameters, string storedProcedureName);
+        Task<Model> GetById<Model>(object parameters, string storedProcedureName);
+        Task<(TFirst, IEnumerable<TSecond>)> GetByIdMultiple<TFirst, TSecond>(object parameters, string storedProcedureName);
         Task PurchaseTransactionsCreate(PurchaseRequestModel model);
 
     }

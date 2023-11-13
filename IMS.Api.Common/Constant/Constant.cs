@@ -305,8 +305,8 @@
 
 
         #region Purchase Order
-        public const string SpGetPurchaseOrderById = "usp_Get_PurchaseOrderById";
         public const string SpGetAllPurchaseOrder = "usp_GetALL_PurchaseOrder";
+        public const string SpGetPurchaseOrderById = "usp_Get_PurchaseOrderById";
         public const string SpCreatePurchaseOrder = "usp_Create_PurchaseOrder";
         public const string SpCreatePurchaseItem = "usp_Create_PurchaseItem";
         public const string SpDeletePurchaseOrderById = "usp_Delete_PurchaseOrder";

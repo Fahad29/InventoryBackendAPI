@@ -1,9 +1,7 @@
 ﻿using IMS.Api.Common.Constant;
-using IMS.Api.Common.Enumerations;
 using IMS.Api.Common.Extensions;
 using IMS.Api.Common.Model.CommonModel;
 using IMS.Api.Common.Model.DataModel;
-using IMS.Api.Common.Model.Params;
 using IMS.Api.Common.Model.RequestModel;
 using IMS.Api.Common.Model.RequestModel.Search;
 using IMS.Api.Common.Model.ResponseModel;
@@ -13,10 +11,7 @@ using IMS.Api.Gateway;
 using IMS.Api.Gateway.Model.Request;
 using IMS.Api.Gateway.Model.Response;
 using IMS.Api.Service.IRepository;
-using Microsoft.AspNetCore.Http;
 using System.Net;
-using static IMS.Api.Common.Enumerations.Eumeration;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace IMS.Api.Core.CoreService
 {

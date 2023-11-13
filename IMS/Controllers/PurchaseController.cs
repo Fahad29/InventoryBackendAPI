@@ -71,8 +71,6 @@ namespace IMS.Controllers
             }
         }
 
-        
-
         [AllowAnonymous, HttpDelete, Route("Delete")]
         public async Task<IActionResult> Delete(int purchaseOrerId)
         {

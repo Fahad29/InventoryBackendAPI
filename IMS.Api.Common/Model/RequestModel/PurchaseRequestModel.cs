@@ -18,6 +18,8 @@ namespace IMS.Api.Common.Model.RequestModel
         public int PaymentStatus { get; set; }
         public decimal PaidAmount { get; set; }
         public string Note { get; set; }
+        public int UserId { get; set; }
+        public int CompanyId { get; set; }
         public List<PurchaseItemRequestModel> PurchaseItemRequests { get; set; }
     }
     public class PurchaseItemRequestModel

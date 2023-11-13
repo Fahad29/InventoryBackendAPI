@@ -10,6 +10,7 @@ using IMS.Api.Core.ICoreService;
 using IMS.Api.Service.IRepository;
 using System.Data;
 using System.Net;
+using static Dapper.SqlMapper;
 
 namespace IMS.Api.Core.CoreService
 {
@@ -28,6 +29,7 @@ namespace IMS.Api.Core.CoreService
             APIConfig.Log.Debug("******* Calling Purchase Search API ******* ");
             try
             {
+
                 List<PurchaseOrderDTO> vendors = _iRepository.Search<PurchaseOrderDTO>(searchModel, Constant.SpGetAllPurchaseOrder).ToList();
                 if (vendors.Count > 0)
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, vendors);
@@ -36,18 +38,28 @@ namespace IMS.Api.Core.CoreService
             }
             catch (Exception ex)
             {
-                throw;
+                APIConfig.Log.Debug("Exception: " + ex.Message);
+                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
         }
 
         public async Task<APIResponse> GetById(int PurchaseOrderId)
         {
             APIConfig.Log.Debug("******* Calling Vendor Get By Id API ******* ");
-
             try
             {
-                PurchaseOrderDTO vendors = await _iRepository.GetById<PurchaseOrderDTO>(PurchaseOrderId, Constant.SpGetPurchaseOrderById);
-                return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
+                // Call the GetByIdMultiple method to retrieve the data
+                var result = await _iRepository.GetByIdMultiple<PurchaseOrderDTO, PurchaseItemRequestModel>(
+                    new { PurchaseOrderId = PurchaseOrderId, CompanyId = APIConfig.CompanyId },
+                    Constant.SpGetPurchaseOrderById);
+
+                // Access the data from the result
+                var respose = new
+                {
+                    purchaseOrder = result.Item1,
+                    purchaseItem = result.Item2
+                };
+                return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, respose);
             }
             catch (Exception ex)
             {
@@ -60,6 +72,8 @@ namespace IMS.Api.Core.CoreService
             APIConfig.Log.Debug("******* Calling Purchase Create API ******* ");
             try
             {
+                model.UserId = APIConfig.UserId;
+                model.CompanyId = APIConfig.CompanyId;
                 await _iRepository.PurchaseTransactionsCreate(model);
                 return _apiResponse.ReturnResponse(HttpStatusCode.Created, null);
             }
