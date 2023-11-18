@@ -43,6 +43,7 @@ namespace IMS.Controllers
             try
             {
                 APIResponse response = await _purchaseCore.GetById(purchaseOrerId);
+               
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();

@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using IMS.Api.Common.Model.CommonModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace IMS.Api.Common.Model.RequestModel
 {
-    public class PurchaseRequestModel
+    public class PurchaseRequestModel 
     {
         public PurchaseRequestModel()
         {
@@ -20,6 +21,7 @@ namespace IMS.Api.Common.Model.RequestModel
         public string Note { get; set; }
         public int UserId { get; set; }
         public int CompanyId { get; set; }
+        public int TaxValue { get; set; }
         public List<PurchaseItemRequestModel> PurchaseItemRequests { get; set; }
     }
     public class PurchaseItemRequestModel
@@ -29,5 +31,8 @@ namespace IMS.Api.Common.Model.RequestModel
         public decimal Quantity { get; set; }
         public decimal ItemPrice { get; set; }
         public DateTime ExpiryDate { get; set; }
+        public decimal TotalWithOutVAT { get; set; }
+        public decimal VATAmount { get; set; }
+        public decimal TotalWithVAT { get; set; }
     }
 }

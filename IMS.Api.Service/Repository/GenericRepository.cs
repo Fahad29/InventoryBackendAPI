@@ -299,7 +299,11 @@ namespace IMS.Api.Service.Repository
 
                             foreach (var purchaseItem in purchaseRequest.PurchaseItemRequests)
                             {
+                                CalculateAmount calculation = new CalculateAmount(purchaseItem.ItemPrice, purchaseRequest.TaxValue);
+
                                 purchaseItem.PurchaseOrderId = purchaseObj.PurchaseOrderID;
+                                purchaseItem.TotalWithOutVAT = calculation.PriceWithoutVat;
+                                purchaseItem.VATAmount = calculation.VatAmount;
                                 await conn.ExecuteAsync(Constant.SpCreatePurchaseItem, purchaseItem, transaction, null, CommandType.StoredProcedure);
                             }
 

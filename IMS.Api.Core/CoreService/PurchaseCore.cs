@@ -72,8 +72,10 @@ namespace IMS.Api.Core.CoreService
             APIConfig.Log.Debug("******* Calling Purchase Create API ******* ");
             try
             {
+
                 model.UserId = APIConfig.UserId;
                 model.CompanyId = APIConfig.CompanyId;
+                model.TaxValue = APIConfig.TaxValue;
                 await _iRepository.PurchaseTransactionsCreate(model);
                 return _apiResponse.ReturnResponse(HttpStatusCode.Created, null);
             }
