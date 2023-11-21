@@ -8,6 +8,7 @@ using IMS.Api.Common.Model.ResponseModel;
 using IMS.Api.Core.ICoreService;
 using IMS.Api.Service.IRepository;
 using System.Net;
+using System.Numerics;
 
 namespace IMS.Api.Core.CoreService
 {
@@ -28,12 +29,19 @@ namespace IMS.Api.Core.CoreService
             APIConfig.Log.Debug("******* Calling Vendor Search API ******* ");
             try
             {
-                List<Vendor> vendors = _iRepository.Search<Vendor>(model, Constant.SpGetVendor).ToList();
-
-                if (vendors.Count > 0)
-                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, vendors);
+                model.CompanyId = APIConfig.CompanyId;
+                var result = await _iRepository.SearchMuiltiple<VendorResponse>(model, Constant.SpGetVendor);
+                // Access the data from the result
+                var respose = new
+                {
+                    vendorList = result.Item1,
+                    totalCount = result.Item2
+                };
+                if (result.Item1.ToList().Count > 0)
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, respose);
                 else
                     return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
+
             }
             catch (Exception ex)
             {
@@ -56,7 +64,7 @@ namespace IMS.Api.Core.CoreService
                 if (vendor != null)
                 {
                     VendorResponse response = vendor.MapTo<VendorResponse>();
-                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, vendor);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, response);
                 }
                 else
                     return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
@@ -86,13 +94,12 @@ namespace IMS.Api.Core.CoreService
                 throw;
             }
         }
-        public async Task<APIResponse> Update(int vendorId, VendorRequestModel model)
+        public async Task<APIResponse> Update(VendorRequestModel model)
         {
             APIConfig.Log.Debug("******* Calling Vendor Update API ******* ");
 
             try
             {
-                model.VendorID = vendorId;
                 model.CurrentUserId = APIConfig.UserId;
                 model.CurrentDate = DateTime.Now;
                 Vendor vendor = _iRepository.CreateSP<Vendor>(model, Constant.SpCreateVendor);

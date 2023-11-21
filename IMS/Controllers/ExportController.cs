@@ -103,6 +103,22 @@ namespace IMS.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("Vendor")]
+        public async Task<IActionResult> Vendor(VendorSearch model)
+        {
+            try
+            {
+                APIResponse response = await _exportCore.Vendor(model);
+                if (response?.Response != null)
+                    return Ok(response);
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
 
     }
 }

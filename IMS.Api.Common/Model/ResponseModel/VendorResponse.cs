@@ -7,6 +7,7 @@ namespace IMS.Api.Common.Model.ResponseModel
         public int VendorID { get; set; } = -1;
         public string VendorCompany { get; set; }
         public int CompanyId { get; set; }
+        public string CompanyName { get; set; }
         public string ContactPerson { get; set; }
         public string ContactEmail { get; set; }
         public string ContactPhone { get; set; }

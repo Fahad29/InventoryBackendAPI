@@ -76,8 +76,8 @@ namespace IMS.Api.Core.CoreService
                 model.UserId = APIConfig.UserId;
                 model.CompanyId = APIConfig.CompanyId;
                 model.TaxValue = APIConfig.TaxValue;
-                await _iRepository.PurchaseTransactionsCreate(model);
-                return _apiResponse.ReturnResponse(HttpStatusCode.Created, null);
+                PurchaseOrderDTO purchaseObj = await _iRepository.PurchaseTransactionsCreate(model);
+                return _apiResponse.ReturnResponse(HttpStatusCode.Created, purchaseObj);
             }
             catch (Exception ex)
             {

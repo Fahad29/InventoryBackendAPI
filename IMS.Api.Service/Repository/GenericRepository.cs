@@ -43,49 +43,26 @@ namespace IMS.Api.Service.Repository
             }
         }
 
-        [ExcludeFromCodeCoverage]
-        public List<Model> Search<Model>(object parameters, string sql, string connectionString)
+        public async Task<(IEnumerable<Model>, int)> SearchMuiltiple<Model>(object parameters, string storedProcedureName)
         {
-            SqlConnection connection = new SqlConnection(_connectionString);
-            using (connection)
+            try
             {
-                DynamicParameters dynamicParameters = new DynamicParameters();
-                if (parameters != null)
+                using (SqlConnection conn = new SqlConnection(_connectionString))
                 {
-                    foreach (PropertyInfo property in parameters.GetType().GetProperties())
+                    conn.Open();
+                    using (GridReader multiObject = await conn.QueryMultipleAsync(storedProcedureName, parameters, commandType: CommandType.StoredProcedure))
                     {
-                        object value = DBNull.Value;
-                        if (property.GetValue(parameters) != null)
-                        {
-                            if ((property.PropertyType == typeof(int) || property.PropertyType == typeof(long) || property.PropertyType == typeof(long?) || property.PropertyType == typeof(int?))
-                                && int.Parse(property.GetValue(parameters).ToString()) != 0)
-                            {
-                                value = property.GetValue(parameters);
-                            }
-                            else if (property.PropertyType == typeof(string) && !string.IsNullOrEmpty(property.GetValue(parameters).ToString()))
-                            {
-                                value = property.GetValue(parameters);
-                            }
-                            else if ((property.PropertyType == typeof(DateTime) || property.PropertyType == typeof(DateTime?)) && Convert.ToDateTime(property.GetValue(parameters).ToString()) != Convert.ToDateTime("01-01-1900"))
-                            {
-                                value = property.GetValue(parameters);
-                            }
-                            else if ((property.PropertyType == typeof(decimal) || property.PropertyType == typeof(decimal?)) && decimal.Parse(property.GetValue(parameters).ToString()) != 0)
-                            {
-                                value = property.GetValue(parameters);
-                            }
-
-                            if (property.PropertyType.BaseType != typeof(object) || property.PropertyType == typeof(string))
-                                dynamicParameters.Add(property.Name, value, direction: ParameterDirection.Input);
-                        }
+                        IEnumerable<Model> listOfObj = await multiObject.ReadAsync<Model>();
+                        int totalCount = await multiObject.ReadFirstAsync<int>();
+                        return (listOfObj, totalCount);
                     }
                 }
-                connection.Open();
-                return connection.Query<Model>(sql, param: dynamicParameters, commandType: CommandType.StoredProcedure).ToList();
+            }
+            catch (Exception ex)
+            {
+                throw;
             }
         }
-
-
         public IEnumerable<Model> ExecuteQuery<Model>(object parameters, string query)
         {
             using (SqlConnection conn = new SqlConnection(_connectionString))
@@ -270,10 +247,11 @@ namespace IMS.Api.Service.Repository
                 throw;
             }
         }
-        public async Task PurchaseTransactionsCreate(PurchaseRequestModel purchaseRequest)
+        public async Task<PurchaseOrderDTO> PurchaseTransactionsCreate(PurchaseRequestModel purchaseRequest)
         {
             try
             {
+                PurchaseOrderDTO purchaseObj = new PurchaseOrderDTO();
                 using (var conn = new SqlConnection(_connectionString))
                 {
                     await conn.OpenAsync();
@@ -295,7 +273,7 @@ namespace IMS.Api.Service.Repository
                                 CompanyId = purchaseRequest.CompanyId
                             };
 
-                            PurchaseOrderDTO purchaseObj = await conn.QuerySingleAsync<PurchaseOrderDTO>(Constant.SpCreatePurchaseOrder, purchaseOrder, transaction, null, CommandType.StoredProcedure);
+                            purchaseObj = await conn.QuerySingleAsync<PurchaseOrderDTO>(Constant.SpCreatePurchaseOrder, purchaseOrder, transaction, null, CommandType.StoredProcedure);
 
                             foreach (var purchaseItem in purchaseRequest.PurchaseItemRequests)
                             {
@@ -317,6 +295,7 @@ namespace IMS.Api.Service.Repository
                             throw;
                         }
                     }
+                    return purchaseObj;
                 }
             }
             catch (Exception ex)

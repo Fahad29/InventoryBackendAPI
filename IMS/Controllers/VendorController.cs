@@ -72,13 +72,13 @@ namespace IMS.Controllers
         }
 
         [AllowAnonymous, HttpPut, Route("Update")]
-        public async Task<IActionResult> Update(int vendorId, VendorRequestModel model)
+        public async Task<IActionResult> Update(VendorRequestModel model)
         {
             try
             {
-                if (vendorId > 0)
+                if (model.VendorID> 0)
                 {
-                    APIResponse response = await _vendorCore.Update(vendorId, model);
+                    APIResponse response = await _vendorCore.Update(model);
                     if (response?.Response != null)
                         return Ok(response);
                 }

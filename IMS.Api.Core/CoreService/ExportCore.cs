@@ -42,7 +42,6 @@ namespace IMS.Api.Core.CoreService
             catch (Exception ex)
             {
                 APIConfig.Log.Debug("Exception: " + ex.Message);
-                _apiResponse.StatusCode = HttpStatusCode.BadRequest;
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
         }
@@ -69,7 +68,6 @@ namespace IMS.Api.Core.CoreService
             catch (Exception ex)
             {
                 APIConfig.Log.Debug("Exception: " + ex.Message);
-                _apiResponse.StatusCode = HttpStatusCode.BadRequest;
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
         }
@@ -96,7 +94,6 @@ namespace IMS.Api.Core.CoreService
             catch (Exception ex)
             {
                 APIConfig.Log.Debug("Exception: " + ex.Message);
-                _apiResponse.StatusCode = HttpStatusCode.BadRequest;
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
         }
@@ -149,7 +146,44 @@ namespace IMS.Api.Core.CoreService
             catch (Exception ex)
             {
                 APIConfig.Log.Debug("Exception: " + ex.Message);
-                _apiResponse.StatusCode = HttpStatusCode.BadRequest;
+                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
+            }
+        }
+        public async Task<APIResponse> Vendor(VendorSearch model)
+        {
+            APIConfig.Log.Debug("******* Calling Transaction Export API ******* ");
+            try
+            {
+                model.CompanyId = APIConfig.CompanyId;
+                var result = await _iRepository.SearchMuiltiple<VendorResponse>(model, Constant.SpGetVendor);
+                // Access the data from the result
+                var respose = new
+                {
+                    vendorList = result.Item1,
+                    totalCount = result.Item2
+                };
+                if (result.Item1.ToList().Count > 0)
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, respose);
+                else
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
+
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task<APIResponse> PurchaseTransaction(TransactionSearchRequestModel model)
+        {
+            APIConfig.Log.Debug("CALLING API\" Transaction Export \"  STARTED");
+            try
+            {
+                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, _apiResponse);
+            }
+            catch (Exception ex)
+            {
+                APIConfig.Log.Debug("Exception: " + ex.Message);
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
             }
         }
