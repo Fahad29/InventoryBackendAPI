@@ -30,15 +30,11 @@ namespace IMS.Api.Core.CoreService
             try
             {
                 model.CompanyId = APIConfig.CompanyId;
-                var result = await _iRepository.SearchMuiltiple<VendorResponse>(model, Constant.SpGetVendor);
+                GridData response = await _iRepository.SearchMuiltiple(model, Constant.SpGetVendor);
                 // Access the data from the result
-                var respose = new
-                {
-                    vendorList = result.Item1,
-                    totalCount = result.Item2
-                };
-                if (result.Item1.ToList().Count > 0)
-                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, respose);
+              
+                if (response.DataList.Count() > 0)
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, response);
                 else
                     return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
 

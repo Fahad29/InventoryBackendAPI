@@ -43,25 +43,33 @@ namespace IMS.Api.Service.Repository
             }
         }
 
-        public async Task<(IEnumerable<Model>, int)> SearchMuiltiple<Model>(object parameters, string storedProcedureName)
+        public async Task<GridData> SearchMuiltiple(object parameters, string storedProcedureName)
         {
             try
             {
+                GridData gridDataInstance = GridData.Instance;
+
                 using (SqlConnection conn = new SqlConnection(_connectionString))
                 {
-                    conn.Open();
+                    await conn.OpenAsync();
+
                     using (GridReader multiObject = await conn.QueryMultipleAsync(storedProcedureName, parameters, commandType: CommandType.StoredProcedure))
                     {
-                        IEnumerable<Model> listOfObj = await multiObject.ReadAsync<Model>();
-                        int totalCount = await multiObject.ReadFirstAsync<int>();
-                        return (listOfObj, totalCount);
+                        gridDataInstance.DataList = await multiObject.ReadAsync<object>(); // Replace with your actual data
+                        gridDataInstance.TotalCount = await multiObject.ReadFirstAsync<int>(); // Replace with your actual logic
                     }
                 }
+
+                return await Task.FromResult(gridDataInstance);
             }
             catch (Exception ex)
             {
+
+                // Log or handle the exception appropriately
+                Console.WriteLine($"Error in SearchMultipleAsync: {ex.Message}");
                 throw;
             }
+
         }
         public IEnumerable<Model> ExecuteQuery<Model>(object parameters, string query)
         {
@@ -247,11 +255,11 @@ namespace IMS.Api.Service.Repository
                 throw;
             }
         }
-        public async Task<PurchaseOrderDTO> PurchaseTransactionsCreate(PurchaseRequestModel purchaseRequest)
+        public async Task<PurchaseOrderResponseModel> PurchaseTransactionsCreate(PurchaseRequestModel purchaseRequest)
         {
             try
             {
-                PurchaseOrderDTO purchaseObj = new PurchaseOrderDTO();
+                PurchaseOrderResponseModel purchaseObj = new PurchaseOrderResponseModel();
                 using (var conn = new SqlConnection(_connectionString))
                 {
                     await conn.OpenAsync();
@@ -273,15 +281,14 @@ namespace IMS.Api.Service.Repository
                                 CompanyId = purchaseRequest.CompanyId
                             };
 
-                            purchaseObj = await conn.QuerySingleAsync<PurchaseOrderDTO>(Constant.SpCreatePurchaseOrder, purchaseOrder, transaction, null, CommandType.StoredProcedure);
+                            purchaseObj = await conn.QuerySingleAsync<PurchaseOrderResponseModel>(Constant.SpCreatePurchaseOrder, purchaseOrder, transaction, null, CommandType.StoredProcedure);
 
                             foreach (var purchaseItem in purchaseRequest.PurchaseItemRequests)
                             {
-                                CalculateAmount calculation = new CalculateAmount(purchaseItem.ItemPrice, purchaseRequest.TaxValue);
-
+                                //CalculateAmount calculation = new CalculateAmount(purchaseItem.ItemPrice, purchaseRequest.TaxValue);
+                                //purchaseItem.TotalWithOutVAT = calculation.PriceWithoutVat;
+                                //purchaseItem.VATAmount = calculation.VatAmount;
                                 purchaseItem.PurchaseOrderId = purchaseObj.PurchaseOrderID;
-                                purchaseItem.TotalWithOutVAT = calculation.PriceWithoutVat;
-                                purchaseItem.VATAmount = calculation.VatAmount;
                                 await conn.ExecuteAsync(Constant.SpCreatePurchaseItem, purchaseItem, transaction, null, CommandType.StoredProcedure);
                             }
 

@@ -239,8 +239,8 @@ namespace IMS.MiddleWare
                     int.TryParse(TokenData.Claims.FirstOrDefault(x => x.Type.Contains("sid")).Value.ToString(), out userId);
                     int.TryParse(TokenData.Claims.FirstOrDefault(x => x.Type.Contains("primarygroupsid")).Value.ToString(), out companyId);
                     int.TryParse(TokenData.Claims.FirstOrDefault(x => x.Type.Contains("role")).Value.ToString(), out roleId);
-                    APIConfig.UserId = userId;
-                    APIConfig.CompanyId = companyId;
+                    APIConfig.UserId = 3;// userId;
+                    APIConfig.CompanyId = 3;//companyId;
                     APIConfig.RoleId = roleId;
 
                     return Constant.SuccessResponse;

@@ -90,6 +90,7 @@ namespace IMS.Api.Core.CoreService
                     company.CompanyName = model.CompanyName;
                     company.IsActive = true;
                     company.IsDeleted = false;
+                    company.CreatedOn = DateTime.Now;
                     company = _iRepository.CreateSP<Company>(company, Constant.SpCreateCompany);
                     if (company?.CompanyId != null && company?.CompanyId > 0)
                     {

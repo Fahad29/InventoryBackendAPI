@@ -75,7 +75,6 @@ namespace IMS.Api.Core.CoreService
             try
             {
                 User user = model.MapTo<User>();
-                //user.CreatedBy = @params.UserId;
                 user = _iRepository.CreateSP<User>(user, Constant.SpCreateCompany);
                 return _apiResponse.ReturnResponse(HttpStatusCode.Created, user);
             }

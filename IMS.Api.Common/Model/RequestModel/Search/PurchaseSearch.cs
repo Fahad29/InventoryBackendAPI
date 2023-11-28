@@ -7,6 +7,7 @@ namespace IMS.Api.Common.Model.RequestModel.Search
         public string VendorCompany { get; set; } = string.Empty;
         public int CompanyId { get; set; } = APIConfig.CompanyId;
         public string PurchaseCode { get; set; } = string.Empty;
-        public string TransactionNo { get; set; } = string.Empty;
+        public int PageNo { get; set; } = 1;
+        public int RecordLimit { get; set; } = 10;
     }
 }

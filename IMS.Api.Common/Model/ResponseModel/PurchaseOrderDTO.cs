@@ -1,8 +1,6 @@
-﻿using IMS.Api.Common.Model;
-
-namespace IMS.Api.Common.Model.ResponseModel
+﻿namespace IMS.Api.Common.Model.ResponseModel
 {
-    public class PurchaseOrderDTO
+    public class PurchaseOrderResponseModel
     {
         public int PurchaseOrderID { get; set; }
         public string PurchaseCode { get; set; }
@@ -19,5 +17,6 @@ namespace IMS.Api.Common.Model.ResponseModel
         public int NoOfItems { get; set; }
 
     }
+
 }
 

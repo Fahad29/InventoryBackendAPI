@@ -8,6 +8,7 @@ using IMS.Api.Common.Model.RequestModel.Search;
 using IMS.Api.Common.Model.ResponseModel;
 using IMS.Api.Core.ICoreService;
 using IMS.Api.Service.IRepository;
+using SendGrid;
 using System.Data;
 using System.Net;
 using static Dapper.SqlMapper;
@@ -29,10 +30,11 @@ namespace IMS.Api.Core.CoreService
             APIConfig.Log.Debug("******* Calling Purchase Search API ******* ");
             try
             {
+                searchModel.CompanyId = APIConfig.CompanyId;
+                GridData response = await _iRepository.SearchMuiltiple(searchModel, Constant.SpGetAllPurchaseOrder);
 
-                List<PurchaseOrderDTO> vendors = _iRepository.Search<PurchaseOrderDTO>(searchModel, Constant.SpGetAllPurchaseOrder).ToList();
-                if (vendors.Count > 0)
-                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, vendors);
+                if (response.DataList.Count() > 0)
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, response);
                 else
                     return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
             }
@@ -49,7 +51,7 @@ namespace IMS.Api.Core.CoreService
             try
             {
                 // Call the GetByIdMultiple method to retrieve the data
-                var result = await _iRepository.GetByIdMultiple<PurchaseOrderDTO, PurchaseItemRequestModel>(
+                var result = await _iRepository.GetByIdMultiple<PurchaseOrderResponseModel, PurchaseItemResponseModel>(
                     new { PurchaseOrderId = PurchaseOrderId, CompanyId = APIConfig.CompanyId },
                     Constant.SpGetPurchaseOrderById);
 
@@ -76,7 +78,7 @@ namespace IMS.Api.Core.CoreService
                 model.UserId = APIConfig.UserId;
                 model.CompanyId = APIConfig.CompanyId;
                 model.TaxValue = APIConfig.TaxValue;
-                PurchaseOrderDTO purchaseObj = await _iRepository.PurchaseTransactionsCreate(model);
+                PurchaseOrderResponseModel purchaseObj = await _iRepository.PurchaseTransactionsCreate(model);
                 return _apiResponse.ReturnResponse(HttpStatusCode.Created, purchaseObj);
             }
             catch (Exception ex)
