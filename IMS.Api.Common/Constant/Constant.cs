@@ -171,7 +171,6 @@
         public const string SpGetProductDetail = "Usp_Get_productDetail";
         public const string SpGetProductDetailById = "Usp_Get_productDetailById";
         public const string SpDeleteProductDetail = "Usp_Delete_ProductDetail";
-        public const string SpProductDetailTotalCount = "Usp_Get_productDetailTotalCount";
         #endregion
 
         #region CompanyProdcut

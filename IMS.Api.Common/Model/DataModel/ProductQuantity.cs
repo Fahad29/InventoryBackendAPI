@@ -6,9 +6,8 @@ namespace IMS.Api.Common.Model.DataModel
     {
         [Key]
         public int Id { get; set; }
-        public int CategoryId { get; set; }
-        public decimal Quantity { get; set; }
-        public string Unit { get; set; }
-        public bool IsActive { get; set; }
+        public decimal Quantity { get; set; } = 0.0M;
+        public string Unit {  get; set; }
+        public bool IsActive { get; set; } = true;
     }
 }

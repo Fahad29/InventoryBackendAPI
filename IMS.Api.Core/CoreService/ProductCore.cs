@@ -25,16 +25,18 @@ namespace IMS.Api.Core.CoreService
             _attachmentCore = attachmentCore;
         }
 
-        public async Task<APIResponse> Search(ProductSearchRequestModel model)
+        public async Task<APIResponse> Search(ProductSearchRequestModel searchModel)
         {
             APIConfig.Log.Debug("CALLING API\" Product search \"  STARTED");
             try
             {
-                List<ProductSearchResponseModel> productList = _iRepository.Search<ProductSearchResponseModel>(model, Constant.SpGetProductDetail).ToList();
-                if (productList.Count > 0)
-                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, productList);
+                searchModel.CompanyId = APIConfig.CompanyId;
+                GridData response = await _iRepository.SearchMuiltiple(searchModel, Constant.SpGetProductDetail);
+
+                if (response.DataList.Count() > 0)
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, response);
                 else
-                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.RecordNotFound);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
 
             }
             catch (Exception ex)
@@ -49,11 +51,11 @@ namespace IMS.Api.Core.CoreService
             APIConfig.Log.Debug("CALLING API\" Product GetById \"  STARTED");
             try
             {
-                ProductResponseModel? product = _iRepository.Search<ProductResponseModel>(new { Id = productId }, Constant.SpGetProductDetail).FirstOrDefault();
+                ProductResponseModel? product = _iRepository.Search<ProductResponseModel>(new { Id = productId }, Constant.SpGetProductDetailById).FirstOrDefault();
 
                 if (product != null)
                 {
-                    List<AttachmentResponse> result = await _attachmentCore.GetAttachments((int)AttachmentTypeEnum.ProductImages, product.Id);
+                    List<AttachmentResponse> result = await _attachmentCore.GetAttachments((int)AttachmentTypeEnum.ProductImages, product.ProductDetailId);
                     product.attachments = result;
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, product);
                 }
@@ -75,20 +77,22 @@ namespace IMS.Api.Core.CoreService
             try
             {
                 ProductDetail product = productRequest.MapTo<ProductDetail>();
+                product.CompanyId = APIConfig.CompanyId;
                 product = _iRepository.CreateSP<ProductDetail>(product, Constant.SpCreateProductDetail);
                 if (product != null && productRequest.Attachments != null && productRequest.Attachments.Count > 0)
                 {
-                    _attachmentCore.UploadImages(productRequest.Attachments, APIConfig.UserId, product.Id, (int)AttachmentTypeEnum.ProductImages);
+                   
+                        _attachmentCore.UploadImages(productRequest.Attachments, APIConfig.UserId, product.Id, (int)AttachmentTypeEnum.ProductImages);
                 }
 
-                if (APIConfig.CompanyId > 0)
-                {
-                    CompanyProduct companyProduct = new CompanyProduct()
-                    {
-                        ProductId = Convert.ToInt32(product?.Id)
-                    };
-                    _iRepository.CreateSP<CompanyProduct>(companyProduct, Constant.SpCreateCompanyProduct);
-                }
+                //if (APIConfig.CompanyId > 0)
+                //{
+                //    CompanyProduct companyProduct = new CompanyProduct()
+                //    {
+                //        ProductId = Convert.ToInt32(product?.Id)
+                //    };
+                //    _iRepository.CreateSP<CompanyProduct>(companyProduct, Constant.SpCreateCompanyProduct);
+                //}
 
                 return _apiResponse.ReturnResponse(HttpStatusCode.Created, product);
 
@@ -151,28 +155,7 @@ namespace IMS.Api.Core.CoreService
             }
         }
 
-        public async Task<APIResponse> TotalCount(ProductSearchRequestModel model)
-        {
-            APIConfig.Log.Debug("CALLING API\" Product TotalCount \"  STARTED");
-            try
-            {
-                int? TotalCount = _iRepository.Search<int>(model, Constant.SpProductDetailTotalCount).FirstOrDefault();
-                if (TotalCount > 0)
-                {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, new { TotalCount = TotalCount });
-                }
-                else
-                {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
-                }
-            }
-            catch (Exception ex)
-            {
-                APIConfig.Log.Debug("Exception: " + ex.Message);
-                _apiResponse.StatusCode = HttpStatusCode.BadRequest;
-                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
-            }
-        }
+
     }
 
 }

@@ -2,6 +2,7 @@
 using IMS.Api.Common.Model.CommonModel;
 using IMS.Api.Common.Model.DataModel;
 using IMS.Api.Common.Model.RequestModel;
+using IMS.Api.Common.Model.RequestModel.Search;
 using IMS.Api.Common.Model.ResponseModel;
 using IMS.Api.Core.ICoreService;
 using IMS.Api.Service.IRepository;
@@ -19,18 +20,14 @@ namespace IMS.Api.Core.CoreService
             _apiResponse = apiResponse;
         }
 
-        public async Task<APIResponse> GetAll()
+        public async Task<APIResponse> GetAll(QuantitySearch quantitySearch)
         {
             APIConfig.Log.Debug("CALLING API\" ItemQuantity Get all \"  STARTED");
             try
             {
-                Object obj = new
-                {
-
-                };
-                List<ProductQuantity> itemQuantities = _iRepository.Search(obj, Constant.SpGetAllQuantities).ToList();
-                if (itemQuantities.Count > 0)
-                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, itemQuantities);
+                GridData response = await _iRepository.SearchMuiltiple(quantitySearch, Constant.SpGetAllQuantities);
+                if (response.DataList.Count() > 0)
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, response);
                 else
                     return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
             }
@@ -47,7 +44,6 @@ namespace IMS.Api.Core.CoreService
             try
             {
                 ProductQuantity itemQty = new ProductQuantity();
-                itemQty.CategoryId = quantityRequest.CategoryId;
                 itemQty.Quantity = quantityRequest.Quantity;
                 itemQty.Unit = quantityRequest.Unit;
                 itemQty = _iRepository.CreateSP<ProductQuantity>(itemQty, Constant.SpCreateQuantity);

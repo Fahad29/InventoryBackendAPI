@@ -1,6 +1,6 @@
 ﻿using IMS.Api.Common.Model.RequestModel;
+using IMS.Api.Common.Model.RequestModel.Search;
 using IMS.Api.Common.Model.ResponseModel;
-using IMS.Api.Core.CoreService;
 using IMS.Api.Core.ICoreService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,19 +18,19 @@ namespace IMS.Controllers
             _quantityCore = quantityCore;
         }
 
-        [AllowAnonymous, HttpGet, Route("GetAll")]
-        public async Task<IActionResult> GetAll()
+        [AllowAnonymous, HttpPost, Route("Search")]
+        public async Task<IActionResult> GetAll(QuantitySearch quantitySearch)
         {
             try
             {
-                APIResponse response = await _quantityCore.GetAll();
+                APIResponse response = await _quantityCore.GetAll(quantitySearch);
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();
             }
             catch (Exception ex)
             {
-                throw;
+                return BadRequest(ex);
             }
         }
 
@@ -46,7 +46,7 @@ namespace IMS.Controllers
             }
             catch (Exception ex)
             {
-                return null;
+                return BadRequest(ex);
             }
         }
 

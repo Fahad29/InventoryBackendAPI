@@ -1,5 +1,4 @@
 ﻿using IMS.Api.Common.Constant;
-using IMS.Api.Common.Helper;
 using IMS.Api.Common.Model;
 using IMS.Api.Common.Model.CommonModel;
 using IMS.Api.Common.Model.DataModel;
@@ -8,10 +7,7 @@ using IMS.Api.Common.Model.RequestModel.Search;
 using IMS.Api.Common.Model.ResponseModel;
 using IMS.Api.Core.ICoreService;
 using IMS.Api.Service.IRepository;
-using SendGrid;
-using System.Data;
 using System.Net;
-using static Dapper.SqlMapper;
 
 namespace IMS.Api.Core.CoreService
 {
@@ -61,7 +57,7 @@ namespace IMS.Api.Core.CoreService
                     purchaseOrder = result.Item1,
                     purchaseItem = result.Item2
                 };
-                return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, respose);
+                return _apiResponse.ReturnResponse(HttpStatusCode.OK, respose);
             }
             catch (Exception ex)
             {

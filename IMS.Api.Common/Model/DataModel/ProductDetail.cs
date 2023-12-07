@@ -1,4 +1,5 @@
-﻿using IMS.Api.Common.Model.ResponseModel;
+﻿using IMS.Api.Common.Model.CommonModel;
+using IMS.Api.Common.Model.ResponseModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace IMS.Api.Common.Model.DataModel
@@ -19,5 +20,6 @@ namespace IMS.Api.Common.Model.DataModel
         [Required]
         public string Name { get; set; }
         public string Description { get; set; }
+        public int CompanyId { get; set; } = APIConfig.CompanyId;
     }
 }

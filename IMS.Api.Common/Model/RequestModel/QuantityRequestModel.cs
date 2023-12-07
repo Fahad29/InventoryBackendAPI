@@ -1,14 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace IMS.Api.Common.Model.RequestModel
 {
     public class QuantityRequestModel
     {
-        [Key]
+        [JsonIgnore]
         public int Id { get; set; }
         [Required]
-        public int CategoryId { get; set; }
         public decimal Quantity { get; set; }
+        [Required]
         public string Unit { get; set; }
     }
 }

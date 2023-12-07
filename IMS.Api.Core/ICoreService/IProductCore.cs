@@ -11,6 +11,5 @@ namespace IMS.Api.Core.ICoreService
         Task<APIResponse> Create(ProductRequestModel productRequest);
         Task<APIResponse> Update(ProductUpdateRequestModel productRequest);
         Task<APIResponse> Delete(long productId, long UserId);
-        Task<APIResponse> TotalCount(ProductSearchRequestModel model);
     }
 }

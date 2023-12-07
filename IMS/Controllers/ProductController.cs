@@ -1,9 +1,7 @@
-﻿using IMS.Api.Common.Model.DataModel;
-using IMS.Api.Common.Model.RequestModel;
+﻿using IMS.Api.Common.Model.RequestModel;
 using IMS.Api.Common.Model.RequestModel.Search;
 using IMS.Api.Common.Model.ResponseModel;
 using IMS.Api.Core.ICoreService;
-using IMS.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,7 +29,7 @@ namespace IMS.Controllers
             }
             catch (Exception ex)
             {
-                throw;
+                return BadRequest(ex);
             }
         }
 
@@ -47,7 +45,7 @@ namespace IMS.Controllers
             }
             catch (Exception ex)
             {
-                throw;
+                return BadRequest(ex);
             }
         }
 
@@ -56,8 +54,6 @@ namespace IMS.Controllers
         {
             try
             {
-                long UserId = UserID;
-                long CompanyId = User.GetUserCompanyId();
                 APIResponse response = await _productCore.Create(productRequest);
                 if (response?.Response != null)
                     return Ok(response);
@@ -86,27 +82,11 @@ namespace IMS.Controllers
         }
 
         [AllowAnonymous, HttpDelete, Route("Delete")]
-        public async Task<IActionResult> Delete(int productId)
+        private async Task<IActionResult> Delete(int productId)
         {
             try
             {
                 APIResponse response = await _productCore.Delete(productId, UserID);
-                if (response?.Response != null)
-                    return Ok(response);
-                return BadRequest();
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
-
-        [AllowAnonymous, HttpGet, Route("TotalCount")]
-        public async Task<IActionResult> TotalCount(ProductSearchRequestModel model)
-        {
-            try
-            {
-                APIResponse response = await _productCore.TotalCount(model);
                 if (response?.Response != null)
                     return Ok(response);
                 return BadRequest();
