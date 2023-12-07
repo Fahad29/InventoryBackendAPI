@@ -2,18 +2,16 @@
 using IMS.Api.Common.Constant;
 using IMS.Api.Common.Extensions;
 using IMS.Api.Common.Helper;
-using IMS.Api.Common.Model;
 using IMS.Api.Common.Model.CommonModel;
-using IMS.Api.Common.Model.DataModel;
 using IMS.Api.Common.Model.RequestModel;
+using IMS.Api.Common.Model.ResponseModel;
 using IMS.Api.Service.IRepository;
-using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Reflection;
-using static IMS.Api.Common.Enumerations.Eumeration;
+using static Dapper.SqlMapper;
 
 namespace IMS.Api.Service.Repository
 {
@@ -45,49 +43,34 @@ namespace IMS.Api.Service.Repository
             }
         }
 
-        [ExcludeFromCodeCoverage]
-        public List<Model> Search<Model>(object parameters, string sql, string connectionString)
+        public async Task<GridData> SearchMuiltiple(object parameters, string storedProcedureName)
         {
-            SqlConnection connection = new SqlConnection(_connectionString);
-            using (connection)
+            try
             {
-                DynamicParameters dynamicParameters = new DynamicParameters();
-                if (parameters != null)
-                {
-                    foreach (PropertyInfo property in parameters.GetType().GetProperties())
-                    {
-                        object value = DBNull.Value;
-                        if (property.GetValue(parameters) != null)
-                        {
-                            if ((property.PropertyType == typeof(int) || property.PropertyType == typeof(long) || property.PropertyType == typeof(long?) || property.PropertyType == typeof(int?))
-                                && int.Parse(property.GetValue(parameters).ToString()) != 0)
-                            {
-                                value = property.GetValue(parameters);
-                            }
-                            else if (property.PropertyType == typeof(string) && !string.IsNullOrEmpty(property.GetValue(parameters).ToString()))
-                            {
-                                value = property.GetValue(parameters);
-                            }
-                            else if ((property.PropertyType == typeof(DateTime) || property.PropertyType == typeof(DateTime?)) && Convert.ToDateTime(property.GetValue(parameters).ToString()) != Convert.ToDateTime("01-01-1900"))
-                            {
-                                value = property.GetValue(parameters);
-                            }
-                            else if ((property.PropertyType == typeof(decimal) || property.PropertyType == typeof(decimal?)) && decimal.Parse(property.GetValue(parameters).ToString()) != 0)
-                            {
-                                value = property.GetValue(parameters);
-                            }
+                GridData gridDataInstance = GridData.Instance;
 
-                            if (property.PropertyType.BaseType != typeof(object) || property.PropertyType == typeof(string))
-                                dynamicParameters.Add(property.Name, value, direction: ParameterDirection.Input);
-                        }
+                using (SqlConnection conn = new SqlConnection(_connectionString))
+                {
+                    await conn.OpenAsync();
+
+                    using (GridReader multiObject = await conn.QueryMultipleAsync(storedProcedureName, parameters, commandType: CommandType.StoredProcedure))
+                    {
+                        gridDataInstance.DataList = await multiObject.ReadAsync<object>(); // Replace with your actual data
+                        gridDataInstance.TotalCount = await multiObject.ReadFirstAsync<int>(); // Replace with your actual logic
                     }
                 }
-                connection.Open();
-                return connection.Query<Model>(sql, param: dynamicParameters, commandType: CommandType.StoredProcedure).ToList();
+
+                return await Task.FromResult(gridDataInstance);
             }
+            catch (Exception ex)
+            {
+
+                // Log or handle the exception appropriately
+                Console.WriteLine($"Error in SearchMultipleAsync: {ex.Message}");
+                throw;
+            }
+
         }
-
-
         public IEnumerable<Model> ExecuteQuery<Model>(object parameters, string query)
         {
             using (SqlConnection conn = new SqlConnection(_connectionString))
@@ -250,12 +233,33 @@ namespace IMS.Api.Service.Repository
             {
                 throw;
             }
-
         }
-        public async Task PurchaseTransactionsCreate(PurchaseRequestModel purchaseRequest)
+
+        public async Task<(TFirst, IEnumerable<TSecond>)> GetByIdMultiple<TFirst, TSecond>(object parameters, string storedProcedureName)
         {
             try
             {
+                using (SqlConnection conn = new SqlConnection(_connectionString))
+                {
+                    conn.Open();
+                    using (GridReader multiObject = await conn.QueryMultipleAsync(storedProcedureName, parameters, commandType: CommandType.StoredProcedure))
+                    {
+                        TFirst FirstModel = await multiObject.ReadFirstAsync<TFirst>();
+                        IEnumerable<TSecond> SecondModel = await multiObject.ReadAsync<TSecond>();
+                        return (FirstModel, SecondModel);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+        public async Task<PurchaseOrderResponseModel> PurchaseTransactionsCreate(PurchaseRequestModel purchaseRequest)
+        {
+            try
+            {
+                PurchaseOrderResponseModel purchaseObj = new PurchaseOrderResponseModel();
                 using (var conn = new SqlConnection(_connectionString))
                 {
                     await conn.OpenAsync();
@@ -272,14 +276,19 @@ namespace IMS.Api.Service.Repository
                                 PaymentType = purchaseRequest.PaymentType,
                                 PaymentStatus = purchaseRequest.PaymentStatus,
                                 PaidAmount = purchaseRequest.PaidAmount,
-                                Note = purchaseRequest.Note
+                                Note = purchaseRequest.Note,
+                                UserId = purchaseRequest.UserId,
+                                CompanyId = purchaseRequest.CompanyId
                             };
 
-                            int purchaseRequestId = await conn.QuerySingleAsync<int>(Constant.SpCreatePurchaseOrder, purchaseOrder, transaction,null,CommandType.StoredProcedure);
+                            purchaseObj = await conn.QuerySingleAsync<PurchaseOrderResponseModel>(Constant.SpCreatePurchaseOrder, purchaseOrder, transaction, null, CommandType.StoredProcedure);
 
                             foreach (var purchaseItem in purchaseRequest.PurchaseItemRequests)
                             {
-                                purchaseItem.PurchaseOrderId = purchaseRequestId;
+                                //CalculateAmount calculation = new CalculateAmount(purchaseItem.ItemPrice, purchaseRequest.TaxValue);
+                                //purchaseItem.TotalWithOutVAT = calculation.PriceWithoutVat;
+                                //purchaseItem.VATAmount = calculation.VatAmount;
+                                purchaseItem.PurchaseOrderId = purchaseObj.PurchaseOrderID;
                                 await conn.ExecuteAsync(Constant.SpCreatePurchaseItem, purchaseItem, transaction, null, CommandType.StoredProcedure);
                             }
 
@@ -293,6 +302,7 @@ namespace IMS.Api.Service.Repository
                             throw;
                         }
                     }
+                    return purchaseObj;
                 }
             }
             catch (Exception ex)

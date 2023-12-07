@@ -13,6 +13,7 @@ namespace IMS.Api.Core.ICoreService
         Task<APIResponse> CompanyProduct(CompanyProductSearchRequestModel model);
         Task<APIResponse> Company(BaseFilter model);
         Task<APIResponse> Transaction(TransactionSearchRequestModel model);
-
+        Task<APIResponse> PurchaseTransaction(TransactionSearchRequestModel model);
+        Task<APIResponse> Vendor(VendorSearch model);
     }
 }

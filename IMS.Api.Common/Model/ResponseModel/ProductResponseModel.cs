@@ -1,4 +1,6 @@
-﻿namespace IMS.Api.Common.Model.ResponseModel
+﻿using IMS.Api.Common.Model.DataModel;
+
+namespace IMS.Api.Common.Model.ResponseModel
 {
     public class ProductResponseModel
     {
@@ -6,12 +8,16 @@
         {
             attachments = new List<AttachmentResponse>();
         }
-        public long Id { get; set; }
+        public long CompanyProductId { get; set; }
+        public long ProductDetailId{ get; set; }
         public int BrandId { get; set; }
         public string BrandName { get; set; }
         public int CategoryId { get; set; }
         public string CategoryName { get; set; }
-        public int ItemQuantityId { get; set; }
+        public decimal Price { get; set; } = 0.0M;
+        public int QuantityId { get; set; }
+        public DateTime ExpiryDate { get; set; }
+        public decimal Stock { get; set; }
         public string Quantity { get; set; }
         public string BarcodeValue { get; set; }
         public string Name { get; set; }

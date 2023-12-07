@@ -6,6 +6,7 @@ using IMS.Api.Common.Model.ResponseModel;
 using IMS.Api.Core.ICoreService;
 using IMS.Api.Service.IRepository;
 using Microsoft.AspNetCore.Http;
+using System.IO;
 using System.Net;
 
 namespace IMS.Api.Core.CoreService
@@ -70,9 +71,14 @@ namespace IMS.Api.Core.CoreService
                     // Combine the path with the unique file name
 
                     // Save the file to the server
-                    using (var stream = new FileStream(attachmentPath, FileMode.Create))
+
+                    if (file.Length > 0)
                     {
-                        await file.CopyToAsync(stream);
+
+                        using (var stream = System.IO.File.Create(attachmentPath))
+                        {
+                            file.CopyTo(stream);
+                        }
                     }
                     AttachmentResponse attachmentRes = _iRepository.CreateSP<AttachmentResponse>(attachment, Constant.SpGetAddAttachments);
                     attachments.Add(attachmentRes);

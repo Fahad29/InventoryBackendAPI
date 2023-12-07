@@ -172,7 +172,6 @@
         public const string SpGetProductDetail = "Usp_Get_productDetail";
         public const string SpGetProductDetailById = "Usp_Get_productDetailById";
         public const string SpDeleteProductDetail = "Usp_Delete_ProductDetail";
-        public const string SpProductDetailTotalCount = "Usp_Get_productDetailTotalCount";
         #endregion
 
         #region CompanyProdcut
@@ -309,8 +308,8 @@
 
 
         #region Purchase Order
-        public const string SpGetPurchaseOrderById = "usp_Get_PurchaseOrderById";
         public const string SpGetAllPurchaseOrder = "usp_GetALL_PurchaseOrder";
+        public const string SpGetPurchaseOrderById = "usp_Get_PurchaseOrderById";
         public const string SpCreatePurchaseOrder = "usp_Create_PurchaseOrder";
         public const string SpCreatePurchaseItem = "usp_Create_PurchaseItem";
         public const string SpDeletePurchaseOrderById = "usp_Delete_PurchaseOrder";

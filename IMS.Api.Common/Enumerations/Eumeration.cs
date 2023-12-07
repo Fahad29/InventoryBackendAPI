@@ -7,8 +7,10 @@
             SuperAdmin = 1 ,
             Administrator ,
             Company ,
-            Supervisior,
+            CEO,
+            Director,
             Manager,
+            Supervisior,
             Cashier,
             Customer
         }

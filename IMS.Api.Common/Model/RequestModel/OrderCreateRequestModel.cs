@@ -30,9 +30,6 @@ namespace IMS.Api.Common.Model.RequestModel
         public List<OrderItemCreateRequestModel> orderItemCreateRequestModelList { get; set; }
     }
 
-
-
-
     public partial class OrderTransactionRequest
     {   
         public TransactionType TransactionType { get; set; }

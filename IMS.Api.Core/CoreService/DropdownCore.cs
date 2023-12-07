@@ -47,7 +47,7 @@ namespace IMS.Api.Core.CoreService
             APIConfig.Log.Debug("Getting Dropdown By Module Id Data From DropdownCore ");
             try
             {
-                List<DropdownResponse> myDropdowns = _iRepository.Search(new { ModuleId = ModuleId }, Constant.SpGetDropdownbyModule).ToList();
+                List<DropdownResponse> myDropdowns = _iRepository.Search(new {UserId=APIConfig.UserId, ModuleId = ModuleId }, Constant.SpGetDropdownbyModule).ToList();
 
                 if (myDropdowns.Count > 0)
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, myDropdowns);

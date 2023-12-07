@@ -1,5 +1,6 @@
-﻿using IMS.Api.Common.Model.RequestModel;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+﻿using IMS.Api.Common.Model.CommonModel;
+using IMS.Api.Common.Model.RequestModel;
+using IMS.Api.Common.Model.ResponseModel;
 
 namespace IMS.Api.Service.IRepository
 {
@@ -7,16 +8,17 @@ namespace IMS.Api.Service.IRepository
     {
         IEnumerable<TEntity> Search(object parameters, string query);
         IEnumerable<Model> Search<Model>(object parameters, string query);
+        Task<GridData> SearchMuiltiple(object parameters, string storedProcedureName);
 
-        public List<Model> Search<Model>(object parameters, string sql, string connectionString);
         IEnumerable<Model> ExecuteQuery<Model>(object parameters, string query);
         Task<IEnumerable<Model>> ExecuteQueryAsync<Model>(object parameters, string query);
         Model CreateSP<Model>(object model, string storedProcName);
         void CreateSP(object model, string storedProcName);
         void InsertInBulk<Model>(List<Model> listModel, string tableName, int? commandTimeout);
         bool Delete(object model, string storedProcName);
-        Task<Model> GetById<Model>  (object parameters, string storedProcedureName);
-        Task PurchaseTransactionsCreate(PurchaseRequestModel model);
+        Task<Model> GetById<Model>(object parameters, string storedProcedureName);
+        Task<(TFirst, IEnumerable<TSecond>)> GetByIdMultiple<TFirst, TSecond>(object parameters, string storedProcedureName);
+        Task<PurchaseOrderResponseModel> PurchaseTransactionsCreate(PurchaseRequestModel model);
 
     }
 }
