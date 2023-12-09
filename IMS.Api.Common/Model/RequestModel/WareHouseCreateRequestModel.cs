@@ -1,17 +1,21 @@
-﻿namespace IMS.Api.Common.Model.RequestModel
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace IMS.Api.Common.Model.RequestModel
 {
-    public class WareHouseCreateRequestModel
+    public class WarehouseCreateRequestModel
     {
-        
-        public int? CompanyId { get; set; }
-        public string? Name { get; set; }
-        public string? PhoneNumber { get; set; }
-        public string? Email { get; set; }
+        [Required]
+        public string Name { get; set; }
+        [Required]
+        public string PhoneNumber { get; set; }
+        [Required]
+        public string Email { get; set; }
         public string? Fax { get; set; }
-        public string? Address { get; set; }
+        [Required]
+        public string Address { get; set; }
     }
-    public class WareHouseUpdateRequestModel : WareHouseCreateRequestModel
+    public class WarehouseUpdateRequestModel : WarehouseCreateRequestModel
     {
-        public int? Id { get; set; }
+        public int Id { get; set; }
     }
 }

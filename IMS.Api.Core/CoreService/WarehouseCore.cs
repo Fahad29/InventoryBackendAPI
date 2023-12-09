@@ -2,7 +2,6 @@
 using IMS.Api.Common.Extensions;
 using IMS.Api.Common.Model.CommonModel;
 using IMS.Api.Common.Model.DataModel;
-using IMS.Api.Common.Model.Params;
 using IMS.Api.Common.Model.RequestModel;
 using IMS.Api.Common.Model.RequestModel.Search;
 using IMS.Api.Common.Model.ResponseModel;
@@ -22,23 +21,19 @@ namespace IMS.Api.Core.CoreService
             _apiResponse = apiResponse;
         }
 
-        public async Task<APIResponse> Search(WareHouseSearchRequestModel model)
+        public async Task<APIResponse> Search(WarehouseSearchRequestModel model)
         {
-            APIConfig.Log.Debug("CALLING API\" Warehouse Get all \"  STARTED");
+            APIConfig.Log.Debug("******* Calling Warehouse Search API ******* ");
             try
             {
+                model.CompanyId = APIConfig.CompanyId;
+                GridData response = await _iRepository.SearchMuiltiple(model, Constant.SpGetWarehouse);
+                // Access the data from the result
 
-                List<WareHouseSearchResponseModel> Warehouse = _iRepository.Search<WareHouseSearchResponseModel>(model, Constant.SpGetWarehouse).ToList();
-                if (Warehouse.Count > 0)
-                {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, Warehouse);
-
-                }
+                if (response.DataList.Count() > 0)
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, response);
                 else
-                {
                     return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
-                }
-
 
             }
             catch (Exception ex)
@@ -54,79 +49,50 @@ namespace IMS.Api.Core.CoreService
             APIConfig.Log.Debug("CALLING API\" Warehouse GetById \"  STARTED");
             try
             {
-                WareHouse wareHouse = _iRepository.Search(new { Id = Id }, Constant.SpGetWarehouseById).FirstOrDefault();
-                if (wareHouse != null)
-                {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, wareHouse);
-                }
+                WarehouseResponse response = _iRepository.Search<WarehouseResponse>(new { Id = Id, CompanyId = APIConfig.CompanyId }, Constant.SpGetWarehouseById).FirstOrDefault();
+                if (response != null)
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, response);
                 else
-                {
                     return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
-                }
             }
-            catch (Exception ex)
+            catch
             {
-                APIConfig.Log.Debug("Exception: " + ex.Message);
-                _apiResponse.StatusCode = HttpStatusCode.BadRequest;
-                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
+                throw;
             }
         }
-
-        public async Task<APIResponse> TotalCount(WareHouseSearchRequestModel model)
-        {
-            APIConfig.Log.Debug("CALLING API\" Warehouse TotalCount \"  STARTED");
-            try
-            {
-                int? TotalCount  = _iRepository.Search<int>(model, Constant.SpGetWarehouseTotalCount).FirstOrDefault();
-                if (TotalCount > 0)
-                {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, new {TotalCount = TotalCount});
-                }
-                else
-                {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
-                }
-            }
-            catch (Exception ex)
-            {
-                APIConfig.Log.Debug("Exception: " + ex.Message);
-                _apiResponse.StatusCode = HttpStatusCode.BadRequest;
-                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
-            }
-        }
-
-        public async Task<APIResponse> Create(WareHouseCreateRequestModel model)
+        public async Task<APIResponse> Create(WarehouseCreateRequestModel model)
         {
             APIConfig.Log.Debug("CALLING API\" Warehouse create \"  STARTED");
             try
             {
-                WareHouse wareHouse = model.MapTo<WareHouse>();
-                wareHouse = _iRepository.CreateSP<WareHouse>(wareHouse, Constant.SpCreateWarehouse);
-                return _apiResponse.ReturnResponse(HttpStatusCode.Created, wareHouse);
+                WareHouse warehouse = model.MapTo<WareHouse>();
+                warehouse.CompanyId = APIConfig.CompanyId;
+                warehouse.CreatedBy = APIConfig.UserId;
+                warehouse.CreatedOn = DateTime.Now;
+                WarehouseResponse response = _iRepository.CreateSP<WarehouseResponse>(warehouse, Constant.SpCreateWarehouse);
+                return _apiResponse.ReturnResponse(HttpStatusCode.Created, response);
             }
-            catch (Exception ex)
+            catch
             {
-                APIConfig.Log.Debug("Exception: " + ex.Message);
-                _apiResponse.StatusCode = HttpStatusCode.BadRequest;
-                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
+                throw;
             }
         }
 
-        public async Task<APIResponse> Update(WareHouseUpdateRequestModel model)
+        public async Task<APIResponse> Update(WarehouseUpdateRequestModel model)
         {
             try
             {
                 APIConfig.Log.Debug("CALLING API\" Warehouse update \"  STARTED");
-                WareHouse wareHouse = model.MapTo<WareHouse>();
-                wareHouse = _iRepository.CreateSP<WareHouse>(wareHouse, Constant.SpUpdateWarehouse);
+                WareHouse warehouse = model.MapTo<WareHouse>();
+                warehouse.UpdatedBy = APIConfig.UserId;
+                warehouse.UpdatedOn = DateTime.Now;
+                warehouse = _iRepository.CreateSP<WareHouse>(warehouse, Constant.SpUpdateWarehouse);
                 return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.UpdateRecord);
 
             }
-            catch (Exception ex)
+            catch
             {
-                APIConfig.Log.Debug("Exception: " + ex.Message);
-                _apiResponse.StatusCode = HttpStatusCode.BadRequest;
-                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
+                throw;
             }
         }
 
@@ -147,14 +113,12 @@ namespace IMS.Api.Core.CoreService
                 }
 
             }
-            catch (Exception ex)
+            catch
             {
-                APIConfig.Log.Debug("Exception: " + ex.Message);
-                _apiResponse.StatusCode = HttpStatusCode.BadRequest;
-                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
+                throw;
             }
         }
-        
+
     }
 }
 
