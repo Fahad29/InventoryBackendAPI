@@ -3,6 +3,7 @@ using IMS.Api.Common.Extensions;
 using IMS.Api.Common.Model.CommonModel;
 using IMS.Api.Common.Model.DataModel;
 using IMS.Api.Common.Model.RequestModel;
+using IMS.Api.Common.Model.RequestModel.Search;
 using IMS.Api.Common.Model.ResponseModel;
 using IMS.Api.Core.ICoreService;
 using IMS.Api.Service.IRepository;
@@ -20,22 +21,21 @@ namespace IMS.Api.Core.CoreService
             _apiResponse = apiResponse;
         }
 
-        public async Task<APIResponse> Search(BaseFilter model)
+        public async Task<APIResponse> Search(UserSearchRequestModel model)
         {
             APIConfig.Log.Debug("CALLING API\" user Get all \"  STARTED");
             try
             {
-                List<User> users = _iRepository.Search(model, Constant.SpGetUser).ToList();
-                if (users.Count > 0)
-                {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, users);
+                model.CompanyId = APIConfig.CompanyId;
+                GridData response = await _iRepository.SearchMuiltiple(model, Constant.SpGetUser);
+                // Access the data from the result
 
-                }
+                if (response.DataList.Count() > 0)
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, response);
                 else
-                {
                     return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
-                }
 
+              
 
             }
             catch (Exception ex)
@@ -51,7 +51,7 @@ namespace IMS.Api.Core.CoreService
             APIConfig.Log.Debug("CALLING API\" user GetById \"  STARTED");
             try
             {
-                User user = _iRepository.Search(new { Id = Id }, Constant.SpGetUser).FirstOrDefault();
+                User user = _iRepository.Search(new { Id = Id }, Constant.SpGetUserById).FirstOrDefault();
                 if (user != null)
                 {
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, user);
@@ -69,13 +69,13 @@ namespace IMS.Api.Core.CoreService
             }
         }
 
-        public async Task<APIResponse> Create(UserRequest model)
+        public async Task<APIResponse> Create(UserCreateRequestModel model)
         {
             APIConfig.Log.Debug("CALLING API\" user create \"  STARTED");
             try
             {
                 User user = model.MapTo<User>();
-                user = _iRepository.CreateSP<User>(user, Constant.SpCreateCompany);
+                user = _iRepository.CreateSP<User>(user, Constant.SpCreateUser);
                 return _apiResponse.ReturnResponse(HttpStatusCode.Created, user);
             }
             catch (Exception ex)
@@ -86,14 +86,14 @@ namespace IMS.Api.Core.CoreService
             }
         }
 
-        public async Task<APIResponse> Update(UserRequest model)
+        public async Task<APIResponse> Update(UserUpdateRequestModel model)
         {
             try
             {
                 APIConfig.Log.Debug("CALLING API\" user update \"  STARTED");
                 User user = model.MapTo<User>();
                 //company.UpdatedBy = @params.UserId;
-                user = _iRepository.CreateSP<User>(user, Constant.SpUpdateCompany);
+                user = _iRepository.CreateSP<User>(user, Constant.SpUpdateUser);
                 return _apiResponse.ReturnResponse(HttpStatusCode.OK, user);
 
             }
@@ -113,7 +113,7 @@ namespace IMS.Api.Core.CoreService
                 if (Id > 0)
                 {
 
-                    _iRepository.CreateSP<User>(new { UserId  = Id }, Constant.SpDeleteUser);
+                    _iRepository.CreateSP<User>(new { UserId  = Id , UpdatedBy = APIConfig.UserId}, Constant.SpDeleteUser);
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.DeleteRecord);
                 }
                 else
@@ -130,30 +130,6 @@ namespace IMS.Api.Core.CoreService
             }
 
         }
-
-        public async Task<APIResponse> TotalCount(BaseFilter model)
-        {
-            APIConfig.Log.Debug("CALLING API\" user TotalCount \"  STARTED");
-            try
-            {
-                int? TotalCount = _iRepository.Search<int>(model, Constant.SpGetUserTotalCount).FirstOrDefault();
-                if (TotalCount > 0)
-                {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, new { TotalCount = TotalCount });
-                }
-                else
-                {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
-                }
-            }
-            catch (Exception ex)
-            {
-                APIConfig.Log.Debug("Exception: " + ex.Message);
-                _apiResponse.StatusCode = HttpStatusCode.BadRequest;
-                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
-            }
-        }
-
 
     }
 }

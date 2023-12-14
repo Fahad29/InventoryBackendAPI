@@ -1,9 +1,11 @@
-﻿namespace IMS.Api.Common.Model.DataModel
+﻿using IMS.Api.Common.Model.CommonModel;
+
+namespace IMS.Api.Common.Model.DataModel
 {
     public class User : BaseModel
     {
         public int UserId { get; set; }
-        public int CompanyId { get; set; }
+        public int CompanyId { get; set; } = APIConfig.CompanyId;
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string PasswordHash { get; set; }

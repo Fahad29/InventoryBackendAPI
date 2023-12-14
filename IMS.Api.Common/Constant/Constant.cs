@@ -144,8 +144,8 @@
         public const string SpCreateUser = "Usp_create_user";
         public const string SpUpdateUser = "Usp_update_user";
         public const string SpGetUser = "Usp_get_user";
+        public const string SpGetUserById = "Usp_get_userById";
         public const string SpDeleteUser = "Usp_Delete_user";
-        public const string SpGetUserTotalCount = "Usp_Get_UserTotalCount";
         #endregion
 
         #region Product SPs
