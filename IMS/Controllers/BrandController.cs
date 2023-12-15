@@ -50,7 +50,7 @@ namespace IMS.Controllers
         }
 
         [AllowAnonymous, HttpDelete, Route("Delete")]
-        public async Task<IActionResult> Delete(int brandId)
+        private async Task<IActionResult> Delete(int brandId)
         {
             try
             {

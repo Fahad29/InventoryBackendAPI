@@ -93,11 +93,15 @@ namespace IMS.Api.Core.CoreService
             }
         }
 
-        public async Task<APIResponse> DeleteAttachmentsById(long AttachmentId, long UserId)
+        public async Task<APIResponse> DeleteAttachmentsById(IEnumerable<long> AttachmentId, long UserId)
         {
             try
             {
-                bool isDelete = _iRepository.Delete(new { AttachmentId = AttachmentId }, Constant.SpDeleteAttachmentById);
+                bool isDelete = false;
+                foreach (var attachmentId in AttachmentId)
+                {
+                    isDelete = _iRepository.Delete(new { AttachmentId = AttachmentId }, Constant.SpDeleteAttachmentById);
+                }
                 if (isDelete)
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.DeleteRecord);
                 else

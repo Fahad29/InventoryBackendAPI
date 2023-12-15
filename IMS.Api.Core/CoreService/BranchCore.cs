@@ -2,7 +2,6 @@
 using IMS.Api.Common.Extensions;
 using IMS.Api.Common.Model.CommonModel;
 using IMS.Api.Common.Model.DataModel;
-using IMS.Api.Common.Model.Params;
 using IMS.Api.Common.Model.RequestModel;
 using IMS.Api.Common.Model.RequestModel.Search;
 using IMS.Api.Common.Model.ResponseModel;
@@ -23,137 +22,96 @@ namespace IMS.Api.Core.CoreService
             _iRepository = iRepository;
             _apiResponse = apiResponse;
         }
-
+        public async Task<APIResponse> Search(BranchSearchRequestModel model)
+        {
+            APIConfig.Log.Debug("******* Calling Branch Search API *******");
+            try
+            {
+                model.CompanyId = APIConfig.CompanyId;
+                GridData response = await _iRepository.SearchMuiltiple(model, Constant.SpGetBranch);
+                // Access the data from the result
+                if (response.DataList.Count() > 0)
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, response);
+                else
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+        public async Task<APIResponse> GetById(int BranchId)
+        {
+            APIConfig.Log.Debug("******* Calling Branch GetById API *******");
+            try
+            {
+                BranchResponseModel response = _iRepository.Search<BranchResponseModel>(new { Id = BranchId, CompanyId = APIConfig.CompanyId }, Constant.SpGetBranchById).FirstOrDefault();
+                if (response != null)
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, response);
+                else
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
+            }
+            catch
+            {
+                throw;
+            }
+        }
         public async Task<APIResponse> Create(BranchCreateRequestModel model)
         {
-            APIConfig.Log.Debug("CALLING API\" branches create \"  STARTED");
+            APIConfig.Log.Debug("******* Calling Branch Create API *******");
             try
             {
                 Branch branch = model.MapTo<Branch>();
-                branch = _iRepository.CreateSP<Branch>(branch, Constant.SpCreateBranch);
-                return _apiResponse.ReturnResponse(HttpStatusCode.Created, branch);
+                branch.CompanyId = APIConfig.CompanyId;
+                branch.CreatedBy = APIConfig.UserId;
+                branch.CreatedOn = DateTime.Now;
+                BranchResponseModel response = _iRepository.CreateSP<BranchResponseModel>(branch, Constant.SpCreateBranch);
+                return _apiResponse.ReturnResponse(HttpStatusCode.Created, response);
             }
-            catch (Exception ex)
+            catch
             {
-                APIConfig.Log.Debug("Exception: " + ex.Message);
-                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
+                throw;
             }
         }
-
         public async Task<APIResponse> Update(BranchUpdateRequestModel model)
         {
             try
             {
-                APIConfig.Log.Debug("CALLING API\" branches update \"  STARTED");
+                APIConfig.Log.Debug("******* Calling Branch Update API *******");
                 Branch branch = model.MapTo<Branch>();
-                branch = _iRepository.CreateSP<Branch>(branch, Constant.SpUpdateBranch);
+                branch.CompanyId = APIConfig.CompanyId;
+                branch.UpdatedBy = APIConfig.UserId;
+                branch.UpdatedOn = DateTime.Now;
+                BranchResponseModel response = _iRepository.CreateSP<BranchResponseModel>(branch, Constant.SpUpdateBranch);
                 return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.UpdateRecord);
-
             }
-            catch (Exception ex)
+            catch
             {
-                APIConfig.Log.Debug("Exception: " + ex.Message);
-                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
+                throw;
             }
         }
-
         public async Task<APIResponse> Delete(int BranchId)
         {
-            APIConfig.Log.Debug("CALLING API\" branches delete \"  STARTED");
+            APIConfig.Log.Debug("******* Calling Branch Delete API *******");
             try
             {
                 if (BranchId > 0)
                 {
-
-                    _iRepository.CreateSP<Company>(new { Id = BranchId }, Constant.SpDeleteCompanyBranch);
+                    _iRepository.Delete(new
+                    {
+                        Id = BranchId,
+                        CompanyId = APIConfig.CompanyId,
+                        UpdatedBy = APIConfig.UserId
+                    }, Constant.SpDeleteCompanyBranch);
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.DeleteRecord);
                 }
                 else
-                {
                     return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.InValidRecordId);
-                }
-
             }
-            catch (Exception ex)
+            catch
             {
-                APIConfig.Log.Debug("Exception: " + ex.Message);
-                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
-            }
-
-        }
-        
-        public async Task<APIResponse> Search(BranchSearchRequestModel model)
-        {
-            APIConfig.Log.Debug("CALLING API\" branches Get all \"  STARTED");
-            try
-            {
-
-                List<BranchSearchResponseModel> branches = _iRepository.Search<BranchSearchResponseModel>(model, Constant.SpGetBranch).ToList();
-                if (branches.Count > 0)
-                {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, branches);
-
-                }
-                else
-                {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
-                }
-
-
-            }
-            catch (Exception ex)
-            {
-                APIConfig.Log.Debug("Exception: " + ex.Message);
-                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
+                throw;
             }
         }
-
-        public async Task<APIResponse> GetById(int BranchId)
-        {
-            APIConfig.Log.Debug("CALLING API\" branches GetById \"  STARTED");
-            try
-            {
-                Branch user = _iRepository.Search(new { Id = BranchId }, Constant.SpGetBranchById).FirstOrDefault();
-                if (user != null)
-                {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, user);
-                }
-                else
-                {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
-                }
-            }
-            catch (Exception ex)
-            {
-                APIConfig.Log.Debug("Exception: " + ex.Message);
-                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
-            }
-        }
-
-        public async Task<APIResponse> TotalCount(BranchSearchRequestModel model)
-        {
-            APIConfig.Log.Debug("CALLING API\" Branch TotalCount \"  STARTED");
-            try
-            {
-                int? TotalCount = _iRepository.Search<int>(model, Constant.SpGetBranchTotalCount).FirstOrDefault();
-                if (TotalCount > 0)
-                {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, new { TotalCount = TotalCount });
-                }
-                else
-                {
-                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
-                }
-            }
-            catch (Exception ex)
-            {
-                APIConfig.Log.Debug("Exception: " + ex.Message);
-                _apiResponse.StatusCode = HttpStatusCode.BadRequest;
-                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
-            }
-        }
-
-
-
     }
-    }
+}

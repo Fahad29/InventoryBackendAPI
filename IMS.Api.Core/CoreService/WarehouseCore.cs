@@ -36,11 +36,9 @@ namespace IMS.Api.Core.CoreService
                     return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
 
             }
-            catch (Exception ex)
+            catch
             {
-                APIConfig.Log.Debug("Exception: " + ex.Message);
-                _apiResponse.StatusCode = HttpStatusCode.BadRequest;
-                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
+                throw;
             }
         }
 
@@ -103,7 +101,6 @@ namespace IMS.Api.Core.CoreService
             {
                 if (WareHouseId > 0)
                 {
-
                     _iRepository.CreateSP<Company>(new { Id = WareHouseId, UpdatedBy = APIConfig.UserId }, Constant.SpDeleteCompanyWarehouse);
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.DeleteRecord);
                 }
@@ -111,7 +108,6 @@ namespace IMS.Api.Core.CoreService
                 {
                     return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.InValidRecordId);
                 }
-
             }
             catch
             {

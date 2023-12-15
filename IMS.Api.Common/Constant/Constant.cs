@@ -125,9 +125,8 @@
         #endregion
 
         #region Branch
-        public const string SpGetBranchById = "Usp_Get_CompanyBranchById";
-        public const string SpGetBranchTotalCount = "Usp_Get_CompanyBranchTotalCount";
         public const string SpGetBranch = "Usp_Get_CompanyBranches";
+        public const string SpGetBranchById = "Usp_Get_CompanyBranchById";
         public const string SpCreateBranch = "Usp_Create_CompanyBranches";
         public const string SpUpdateBranch = "Usp_Update_CompanyBranches";
         public const string SpDeleteCompanyBranch = "Usp_Delete_CompanyBranch";
