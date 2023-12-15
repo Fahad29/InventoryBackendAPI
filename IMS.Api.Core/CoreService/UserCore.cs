@@ -11,7 +11,7 @@ using System.Net;
 
 namespace IMS.Api.Core.CoreService
 {
-    public  class UserCore :IUserCore
+    public class UserCore : IUserCore
     {
         IRepository<User> _iRepository;
         APIResponse _apiResponse;
@@ -35,14 +35,14 @@ namespace IMS.Api.Core.CoreService
                 else
                     return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
 
-              
+
 
             }
             catch (Exception ex)
             {
                 APIConfig.Log.Debug("Exception: " + ex.Message);
                 _apiResponse.StatusCode = HttpStatusCode.BadRequest;
-                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
+                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex.Message);
             }
         }
 
@@ -65,7 +65,7 @@ namespace IMS.Api.Core.CoreService
             {
                 APIConfig.Log.Debug("Exception: " + ex.Message);
                 _apiResponse.StatusCode = HttpStatusCode.BadRequest;
-                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
+                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex.Message);
             }
         }
 
@@ -74,15 +74,26 @@ namespace IMS.Api.Core.CoreService
             APIConfig.Log.Debug("CALLING API\" user create \"  STARTED");
             try
             {
-                User user = model.MapTo<User>();
-                user = _iRepository.CreateSP<User>(user, Constant.SpCreateUser);
-                return _apiResponse.ReturnResponse(HttpStatusCode.Created, user);
+                int? Id = _iRepository.CreateSP<User>(new { UserName = model?.Email }, Constant.SpUserLogin)?.UserId;
+                if (Id > 0 || Id != null)
+                {
+                    _apiResponse.StatusCode = HttpStatusCode.Conflict;
+                    return _apiResponse.ReturnResponse(HttpStatusCode.Conflict, Constant.EmailALreadyInUse);
+                }
+                else
+                {
+                    User user = model.MapTo<User>();
+                    user.PasswordHash = model?.PasswordHash?.MD5Encrypt();
+                    UserResponseModel userResponseModel = _iRepository.CreateSP<UserResponseModel>(user, Constant.SpCreateUser);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.Created, userResponseModel);
+                }
+
             }
             catch (Exception ex)
             {
                 APIConfig.Log.Debug("Exception: " + ex.Message);
                 _apiResponse.StatusCode = HttpStatusCode.BadRequest;
-                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
+                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex.Message);
             }
         }
 
@@ -91,17 +102,25 @@ namespace IMS.Api.Core.CoreService
             try
             {
                 APIConfig.Log.Debug("CALLING API\" user update \"  STARTED");
-                User user = model.MapTo<User>();
-                //company.UpdatedBy = @params.UserId;
-                user = _iRepository.CreateSP<User>(user, Constant.SpUpdateUser);
-                return _apiResponse.ReturnResponse(HttpStatusCode.OK, user);
+                int? Id = _iRepository.CreateSP<User>(new { Id = model?.UserId }, Constant.SpUserLogin)?.UserId;
+                if (Id > 0)
+                {
+                    User user = model.MapTo<User>();
+                    UserResponseModel userResponseModel = _iRepository.CreateSP<UserResponseModel>(user, Constant.SpUpdateUser);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, userResponseModel);
+                }
+                else
+                {
+                    _apiResponse.StatusCode = HttpStatusCode.NotFound;
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NotFound, Constant.RecordNotFound);
+                }
 
             }
             catch (Exception ex)
             {
                 APIConfig.Log.Debug("Exception: " + ex.Message);
                 _apiResponse.StatusCode = HttpStatusCode.BadRequest;
-                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
+                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex.Message);
             }
         }
 
@@ -113,12 +132,12 @@ namespace IMS.Api.Core.CoreService
                 if (Id > 0)
                 {
 
-                    _iRepository.CreateSP<User>(new { UserId  = Id , UpdatedBy = APIConfig.UserId}, Constant.SpDeleteUser);
+                    _iRepository.CreateSP<User>(new { UserId = Id, UpdatedBy = APIConfig.UserId }, Constant.SpDeleteUser);
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, Constant.DeleteRecord);
                 }
                 else
                 {
-                    return  _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
                 }
 
             }
@@ -126,7 +145,7 @@ namespace IMS.Api.Core.CoreService
             {
                 APIConfig.Log.Debug("Exception: " + ex.Message);
                 _apiResponse.StatusCode = HttpStatusCode.BadRequest;
-                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
+                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex.Message);
             }
 
         }

@@ -45,6 +45,8 @@
 
         public const string InvalidUser = "Invalid Email and Password";
         public const string NotActive = "User Not Active";
+       
+        public const string EmailALreadyInUse = "This Email ALready In Use";
         #endregion
 
         #region Store Procedure
@@ -146,6 +148,7 @@
         public const string SpGetUser = "Usp_get_user";
         public const string SpGetUserById = "Usp_get_userById";
         public const string SpDeleteUser = "Usp_Delete_user";
+        public const string SpUserLogin = "Usp_UserLogin";
         #endregion
 
         #region Product SPs

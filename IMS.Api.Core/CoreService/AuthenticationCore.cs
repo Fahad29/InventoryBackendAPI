@@ -41,7 +41,7 @@ namespace IMS.Api.Core.CoreService
                 {
                     //loginRequest.Password = loginRequest?.Password?.EncryptPassword();
                     loginRequest.Password = loginRequest?.Password?.MD5Encrypt();
-                    User user = _iRepository.CreateSP<User>(loginRequest, Constant.SpGetUser);
+                    User user = _iRepository.CreateSP<User>(loginRequest, Constant.SpUserLogin);
                     if (user != null)
                     {
                         string expiry = APIConfig.Configuration?.GetSection("JWT")["ExpiryMinutes"].ToString();
@@ -129,7 +129,7 @@ namespace IMS.Api.Core.CoreService
 
                 if (model != null)
                 {
-                    User user = _iRepository.CreateSP<User>(new { Id = model.UserId }, Constant.SpGetUser);
+                    User user = _iRepository.CreateSP<User>(new { Id = model.UserId }, Constant.SpUserLogin);
                     string expiry = DateTime.Now.AddHours(24).ToString("yyyy-MM-dd HH:mm:ss");
                     string jwtExpiry = APIConfig.Configuration?.GetSection("JWT")["ExpiryMinutes"].ToString();
                     string emailContent = ExtensionMethod.CreateEmailBody(APIConfig.ContentRootPath.MapPath(Constant.ForgetPasswordEmailTemplate));
@@ -168,7 +168,7 @@ namespace IMS.Api.Core.CoreService
         {
             try
             {
-                User? user = _iRepository.Search<User>(new { UserName = model.Email, Id = model.UserId }, Constant.SpGetUser)?.FirstOrDefault();
+                User? user = _iRepository.Search<User>(new { UserName = model.Email, Id = model.UserId },  Constant.SpUserLogin)?.FirstOrDefault();
                 if (user != null)
                 {
                     model.Password = model.Password.DecryptString();
@@ -233,7 +233,7 @@ namespace IMS.Api.Core.CoreService
         public APIResponse GetOTP(string emailAddress)
         {
             string Htmlcontent = string.Empty;
-            User? user = _iRepository.Search<User>(new { UserName = emailAddress }, Constant.SpGetUser)?.FirstOrDefault();
+            User? user = _iRepository.Search<User>(new { UserName = emailAddress },  Constant.SpUserLogin)?.FirstOrDefault();
             if (user != null && emailAddress != null)
             {
                 user.OTPExpire = DateTime.UtcNow;
@@ -290,7 +290,7 @@ namespace IMS.Api.Core.CoreService
 
         public APIResponse VerifyOTP(OTPVerificationRequestModel model)
         {
-            User user = _iRepository.Search<User>(new { UserName = model.EmailAddress }, Constant.SpGetUser)?.FirstOrDefault();
+            User user = _iRepository.Search<User>(new { UserName = model.EmailAddress },  Constant.SpUserLogin)?.FirstOrDefault();
             if (user != null)
             {
                 if (user?.OTPExpire?.AddMinutes(1) <= DateTime.UtcNow)
@@ -321,7 +321,7 @@ namespace IMS.Api.Core.CoreService
 
         public async Task<APIResponse> ChangePassword(ChangePasswordRequest model)
         {
-            User user = _iRepository.Search<User>(new { UserName = model.Email, Password = model.OldPassword.MD5Encrypt() }, Constant.SpGetUser)?.FirstOrDefault();
+            User user = _iRepository.Search<User>(new { UserName = model.Email, Password = model.OldPassword.MD5Encrypt() },  Constant.SpUserLogin)?.FirstOrDefault();
             if (user != null)
             {
                 model.NewPassword = model.NewPassword.DecryptString();

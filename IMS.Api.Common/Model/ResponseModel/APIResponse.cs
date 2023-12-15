@@ -37,6 +37,9 @@ namespace IMS.Api.Common.Model.ResponseModel
                 case HttpStatusCode.NoContent:
                     StatusMessage = "Record Not Found.";
                     break;
+                case HttpStatusCode.Conflict:
+                    StatusMessage = "Already Exist.";
+                    break;
                 default:
                     StatusMessage = "Not Found"; break;
             }
