@@ -12,6 +12,7 @@ namespace IMS.Api.Common.Model.ResponseModel
         public string Email { get; set; }
         public int UserRoleId { get; set; }
         public string MobileNo { get; set; }
+        public bool IsActive { get; set; }
 
     }
 }

@@ -120,5 +120,22 @@ namespace IMS.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("User")]
+        public async Task<IActionResult> User(UserSearchRequestModel model)
+        {
+            try
+            {
+                APIResponse response = await _exportCore.User(model);
+                if (response?.Response != null)
+                    return Ok(response);
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
     }
 }

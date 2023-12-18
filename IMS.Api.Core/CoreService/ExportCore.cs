@@ -1,4 +1,5 @@
 ﻿using IMS.Api.Common.Constant;
+using IMS.Api.Common.Extensions;
 using IMS.Api.Common.Model.CommonModel;
 using IMS.Api.Common.Model.DataModel;
 using IMS.Api.Common.Model.RequestModel.Search;
@@ -176,6 +177,29 @@ namespace IMS.Api.Core.CoreService
             {
                 APIConfig.Log.Debug("Exception: " + ex.Message);
                 return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex);
+            }
+        }
+        public async Task<APIResponse> User(UserSearchRequestModel model)
+        {
+            APIConfig.Log.Debug("CALLING API\" user export \"  STARTED");
+            try
+            {
+                model.CompanyId = APIConfig.CompanyId;
+                GridData response = await _iRepository.SearchMuiltiple(model, Constant.SpGetUser);
+                UserExportResponseModel userExportResponseModel = response.MapTo<UserExportResponseModel>();
+                if (response.DataList.Count() > 0)
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, userExportResponseModel);
+                else
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NoContent, Constant.RecordNotFound);
+
+
+
+            }
+            catch (Exception ex)
+            {
+                APIConfig.Log.Debug("Exception: " + ex.Message);
+                _apiResponse.StatusCode = HttpStatusCode.BadRequest;
+                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex.Message);
             }
         }
     }

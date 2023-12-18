@@ -124,6 +124,31 @@ namespace IMS.Api.Core.CoreService
             }
         }
 
+        public async Task<APIResponse> StatusUpdate(UserStatusUpdateRequestModel model)
+        {
+            try
+            {
+                APIConfig.Log.Debug("CALLING API\" user status update \"  STARTED");
+                int? Id = _iRepository.CreateSP<User>(new { Id = model?.UserId }, Constant.SpUserLogin)?.UserId;
+                if (Id > 0)
+                {
+                    UserResponseModel userResponseModel = _iRepository.CreateSP<UserResponseModel>(model, Constant.SpUserStatusUpdate);
+                    return _apiResponse.ReturnResponse(HttpStatusCode.OK, userResponseModel);
+                }
+                else
+                {
+                    _apiResponse.StatusCode = HttpStatusCode.NotFound;
+                    return _apiResponse.ReturnResponse(HttpStatusCode.NotFound, Constant.RecordNotFound);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                APIConfig.Log.Debug("Exception: " + ex.Message);
+                _apiResponse.StatusCode = HttpStatusCode.BadRequest;
+                return _apiResponse.ReturnResponse(HttpStatusCode.BadRequest, ex.Message);
+            }
+        }
         public async Task<APIResponse> Delete(int Id)
         {
             APIConfig.Log.Debug("CALLING API\" User delete \"  STARTED");
@@ -149,6 +174,7 @@ namespace IMS.Api.Core.CoreService
             }
 
         }
+        
 
     }
 }

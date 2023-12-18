@@ -148,6 +148,7 @@
         public const string SpGetUserById = "Usp_get_userById";
         public const string SpDeleteUser = "Usp_Delete_user";
         public const string SpUserLogin = "Usp_UserLogin";
+        public const string SpUserStatusUpdate = "Usp_UserStatusUpdate";
         #endregion
 
         #region Product SPs

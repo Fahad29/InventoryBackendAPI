@@ -1,4 +1,6 @@
-﻿namespace IMS.Api.Common.Model.RequestModel
+﻿using IMS.Api.Common.Model.CommonModel;
+
+namespace IMS.Api.Common.Model.RequestModel
 {
     public class UserCreateRequestModel
     {
@@ -16,6 +18,12 @@
         public string? LastName { get; set; }
         public string? MobileNo { get; set; }
         public int UserRoleId { get; set; }
-        public bool IsActive { get; set; }
     }
+    public class UserStatusUpdateRequestModel
+    {
+        public int UserId { get; set; }
+        public bool IsActive { get; set; }
+        public int UpdatedBy { get; set; } = APIConfig.UserId;
+    }
+
 }

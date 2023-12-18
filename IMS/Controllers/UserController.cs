@@ -83,6 +83,22 @@ namespace IMS.Controllers
             }
         }
 
+        [AllowAnonymous, HttpPut, Route("StatusUpdate")]
+        public async Task<IActionResult> StatusUpdate(UserStatusUpdateRequestModel model)
+        {
+            try
+            {
+                APIResponse response = await _userCore.StatusUpdate(model);
+                if (response?.Response != null)
+                    return Ok(response);
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
         [AllowAnonymous, HttpDelete, Route("Delete")]
         public async Task<IActionResult> Delete(int userId)
         {

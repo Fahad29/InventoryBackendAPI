@@ -15,5 +15,6 @@ namespace IMS.Api.Core.ICoreService
         Task<APIResponse> Transaction(TransactionSearchRequestModel model);
         Task<APIResponse> PurchaseTransaction(TransactionSearchRequestModel model);
         Task<APIResponse> Vendor(VendorSearch model);
+        Task<APIResponse> User(UserSearchRequestModel model);
     }
 }
