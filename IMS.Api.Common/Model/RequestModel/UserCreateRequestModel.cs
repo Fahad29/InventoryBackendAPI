@@ -1,4 +1,5 @@
 ﻿using IMS.Api.Common.Model.CommonModel;
+using System.Text.Json.Serialization;
 
 namespace IMS.Api.Common.Model.RequestModel
 {
@@ -23,6 +24,7 @@ namespace IMS.Api.Common.Model.RequestModel
     {
         public int UserId { get; set; }
         public bool IsActive { get; set; }
+        [JsonIgnore]
         public int UpdatedBy { get; set; } = APIConfig.UserId;
     }
 

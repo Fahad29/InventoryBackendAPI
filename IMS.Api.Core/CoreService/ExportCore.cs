@@ -186,7 +186,7 @@ namespace IMS.Api.Core.CoreService
             {
                 model.CompanyId = APIConfig.CompanyId;
                 GridData response = await _iRepository.SearchMuiltiple(model, Constant.SpGetUser);
-                UserExportResponseModel userExportResponseModel = response.MapTo<UserExportResponseModel>();
+                UserExportResponseModel userExportResponseModel = response?.DataList?.MapTo<UserExportResponseModel>();
                 if (response.DataList.Count() > 0)
                     return _apiResponse.ReturnResponse(HttpStatusCode.OK, userExportResponseModel);
                 else
