@@ -7,6 +7,7 @@
         public int ModuleId { get; set; }
         public int RoleId { get; set; }
         public string ModuleName { get; set; }
+        public string RoleName { get; set; }
         public bool AllowView { get; set; }
         public bool AllowCreate { get; set; }
         public bool AllowUpdate { get; set; }
